@@ -1,0 +1,15 @@
+<div class="article-type-edit">
+  <!-- <label>Name:</label>
+  <input placeholder="name" #articleTypeNameInput>
+
+  <label>Additional fields:</label>
+  <div *ngFor="let additionalField of additionalFields">
+    {{ additionalField.name }}
+  </div>
+  <input placeholder="field name" #addFieldInput>
+  <button (click)="onCreateField(addFieldInput.value)">Add</button> -->
+
+  <button (click)="onShowEditTags()">Edit tags</button>
+
+  <app-edit-tags [enabled]="showTagsEditView" (viewClosed)="onTagsViewClosed()"></app-edit-tags>
+</div>

@@ -1,0 +1,17 @@
+<div class="article-type">
+  <div class="article-type-name">
+    {{ articleType.name }}
+  </div>
+  <div class="section-name">
+    Extra fields
+  </div>
+  <div *ngFor="let fieldName of (fieldNames$ | async)" class="article-field-name">
+    {{ fieldName.name }}
+  </div>
+  <div class="section-name">
+    Default tags
+  </div>
+  <div *ngFor="let tag of (tags$ | async)" class="article-tag">
+    {{ tag.name }}
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="edit-tags-view" [class.hide]="!enabled">
+  <button class="close-button" (click)="onCloseView()">X</button>
+  <select #tagDropdown>
+    <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>
+  </select>
+  <button (click)="onRemoveTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Delete tag</button>
+  <br>
+  <br>
+  <input placeholder="create tag" #createTagInput>
+  <button (click)="onCreateTag(createTagInput.value)">Create tag</button>
+</div>

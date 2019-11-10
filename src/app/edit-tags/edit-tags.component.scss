@@ -1,0 +1,25 @@
+.edit-tags-view {
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  display: inline-block;
+  width: 30rem;
+  height: 10rem;
+  border: 2px solid gray;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.close-button {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid gray;
+}
+
+.hide {
+  display: none;
+}

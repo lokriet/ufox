@@ -136,5 +136,8 @@
       }
     }
   },
-  "defaultProject": "ufox"
+  "defaultProject": "ufox",
+  "cli": {
+    "defaultCollection": "@datorama/akita"
+  }
 }
