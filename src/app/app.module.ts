@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
@@ -11,22 +10,21 @@ import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { AkitaNgRouterStoreModule } from '@datorama/akita-ng-router-store';
-import { ArticlesSetupComponent } from './articles-setup/articles-setup.component';
-import { ArticleTypeEditComponent } from './articles-setup/article-type-edit/article-type-edit.component';
-import { ArticleTypeViewComponent } from './articles-setup/article-type-view/article-type-view.component';
-import { EditTagsComponent } from './edit-tags/edit-tags.component';
+import { ArticlesModule } from './articles/articles.module';
+import { ArticlesSetupModule } from './articles-setup/articles-setup.module';
+import { HomeComponent } from './home/home.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ArticlesSetupComponent,
-    ArticleTypeEditComponent,
-    ArticleTypeViewComponent,
-    EditTagsComponent
+    HomeComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
-    ReactiveFormsModule,
+    ArticlesModule,
+    ArticlesSetupModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features

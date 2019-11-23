@@ -1,10 +1,8 @@
-import { ID } from '@datorama/akita';
-
 export interface ArticleType {
-  id: ID;
+  id: string;
   name: string;
-  defaultTags: ID[];
-  articleFields: ID[];
+  defaultTags: string[];
+  articleFields: string[];
 }
 
 export function createArticleType(params: Partial<ArticleType>) {

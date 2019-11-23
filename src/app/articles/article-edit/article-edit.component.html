@@ -1,0 +1,53 @@
+<div class="edit-article">
+  <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+    <select 
+          formControlName="articleType"
+          (change)="onArticleTypeSwitched($event.target.value)">
+      <option value='null' selected>General</option>
+      <option 
+            *ngFor="let type of (articleTypes$ | async)" 
+            [value]="type.id"
+            > {{type.name}}</option>
+    </select>
+
+    <br><br>
+
+    <label>Article Name</label>
+    <input formControlName="name">
+
+    <br><br>
+
+    <div
+        formArrayName="additionalFields" 
+        *ngIf="selectedArticleType != null">
+      <div class="additional-field" *ngFor="let additionalField of additionalFieldNames; let i = index" [formGroupName]="i">
+        <label>{{ additionalField.name }}</label>
+        <input type="hidden" formControlName="id">
+        <input type="hidden" formControlName="fieldNameId">
+        <input type="text" formControlName="value">
+      </div>
+    </div>
+
+    <label>Text</label>
+    <textarea formControlName="articleText"></textarea>
+
+    <br><br>
+    <label>Tags:</label>
+  <div *ngFor="let tag of addedTags">
+    {{ tag.name }}
+  </div>
+  <select #tagDropdown>
+    <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
+  </select>
+  <button type="button"  (click)="onAddTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Add</button>
+  <button type="button" (click)="onShowEditTags()">Edit tags</button>
+  <app-edit-tags 
+      [enabled]="showTagsEditView" 
+      (tagDeleted)="onTagDeleted($event)"
+      (viewClosed)="onTagsViewClosed()"></app-edit-tags>
+  
+  <br><br>
+
+  <button type="submit">Create article</button>
+  </form>
+</div>

@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
-import { ID, guid } from '@datorama/akita';
-import { ArticleTagService } from '../articles-setup/state/article-tag.service';
-import { ArticleTagQuery } from '../articles-setup/state/article-tag.query';
-import { ArticleTagStore } from '../articles-setup/state/article-tag.store';
-import { ArticleTag } from '../articles-setup/state/article-tag.model';
+import { guid } from '@datorama/akita';
+import { ArticleTagService } from '../../articles-setup/state/article-tag.service';
+import { ArticleTagQuery } from '../../articles-setup/state/article-tag.query';
+import { ArticleTagStore } from '../../articles-setup/state/article-tag.store';
+import { ArticleTag } from '../../articles-setup/state/article-tag.model';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -12,10 +12,11 @@ import { Observable } from 'rxjs';
   styleUrls: ['./edit-tags.component.scss']
 })
 export class EditTagsComponent implements OnInit {
-  @ViewChild('createTagInput') createTagInput: ElementRef;
+  @ViewChild('createTagInput', { static: true }) createTagInput: ElementRef;
   @Input() enabled: boolean;
   tags$: Observable<ArticleTag[]>;
   @Output() viewClosed = new EventEmitter();
+  @Output() tagDeleted = new EventEmitter<string>();
 
   constructor(private tagService: ArticleTagService,
               private tagQuery: ArticleTagQuery,
@@ -28,8 +29,8 @@ export class EditTagsComponent implements OnInit {
 
   onRemoveTag(selectedTagId: string) {
     this.tagService.remove(selectedTagId);
-    // this.tagStore.remove(selectedTagId);
     console.log('removed ' + selectedTagId);
+    this.tagDeleted.emit(selectedTagId);
   }
 
   onCreateTag(tagName: string) {

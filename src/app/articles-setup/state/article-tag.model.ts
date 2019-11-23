@@ -1,7 +1,5 @@
-import { ID } from '@datorama/akita';
-
 export interface ArticleTag {
-  id: ID;
+  id: string;
   name: string;
 }
 

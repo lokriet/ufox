@@ -4,11 +4,9 @@ import { Observable } from 'rxjs';
 
 import { ArticleFieldName } from '../state/article-field-name.model';
 import { ArticleFieldNameService } from '../state/article-field-name.service';
-import { ArticleFieldNameStore } from '../state/article-field-name.store';
 import { ArticleTag } from '../state/article-tag.model';
 import { ArticleTagQuery } from '../state/article-tag.query';
 import { ArticleTagService } from '../state/article-tag.service';
-import { ArticleTagStore } from '../state/article-tag.store';
 import { ArticleTypeService } from '../state/article-type.service';
 
 @Component({
@@ -18,18 +16,16 @@ import { ArticleTypeService } from '../state/article-type.service';
 })
 export class ArticleTypeEditComponent implements OnInit {
   tags$: Observable<ArticleTag[]>;
-  @ViewChild('createTagInput') createTagInputField: ElementRef;
-
+  @ViewChild('createTagInput', { static: false }) createTagInputField: ElementRef;
+  @ViewChild('additionalFieldInput', { static: true }) additionalFieldInput: ElementRef;
+  @ViewChild('articleTypeNameInput', { static: true }) articleTypeNameInput: ElementRef;
   additionalFields: ArticleFieldName[];
-  tags: ArticleTag[];
+  defaultTags: ArticleTag[];
   showTagsEditView: boolean;
 
-  constructor(private tagStore: ArticleTagStore,
-              private tagQuery: ArticleTagQuery,
+  constructor(private tagQuery: ArticleTagQuery,
               private tagService: ArticleTagService,
-              private fieldNameStore: ArticleFieldNameStore,
               private fieldNameService: ArticleFieldNameService,
-              private articleTypeStore: ArticleTagStore,
               private articleTypeService: ArticleTypeService) { }
 
   ngOnInit() {
@@ -40,12 +36,21 @@ export class ArticleTypeEditComponent implements OnInit {
     this.tags$ = this.tagQuery.selectAll();
 
     this.additionalFields = [];
+    this.defaultTags = [];
     this.showTagsEditView = false;
   }
 
   onCreateField(fieldName: string) {
     const additionalField = {id: guid(), orderNo: this.additionalFields.length, name: fieldName} as ArticleFieldName;
     this.additionalFields.push(additionalField);
+    this.additionalFieldInput.nativeElement.value = '';
+  }
+
+  onAddTag(tagId: string) {
+    const tag = this.tagQuery.getEntity(tagId);
+    if (!this.defaultTags.includes(tag)) {
+      this.defaultTags.push(tag);
+    }
   }
 
   onShowEditTags() {
@@ -54,5 +59,40 @@ export class ArticleTypeEditComponent implements OnInit {
 
   onTagsViewClosed() {
     this.showTagsEditView = false;
+  }
+
+  onTagDeleted(tagId: string) {
+    this.defaultTags = this.defaultTags.filter(tag => tag.id !== tagId);
+  }
+
+  onMoveFieldUp(index: number) {
+    const upperField = this.additionalFields[index - 1];
+    this.additionalFields[index - 1] = this.additionalFields[index];
+    this.additionalFields[index] = upperField;
+    upperField.orderNo = index;
+    this.additionalFields[index - 1].orderNo = index - 1;
+  }
+
+  onMoveFieldDown(index: number) {
+    const lowerField = this.additionalFields[index + 1];
+    this.additionalFields[index + 1] = this.additionalFields[index];
+    this.additionalFields[index] = lowerField;
+    lowerField.orderNo = index;
+    this.additionalFields[index + 1].orderNo = index + 1;
+  }
+
+  onSaveArticleType() {
+    if (this.additionalFields.length > 0) {
+        this.fieldNameService.add(this.additionalFields)
+    }
+
+    const newArticleType = {
+      id: guid(),
+      name: this.articleTypeNameInput.nativeElement.value,
+      defaultTags: this.defaultTags.map(tag => tag.id),
+      articleFields: this.additionalFields.map(articleField => articleField.id)
+    };
+
+    this.articleTypeService.add(newArticleType);
   }
 }

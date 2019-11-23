@@ -1,7 +1,5 @@
-import { ID } from '@datorama/akita';
-
 export interface ArticleFieldName {
-  id: ID;
+  id: string;
   orderNo: number;
   name: string;
 }
