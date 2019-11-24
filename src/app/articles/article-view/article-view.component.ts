@@ -4,12 +4,11 @@ import { ArticleFieldValue } from '../state/article-field-value.model';
 import { ArticleFieldName } from 'src/app/articles-setup/state/article-field-name.model';
 import { ArticleFieldNameQuery } from 'src/app/articles-setup/state/article-field-name.query';
 import { ArticleFieldValueQuery } from '../state/article-field-value.query';
-import { ArticleFieldNameService } from 'src/app/articles-setup/state/article-field-name.service';
-import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { Observable } from 'rxjs';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
-import { ArticleTagService } from 'src/app/articles-setup/state/article-tag.service';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
+import { ArticleFieldValueService } from '../state/article-field-value.service';
+import { ArticleService } from '../state/article.service';
 
 interface AdditionalField {
   name: ArticleFieldName;
@@ -28,7 +27,9 @@ export class ArticleViewComponent implements OnInit {
 
   constructor(private fieldNamesQuery: ArticleFieldNameQuery,
               private fieldValuesQuery: ArticleFieldValueQuery,
-              private tagsQuery: ArticleTagQuery) {
+              private fieldValueService: ArticleFieldValueService,
+              private tagsQuery: ArticleTagQuery,
+              private articleService: ArticleService) {
   }
 
   ngOnInit() {
@@ -55,5 +56,12 @@ export class ArticleViewComponent implements OnInit {
     }
 
     return this.additionalFields;
+  }
+
+  onDeleteArticle() {
+    for (const fieldValueId of this.article.additionalFieldValueIds) {
+      this.fieldValueService.remove(fieldValueId);
+    }
+    this.articleService.remove(this.article.id);
   }
 }

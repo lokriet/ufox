@@ -134,6 +134,10 @@ export class ArticleEditComponent implements OnInit {
     }
   }
 
+  onDeleteArticleTag(tagIndex: number) {
+    this.addedTags.splice(tagIndex, 1);
+  }
+
   onTagDeleted(deletedTagId: string) {
     if (deletedTagId !== null) {
       this.addedTags = this.addedTags.filter(tag => tag.id !== deletedTagId);
@@ -161,7 +165,7 @@ export class ArticleEditComponent implements OnInit {
 
     const article = {
       id: guid(),
-      type: this.selectedArticleType == null ? null : this.selectedArticleType.id,
+      typeId: this.selectedArticleType == null ? null : this.selectedArticleType.id,
       name: this.articleForm.value.name,
       text: this.articleForm.value.articleText,
       additionalFieldValueIds,

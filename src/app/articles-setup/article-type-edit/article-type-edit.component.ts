@@ -23,8 +23,8 @@ export class ArticleTypeEditComponent implements OnInit {
 
   tags$: Observable<ArticleTag[]>;
   @ViewChild('createTagInput', { static: false }) createTagInputField: ElementRef;
-  @ViewChild('additionalFieldInput', { static: true }) additionalFieldInput: ElementRef;
-  @ViewChild('articleTypeNameInput', { static: true }) articleTypeNameInput: ElementRef;
+  @ViewChild('additionalFieldInput', { static: false }) additionalFieldInput: ElementRef;
+  @ViewChild('articleTypeNameInput', { static: false }) articleTypeNameInput: ElementRef;
   additionalFields: ArticleFieldName[];
   defaultTags: ArticleTag[];
   showTagsEditView: boolean;
@@ -48,6 +48,13 @@ export class ArticleTypeEditComponent implements OnInit {
     this.showTagsEditView = false;
   }
 
+  onAdditionalFieldInput(event: KeyboardEvent) {
+    if (event.keyCode === 13) { // enter
+      event.stopPropagation(); // don't submit the form
+      this.onCreateField(this.additionalFieldInput.nativeElement.value);
+    }
+  }
+
   onCreateField(fieldName: string) {
     const additionalField = {id: guid(), orderNo: this.additionalFields.length, name: fieldName} as ArticleFieldName;
     this.additionalFields.push(additionalField);
@@ -59,6 +66,10 @@ export class ArticleTypeEditComponent implements OnInit {
     if (!this.defaultTags.includes(tag)) {
       this.defaultTags.push(tag);
     }
+  }
+
+  onArticleTypeTagDeleted(tagIndex: number) {
+    this.defaultTags.splice(tagIndex, 1);
   }
 
   onShowEditTags() {
@@ -87,6 +98,10 @@ export class ArticleTypeEditComponent implements OnInit {
     this.additionalFields[index] = lowerField;
     lowerField.orderNo = index;
     this.additionalFields[index + 1].orderNo = index + 1;
+  }
+
+  onDeleteField(index: number) {
+    this.additionalFields.splice(index, 1);
   }
 
   onSaveArticleType() {

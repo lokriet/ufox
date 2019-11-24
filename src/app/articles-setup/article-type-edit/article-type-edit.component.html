@@ -12,18 +12,18 @@
     <br><br>
     <div *ngFor="let additionalField of additionalFields; let i = index">
       <span class="field-name">{{ (additionalField.orderNo + 1) + ' ' + additionalField.name }}</span>
-      <button [disabled]="i == 0" (click)="onMoveFieldUp(i)">Up</button>
-      <button [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">Down</button>
+      <button type="button" [disabled]="i == 0" (click)="onMoveFieldUp(i)">Up</button>
+      <button type="button" [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">Down</button>
+      <button type="button" (click)="onDeleteField(i)">X</button>
     </div>
-    <input placeholder="field name" #additionalFieldInput>
-    <button (click)="onCreateField(additionalFieldInput.value)">Add</button>
-
+    <input placeholder="field name" #additionalFieldInput (keyup)="onAdditionalFieldInput($event)">
+    <button type="button"  (click)="onCreateField(additionalFieldInput.value)">Add</button>
 
     <br><br>
 
     <label>Default tags:</label>
-    <div *ngFor="let tag of defaultTags">
-      {{ tag.name }}
+    <div *ngFor="let tag of defaultTags; let i = index">
+      <span>{{ tag.name }}</span><span><button type="button" (click)="onArticleTypeTagDeleted(i)">X</button></span>
     </div>
     <select #tagDropdown>
       <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>

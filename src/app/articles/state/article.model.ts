@@ -1,6 +1,6 @@
 export interface Article {
   id: string;
-  type: string;
+  typeId: string;
   name: string;
   text: string;
   additionalFieldValueIds: string[];

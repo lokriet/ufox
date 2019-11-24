@@ -43,8 +43,8 @@
 
       <br><br>
       <label>Tags:</label>
-    <div *ngFor="let tag of addedTags">
-      {{ tag.name }}
+    <div *ngFor="let tag of addedTags; let i = index">
+      <span>{{ tag.name }}</span><span><button type="button" (click)="onDeleteArticleTag(i)">X</button></span>
     </div>
     <select #tagDropdown>
       <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>

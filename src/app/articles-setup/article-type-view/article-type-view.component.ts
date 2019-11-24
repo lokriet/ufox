@@ -1,12 +1,18 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ArticleType } from '../state/article-type.model';
-import { ArticleTagQuery } from '../state/article-tag.query';
-import { ArticleTagService } from '../state/article-tag.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+
+import { ArticleFieldName } from '../state/article-field-name.model';
 import { ArticleFieldNameQuery } from '../state/article-field-name.query';
 import { ArticleFieldNameService } from '../state/article-field-name.service';
-import { Observable } from 'rxjs';
 import { ArticleTag } from '../state/article-tag.model';
-import { ArticleFieldName } from '../state/article-field-name.model';
+import { ArticleTagQuery } from '../state/article-tag.query';
+import { ArticleType } from '../state/article-type.model';
+import { ArticleTypeService } from '../state/article-type.service';
+import { ArticleQuery } from 'src/app/articles/state/article.query';
+import { ArticleService } from 'src/app/articles/state/article.service';
+import { ArticleFieldValueQuery } from 'src/app/articles/state/article-field-value.query';
+import { ArticleFieldValueService } from 'src/app/articles/state/article-field-value.service';
+import { Article } from 'src/app/articles/state/article.model';
 
 @Component({
   selector: 'app-article-type-view',
@@ -14,13 +20,20 @@ import { ArticleFieldName } from '../state/article-field-name.model';
   styleUrls: ['./article-type-view.component.scss']
 })
 export class ArticleTypeViewComponent implements OnInit {
+  loading = false;
+
   @Input() articleType: ArticleType;
 
   tags$: Observable<ArticleTag[]>;
   fieldNames$: Observable<ArticleFieldName[]>;
 
   constructor(private tagsQuery: ArticleTagQuery,
-              private fieldNamesQuery: ArticleFieldNameQuery
+              private fieldNamesQuery: ArticleFieldNameQuery,
+              private fieldNamesService: ArticleFieldNameService,
+              private articleTypeService: ArticleTypeService,
+              private articleQuery: ArticleQuery,
+              private articleService: ArticleService,
+              private articleFieldValueService: ArticleFieldValueService
   ) { }
 
   ngOnInit() {
@@ -33,4 +46,41 @@ export class ArticleTypeViewComponent implements OnInit {
     });
   }
 
+  onDeleteArticleType() {
+    this.loading = true;
+    this.articleTypeService.syncCollection().subscribe();
+    this.articleService.syncCollection().subscribe(() => {
+      this.loading = false;
+      const articles = this.articleQuery.getAll({filterBy: article => article.typeId != null && article.typeId === this.articleType.id});
+      if (articles != null && articles.length > 0) {
+        if (confirm(`There are ${articles.length} articles with this type. ` +
+                    `They will be deleted if you procede. Are you sure about this?`)) {
+          this.loading = true;
+          this.articleFieldValueService.syncCollection().subscribe(() => {
+            this.loading = false;
+            this.deleteArticles(articles);
+            this.deleteArticleType();
+          });
+        }
+      } else {
+        this.deleteArticleType();
+      }
+    });
+  }
+
+  deleteArticles(articles: Article[]) {
+    for (const article of articles) {
+      for (const fieldValueId of article.additionalFieldValueIds) {
+        this.articleFieldValueService.remove(fieldValueId);
+      }
+      this.articleService.remove(article.id);
+    }
+  }
+
+  deleteArticleType() {
+    for (const fieldNameId of this.articleType.articleFieldNameIds) {
+      this.fieldNamesService.remove(fieldNameId);
+    }
+    this.articleTypeService.remove(this.articleType.id);
+  }
 }
