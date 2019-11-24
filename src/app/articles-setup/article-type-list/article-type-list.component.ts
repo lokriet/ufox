@@ -12,11 +12,9 @@ import { ArticleTypeQuery } from '../state/article-type.query';
 export class ArticleTypeListComponent implements OnInit {
   articleTypes$: Observable<ArticleType[]>;
 
-  constructor(private articleTypesService: ArticleTypeService,
-              private articleTypesQuery: ArticleTypeQuery) { }
+  constructor(private articleTypesQuery: ArticleTypeQuery) { }
 
   ngOnInit() {
-    this.articleTypesService.syncCollection().subscribe();
     this.articleTypes$ = this.articleTypesQuery.selectAll();
   }
 }

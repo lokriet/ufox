@@ -3,8 +3,8 @@ export interface Article {
   type: string;
   name: string;
   text: string;
-  additionalFieldValues: string[];
-  tags: string[];
+  additionalFieldValueIds: string[];
+  tagIds: string[];
 }
 
 export function createArticle(params: Partial<Article>) {

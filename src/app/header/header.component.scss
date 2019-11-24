@@ -1,0 +1,81 @@
+@import "../../assets/scss/partials/variables";
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: $header-height;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  z-index: 100;
+}
+
+.align-baseline {
+  display: flex;
+  align-items: baseline;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.navbar-brand {
+  height: 2rem;
+  text-decoration: none;
+  margin-right: 0.5rem;
+
+  p {
+    font-family: $header-font;
+    font-weight: 900;
+    letter-spacing: 0.07rem;
+    font-size: 1.5rem;
+    margin: 0;
+    color: black;
+  }
+
+  img {
+    height: 100%;
+  }
+}
+
+.navbar-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.navbar-nav-group {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-item {
+  margin: 0;
+  height: 100%;
+  padding: 1.5rem 0.5rem 0 0.5rem;
+
+  &:hover,
+  &.active {
+    background-color: gray;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  color: black;
+  font-family: $header-font;
+  font-weight: 700;
+}
+
+.nav-main {
+  flex-grow: 1;
+}
+

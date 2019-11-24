@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
-import { ArticleTypeService } from 'src/app/articles-setup/state/article-type.service';
-import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
-import { ArticleFieldName } from 'src/app/articles-setup/state/article-field-name.model';
-import { ArticleFieldNameService } from 'src/app/articles-setup/state/article-field-name.service';
-import { ArticleFieldNameQuery } from 'src/app/articles-setup/state/article-field-name.query';
-import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { guid } from '@datorama/akita';
+import { Observable } from 'rxjs';
+import { ArticleFieldName } from 'src/app/articles-setup/state/article-field-name.model';
+import { ArticleFieldNameQuery } from 'src/app/articles-setup/state/article-field-name.query';
+import { ArticleFieldNameService } from 'src/app/articles-setup/state/article-field-name.service';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
 import { ArticleTagService } from 'src/app/articles-setup/state/article-tag.service';
-import { ArticleTagStore } from 'src/app/articles-setup/state/article-tag.store';
+import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
+import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
+import { ArticleTypeService } from 'src/app/articles-setup/state/article-type.service';
+
 import { ArticleFieldValueService } from '../state/article-field-value.service';
-import { ArticleFieldValueQuery } from '../state/article-field-value.query';
 import { ArticleService } from '../state/article.service';
+import { Router } from '@angular/router';
+import { ArticleQuery } from '../state/article.query';
+import { ArticleFieldValueQuery } from '../state/article-field-value.query';
 
 @Component({
   selector: 'app-article-edit',
@@ -23,6 +24,13 @@ import { ArticleService } from '../state/article.service';
   styleUrls: ['./article-edit.component.scss']
 })
 export class ArticleEditComponent implements OnInit {
+  public loadingArticles$: Observable<boolean>;
+  public loadingFieldNames$: Observable<boolean>;
+  public loadingFieldValues$: Observable<boolean>;
+  public loadingTags$: Observable<boolean>;
+  public loadingArticleTypes$: Observable<boolean>;
+
+
   articleTypes$: Observable<ArticleType[]>;
   selectedArticleType: ArticleType;
   additionalFieldNames: ArticleFieldName[];
@@ -33,24 +41,26 @@ export class ArticleEditComponent implements OnInit {
 
   articleForm: FormGroup;
 
-  constructor(private articleTypeService: ArticleTypeService,
+  constructor(private router: Router,
               private articleTypeQuery: ArticleTypeQuery,
-              private articleFieldNameService: ArticleFieldNameService,
               private articleFieldNameQuery: ArticleFieldNameQuery,
-              private articleTagService: ArticleTagService,
               private articleTagQuery: ArticleTagQuery,
               private articleFieldValueService: ArticleFieldValueService,
+              private articleFieldValueQuery: ArticleFieldValueQuery,
+              private articleQuery: ArticleQuery,
               private articleService: ArticleService) { }
 
   ngOnInit() {
-    this.articleTypeService.syncCollection().subscribe();
+    this.loadingArticles$ = this.articleQuery.selectLoading();
+    this.loadingFieldNames$ = this.articleFieldNameQuery.selectLoading();
+    this.loadingFieldValues$ = this.articleFieldValueQuery.selectLoading();
+    this.loadingTags$ = this.articleTagQuery.selectLoading();
+    this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
+
+
     this.articleTypes$ = this.articleTypeQuery.selectAll();
     this.selectedArticleType = null;
 
-    this.articleFieldNameService.syncCollection().subscribe();
-    this.articleFieldValueService.syncCollection().subscribe();
-    this.articleService.syncCollection().subscribe();
-    this.articleTagService.syncCollection().subscribe();
     this.allTags$ = this.articleTagQuery.selectAll();
 
     this.initForm();
@@ -83,7 +93,7 @@ export class ArticleEditComponent implements OnInit {
     this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
     if (this.selectedArticleType != null) {
       this.additionalFieldNames = this.articleFieldNameQuery.getAll({
-        filterBy: entity => this.selectedArticleType.articleFields.includes(entity.id),
+        filterBy: entity => this.selectedArticleType.articleFieldNameIds.includes(entity.id),
         sortBy: 'orderNo'
       });
 
@@ -100,7 +110,7 @@ export class ArticleEditComponent implements OnInit {
 
       this.addedTags = [];
       const defaultTags = this.articleTagQuery.getAll({
-        filterBy: entity => this.selectedArticleType.defaultTags.includes(entity.id)
+        filterBy: entity => this.selectedArticleType.defaultTagIds.includes(entity.id)
       });
 
       for (const tag of defaultTags) {
@@ -154,12 +164,13 @@ export class ArticleEditComponent implements OnInit {
       type: this.selectedArticleType == null ? null : this.selectedArticleType.id,
       name: this.articleForm.value.name,
       text: this.articleForm.value.articleText,
-      additionalFieldValues: additionalFieldValueIds,
-      tags: tagIds
+      additionalFieldValueIds,
+      tagIds
     };
 
     this.articleService.add(article);
 
-    this.initForm();
+    // this.initForm();
+    this.router.navigate(['articles']);
   }
 }

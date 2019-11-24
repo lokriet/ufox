@@ -1,0 +1,36 @@
+<nav>
+  <a class="navbar-brand" [routerLink]="['/']">
+    <img src="../../assets/img/homeIcon.png" alt="">
+  </a>
+
+  <div class="align-baseline">
+    <a class="navbar-brand" [routerLink]="['/']"><p>Ufox</p></a>
+  
+    <div class="navbar-nav" #navigation>
+      <ul class="navbar-nav-group nav-main">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="'/articles'">Articles</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="'/articles-setup'">Settings</a>
+        </li>
+      </ul>
+      <!-- <ul class="navbar-nav-group nav-signin" *ngIf="!(isAuthenticated$ | async)">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="'/login'">Log In</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="'/register'">Register</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav-group nav-signout" *ngIf="isAuthenticated$ | async">
+        <li class="nav-item">
+          <a class="nav-link" (click)="onLogout()" style="cursor: pointer">Log Out</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="'/profile'">Profile</a>
+        </li>
+      </ul> -->
+    </div>
+  </div>
+</nav>

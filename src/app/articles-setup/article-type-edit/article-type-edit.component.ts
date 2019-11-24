@@ -6,8 +6,10 @@ import { ArticleFieldName } from '../state/article-field-name.model';
 import { ArticleFieldNameService } from '../state/article-field-name.service';
 import { ArticleTag } from '../state/article-tag.model';
 import { ArticleTagQuery } from '../state/article-tag.query';
-import { ArticleTagService } from '../state/article-tag.service';
 import { ArticleTypeService } from '../state/article-type.service';
+import { Router } from '@angular/router';
+import { ArticleFieldNameQuery } from '../state/article-field-name.query';
+import { ArticleTypeQuery } from '../state/article-type.query';
 
 @Component({
   selector: 'app-article-type-edit',
@@ -15,6 +17,10 @@ import { ArticleTypeService } from '../state/article-type.service';
   styleUrls: ['./article-type-edit.component.scss']
 })
 export class ArticleTypeEditComponent implements OnInit {
+  public loadingArticleTypes$: Observable<boolean>;
+  public loadingTags$: Observable<boolean>;
+  public loadingFieldNames$: Observable<boolean>;
+
   tags$: Observable<ArticleTag[]>;
   @ViewChild('createTagInput', { static: false }) createTagInputField: ElementRef;
   @ViewChild('additionalFieldInput', { static: true }) additionalFieldInput: ElementRef;
@@ -23,17 +29,19 @@ export class ArticleTypeEditComponent implements OnInit {
   defaultTags: ArticleTag[];
   showTagsEditView: boolean;
 
-  constructor(private tagQuery: ArticleTagQuery,
-              private tagService: ArticleTagService,
+  constructor(private router: Router,
+              private tagQuery: ArticleTagQuery,
               private fieldNameService: ArticleFieldNameService,
-              private articleTypeService: ArticleTypeService) { }
+              private fieldNameQuery: ArticleFieldNameQuery,
+              private articleTypeService: ArticleTypeService,
+              private articleTypeQuery: ArticleTypeQuery) {
+  }
 
   ngOnInit() {
-    this.tagService.syncCollection().subscribe();
-    this.fieldNameService.syncCollection().subscribe();
-    this.articleTypeService.syncCollection().subscribe();
-
     this.tags$ = this.tagQuery.selectAll();
+    this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
+    this.loadingTags$ = this.tagQuery.selectLoading();
+    this.loadingFieldNames$ = this.fieldNameQuery.selectLoading();
 
     this.additionalFields = [];
     this.defaultTags = [];
@@ -89,10 +97,12 @@ export class ArticleTypeEditComponent implements OnInit {
     const newArticleType = {
       id: guid(),
       name: this.articleTypeNameInput.nativeElement.value,
-      defaultTags: this.defaultTags.map(tag => tag.id),
-      articleFields: this.additionalFields.map(articleField => articleField.id)
+      defaultTagIds: this.defaultTags.map(tag => tag.id),
+      articleFieldNameIds: this.additionalFields.map(articleField => articleField.id)
     };
 
     this.articleTypeService.add(newArticleType);
+
+    this.router.navigate(['articles-setup']);
   }
 }

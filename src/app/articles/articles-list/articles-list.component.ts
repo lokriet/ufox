@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ArticleService } from '../state/article.service';
-import { ArticleQuery } from '../state/article.query';
 import { Observable } from 'rxjs';
+
 import { Article } from '../state/article.model';
+import { ArticleQuery } from '../state/article.query';
 
 @Component({
   selector: 'app-articles-list',
@@ -13,11 +13,9 @@ export class ArticlesListComponent implements OnInit {
 
   articles$: Observable<Article[]>;
 
-  constructor(private articleService: ArticleService,
-              private articleQuery: ArticleQuery) { }
+  constructor(private articleQuery: ArticleQuery) { }
 
   ngOnInit() {
-    this.articleService.syncCollection().subscribe();
     this.articles$ = this.articleQuery.selectAll();
   }
 

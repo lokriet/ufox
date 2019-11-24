@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter }
 import { guid } from '@datorama/akita';
 import { ArticleTagService } from '../../articles-setup/state/article-tag.service';
 import { ArticleTagQuery } from '../../articles-setup/state/article-tag.query';
-import { ArticleTagStore } from '../../articles-setup/state/article-tag.store';
 import { ArticleTag } from '../../articles-setup/state/article-tag.model';
 import { Observable } from 'rxjs';
 
@@ -19,11 +18,9 @@ export class EditTagsComponent implements OnInit {
   @Output() tagDeleted = new EventEmitter<string>();
 
   constructor(private tagService: ArticleTagService,
-              private tagQuery: ArticleTagQuery,
-              private tagStore: ArticleTagStore) { }
+              private tagQuery: ArticleTagQuery) { }
 
   ngOnInit() {
-    this.tagService.syncCollection().subscribe();
     this.tags$ = this.tagQuery.selectAll();
   }
 
@@ -34,7 +31,6 @@ export class EditTagsComponent implements OnInit {
   }
 
   onCreateTag(tagName: string) {
-    // this.tagStore.add({id: guid(), name: tagName});
     this.tagService.add({id: guid(), name: tagName});
     this.createTagInput.nativeElement.value = '';
   }

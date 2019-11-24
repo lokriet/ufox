@@ -1,0 +1,9 @@
+<ng-container *ngIf="(loadingArticles$ | async) || (loadingFieldNames$ | async) || (loadingFieldValues$ | async) || (loadingTags$ | async); else loaded">
+  <h1>Loading...</h1>
+</ng-container>
+
+<ng-template #loaded>
+  <button type="button" class="nav-link" [routerLink]="'/articles/new'">Add</button>
+
+  <app-articles-list></app-articles-list>
+</ng-template>

@@ -20,20 +20,16 @@ export class ArticleTypeViewComponent implements OnInit {
   fieldNames$: Observable<ArticleFieldName[]>;
 
   constructor(private tagsQuery: ArticleTagQuery,
-              private tagsService: ArticleTagService,
-              private fieldNamesQuery: ArticleFieldNameQuery,
-              private fieldNamesService: ArticleFieldNameService
+              private fieldNamesQuery: ArticleFieldNameQuery
   ) { }
 
   ngOnInit() {
-    this.tagsService.syncCollection().subscribe();
     this.tags$ = this.tagsQuery.selectAll({
-      filterBy: entity => this.articleType.defaultTags.includes(entity.id)
+      filterBy: entity => this.articleType.defaultTagIds.includes(entity.id)
     });
 
-    this.fieldNamesService.syncCollection().subscribe();
     this.fieldNames$ = this.fieldNamesQuery.selectAll({
-      filterBy: entity => this.articleType.articleFields.includes(entity.id)
+      filterBy: entity => this.articleType.articleFieldNameIds.includes(entity.id)
     });
   }
 

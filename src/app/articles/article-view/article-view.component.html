@@ -1,4 +1,15 @@
-<p>
-  article-view works!
-  {{stringify()}}
-</p>
+<div class="article">
+  <h1 class="article-name">{{ article.name }}</h1>
+  <div class="additional-field"
+       *ngFor="let additionalField of additionalFields">
+    <span class="article-field-name">{{ additionalField.name.name }}: </span>
+    <span class="article-field-value">{{ additionalField.value.value }}</span>
+  </div>
+  <div class="article-text">
+    {{ article.text }}
+  </div>
+  <div class="tags">
+    <div class="tag" *ngFor="let tag of (articleTags | async)">{{ tag.name }}</div>
+  </div>
+</div>
+

@@ -1,34 +1,42 @@
-<div class="article-type-edit">
-  <label>Name:</label>
-  <input placeholder="name" #articleTypeNameInput>
-  <br><br>
-  <label>Additional fields:</label>
-  <br><br>
-  <div *ngFor="let additionalField of additionalFields; let i = index">
-    <span class="field-name">{{ (additionalField.orderNo + 1) + ' ' + additionalField.name }}</span>
-    <button [disabled]="i == 0" (click)="onMoveFieldUp(i)">Up</button>
-    <button [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">Down</button>
+
+<ng-container *ngIf="(loadingArticleTypes$ | async) || (loadingFieldNames$ | async) || (loadingTags$ | async); else loaded">
+  <h1>Loading...</h1>
+</ng-container>
+
+<ng-template #loaded>
+  <div class="article-type-edit">
+    <label>Name:</label>
+    <input placeholder="name" #articleTypeNameInput>
+    <br><br>
+    <label>Additional fields:</label>
+    <br><br>
+    <div *ngFor="let additionalField of additionalFields; let i = index">
+      <span class="field-name">{{ (additionalField.orderNo + 1) + ' ' + additionalField.name }}</span>
+      <button [disabled]="i == 0" (click)="onMoveFieldUp(i)">Up</button>
+      <button [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">Down</button>
+    </div>
+    <input placeholder="field name" #additionalFieldInput>
+    <button (click)="onCreateField(additionalFieldInput.value)">Add</button>
+
+
+    <br><br>
+
+    <label>Default tags:</label>
+    <div *ngFor="let tag of defaultTags">
+      {{ tag.name }}
+    </div>
+    <select #tagDropdown>
+      <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>
+    </select>
+    <button (click)="onAddTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Add</button>
+    <button (click)="onShowEditTags()">Edit tags</button>
+
+    <app-edit-tags 
+        [enabled]="showTagsEditView" 
+        (tagDeleted)="onTagDeleted($event)"
+        (viewClosed)="onTagsViewClosed()"></app-edit-tags>
+
+
+    <button (click)="onSaveArticleType()">Save</button>
   </div>
-  <input placeholder="field name" #additionalFieldInput>
-  <button (click)="onCreateField(additionalFieldInput.value)">Add</button>
-
-
-  <br><br>
-
-  <label>Default tags:</label>
-  <div *ngFor="let tag of defaultTags">
-    {{ tag.name }}
-  </div>
-  <select #tagDropdown>
-    <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>
-  </select>
-  <button (click)="onAddTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Add</button>
-  <button (click)="onShowEditTags()">Edit tags</button>
-  <app-edit-tags 
-      [enabled]="showTagsEditView" 
-      (tagDeleted)="onTagDeleted($event)"
-      (viewClosed)="onTagsViewClosed()"></app-edit-tags>
-
-
-  <button (click)="onSaveArticleType()">Save</button>
-</div>
+</ng-template>

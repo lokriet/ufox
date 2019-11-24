@@ -1,8 +1,8 @@
 export interface ArticleType {
   id: string;
   name: string;
-  defaultTags: string[];
-  articleFields: string[];
+  defaultTagIds: string[];
+  articleFieldNameIds: string[];
 }
 
 export function createArticleType(params: Partial<ArticleType>) {

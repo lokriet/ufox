@@ -1,5 +1,13 @@
-Hello world!
-<div class="articles-setup">
-  <!-- <app-article-type-edit></app-article-type-edit> -->
-  <app-article-type-list></app-article-type-list>
-</div>
+
+<ng-container *ngIf="(loadingArticleTypes$ | async) || (loadingFieldNames$ | async) || (loadingTags$ | async); else loaded">
+  <h1>Loading...</h1>
+</ng-container>
+
+<ng-template #loaded>
+  <div class="articles-setup">
+    <button type="button" class="nav-link" [routerLink]="'/articles-setup/new'">Add</button>
+  
+    <app-article-type-list></app-article-type-list>
+  </div>
+</ng-template>
+
