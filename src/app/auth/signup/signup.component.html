@@ -1,0 +1,30 @@
+<form (ngSubmit)="onSignUp()" #f="ngForm">
+    <h3>Sign up</h3>
+    <div class="row">
+      <div class="col-xs-12 col-md-8 col-lg-4">
+        <label for="email">E-mail</label>
+        <input 
+            type="text" 
+            [(ngModel)]="email" 
+            id="email" 
+            name="email"
+            class="form-control" 
+            required>
+        <label for="password">Password</label>
+        <input 
+            type="password" 
+            [(ngModel)]="password" 
+            id="password" 
+            name="password"
+            class="form-control"
+            required
+            minlength="6">
+        <br>
+        <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="!f.valid">Create account</button>
+      </div>
+    </div>
+  </form>
+  

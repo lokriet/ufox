@@ -14,6 +14,7 @@ import { ArticleService } from '../state/article.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ArticleQuery } from '../state/article.query';
 import { ArticleFieldValueQuery } from '../state/article-field-value.query';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-article-edit',
@@ -26,6 +27,8 @@ export class ArticleEditComponent implements OnInit {
   loadingFieldValues$: Observable<boolean>;
   loadingTags$: Observable<boolean>;
   loadingArticleTypes$: Observable<boolean>;
+
+  public Editor = ClassicEditor;
 
   editMode = false;
   editedArticleId: string;

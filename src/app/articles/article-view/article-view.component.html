@@ -6,8 +6,8 @@
     <span class="article-field-name">{{ additionalField.name.name }}: </span>
     <span class="article-field-value">{{ additionalField.value ? additionalField.value.value : '' }}</span>
   </div>
-  <div class="article-text">
-    {{ article.text }}
+  <div class="article-text" [innerHTML]="article.text">
+    <!-- {{ article.text }} -->
   </div>
   <div class="tags">
     <div class="tag" *ngFor="let tag of (articleTags | async)">{{ tag.name }}</div>

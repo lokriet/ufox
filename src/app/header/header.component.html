@@ -15,22 +15,22 @@
           <a class="nav-link" [routerLink]="'/articles-setup'">Settings</a>
         </li>
       </ul>
-      <!-- <ul class="navbar-nav-group nav-signin" *ngIf="!(isAuthenticated$ | async)">
+      <ul class="navbar-nav-group nav-signin" *ngIf="!isAuthenticated()">
         <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" [routerLink]="'/login'">Log In</a>
+          <a class="nav-link" [routerLink]="'/signin'">Log In</a>
         </li>
         <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" [routerLink]="'/register'">Register</a>
+          <a class="nav-link" [routerLink]="'/signup'">Register</a>
         </li>
       </ul>
-      <ul class="navbar-nav-group nav-signout" *ngIf="isAuthenticated$ | async">
+      <ul class="navbar-nav-group nav-signout" *ngIf="isAuthenticated()">
         <li class="nav-item">
           <a class="nav-link" (click)="onLogout()" style="cursor: pointer">Log Out</a>
         </li>
         <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" [routerLink]="'/profile'">Profile</a>
+          <a class="nav-link" [routerLink]="'/profile'">{{userEmail()}}</a>
         </li>
-      </ul> -->
+      </ul>
     </div>
   </div>
 </nav>
