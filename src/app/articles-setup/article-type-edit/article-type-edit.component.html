@@ -6,18 +6,26 @@
 <ng-template #loaded>
   <div class="article-type-edit">
     <label>Name:</label>
-    <input placeholder="name" #articleTypeNameInput>
+    <input placeholder="name" #articleTypeNameInput [(ngModel)]="articleTypeName">
     <br><br>
     <label>Additional fields:</label>
     <br><br>
     <div *ngFor="let additionalField of additionalFields; let i = index">
-      <span class="field-name">{{ (additionalField.orderNo + 1) + ' ' + additionalField.name }}</span>
+      <span class="field-order-no">{{ (additionalField.orderNo + 1) }} </span>
+      <span *ngIf="i !== editedAdditionalFieldIndex" class="field-name">{{ additionalField.name }}</span>
+      <input *ngIf="i === editedAdditionalFieldIndex" [(ngModel)]="editedAdditionalFieldName">
+      
       <button type="button" [disabled]="i == 0" (click)="onMoveFieldUp(i)">Up</button>
       <button type="button" [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">Down</button>
+
       <button type="button" (click)="onDeleteField(i)">X</button>
+      
+      <button type="button" (click)="onRenameField(i)" *ngIf="editMode && i !== editedAdditionalFieldIndex">Rename</button>
+      <button type="button" (click)="onSaveRenamedField(i)" *ngIf="editMode && i === editedAdditionalFieldIndex">Save</button>
+      <button type="button" (click)="onCancelRenamingField()" *ngIf="editMode && i === editedAdditionalFieldIndex">Cancel</button>
     </div>
-    <input placeholder="field name" #additionalFieldInput (keyup)="onAdditionalFieldInput($event)">
-    <button type="button"  (click)="onCreateField(additionalFieldInput.value)">Add</button>
+    <input placeholder="field name" #additionalFieldInput (keyup)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldName">
+    <button type="button" (click)="onCreateField()">Add</button>
 
     <br><br>
 
@@ -36,7 +44,9 @@
         (tagDeleted)="onTagDeleted($event)"
         (viewClosed)="onTagsViewClosed()"></app-edit-tags>
 
-
-    <button (click)="onSaveArticleType()">Save</button>
+    <div>
+      <button (click)="onSaveArticleType()">Save</button>
+      <button type="button" class="nav-link" [routerLink]="'/articles-setup'">Cancel</button>
+    </div>
   </div>
 </ng-template>

@@ -9,6 +9,7 @@ import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query'
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticleService } from '../state/article.service';
+import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
 
 interface AdditionalField {
   name: ArticleFieldName;
@@ -29,6 +30,7 @@ export class ArticleViewComponent implements OnInit {
               private fieldValuesQuery: ArticleFieldValueQuery,
               private fieldValueService: ArticleFieldValueService,
               private tagsQuery: ArticleTagQuery,
+              private articleTypeQuery: ArticleTypeQuery,
               private articleService: ArticleService) {
   }
 
@@ -42,17 +44,25 @@ export class ArticleViewComponent implements OnInit {
     if (this.additionalFields == null) {
       this.additionalFields = [];
 
-      if (this.article != null && this.article.additionalFieldValueIds != null && this.article.additionalFieldValueIds.length > 0) {
-        const additionalFieldValues = this.fieldValuesQuery.getAll({
-          filterBy: fieldValue => this.article.additionalFieldValueIds.includes(fieldValue.id)
+      if (this.article != null && this.article.typeId != null) {
+        const articleType = this.articleTypeQuery.getEntity(this.article.typeId);
+        const additionalFieldNames = this.fieldNamesQuery.getAll({
+              filterBy: value => articleType.articleFieldNameIds.includes(value.id), sortBy: 'orderNo'
         });
 
-        const additionalFieldNames = additionalFieldValues.map(fieldValue => this.fieldNamesQuery.getEntity(fieldValue.fieldNameId));
-        for (let i = 0; i < additionalFieldNames.length; i++) {
-          this.additionalFields.push({ name: additionalFieldNames[i], value: additionalFieldValues[i]});
+        if (this.article.additionalFieldValueIds != null && this.article.additionalFieldValueIds.length > 0) {
+          const additionalFieldValues = this.fieldValuesQuery.getAll({
+            filterBy: fieldValue => this.article.additionalFieldValueIds.includes(fieldValue.id)
+          });
+
+          // const additionalFieldNames = additionalFieldValues.map(fieldValue => this.fieldNamesQuery.getEntity(fieldValue.fieldNameId));
+          for (const additionalFieldName of additionalFieldNames) {
+            const existingValue = additionalFieldValues.find(value => value.fieldNameId === additionalFieldName.id);
+            this.additionalFields.push({ name: additionalFieldName, value: existingValue ? existingValue : null});
+          }
         }
-        this.additionalFields.sort((a, b) => a.name.orderNo - b.name.orderNo);
       }
+
     }
 
     return this.additionalFields;

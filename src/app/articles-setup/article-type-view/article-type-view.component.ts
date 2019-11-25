@@ -9,8 +9,7 @@ import { ArticleTagQuery } from '../state/article-tag.query';
 import { ArticleType } from '../state/article-type.model';
 import { ArticleTypeService } from '../state/article-type.service';
 import { ArticleQuery } from 'src/app/articles/state/article.query';
-import { ArticleService } from 'src/app/articles/state/article.service';
-import { ArticleFieldValueQuery } from 'src/app/articles/state/article-field-value.query';
+import { ArticleService } from 'src/app/articles/state/article.service';;
 import { ArticleFieldValueService } from 'src/app/articles/state/article-field-value.service';
 import { Article } from 'src/app/articles/state/article.model';
 
@@ -42,7 +41,8 @@ export class ArticleTypeViewComponent implements OnInit {
     });
 
     this.fieldNames$ = this.fieldNamesQuery.selectAll({
-      filterBy: entity => this.articleType.articleFieldNameIds.includes(entity.id)
+      filterBy: entity => this.articleType.articleFieldNameIds.includes(entity.id),
+      sortBy: 'orderNo'
     });
   }
 

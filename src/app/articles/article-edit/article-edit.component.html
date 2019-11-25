@@ -31,6 +31,7 @@
           formArrayName="additionalFields" 
           *ngIf="selectedArticleType != null">
         <div class="additional-field" *ngFor="let additionalField of additionalFieldNames; let i = index" [formGroupName]="i">
+          <span>{{ additionalField.orderNo + 1}} </span>
           <label>{{ additionalField.name }}</label>
           <input type="hidden" formControlName="id">
           <input type="hidden" formControlName="fieldNameId">
@@ -58,7 +59,7 @@
     
     <br><br>
 
-    <button type="submit">Create article</button>
+    <button type="submit">{{ editMode ? 'Save' : 'Create article' }}</button>
     </form>
   </div>
 </ng-template>

@@ -4,17 +4,14 @@ import { guid } from '@datorama/akita';
 import { Observable } from 'rxjs';
 import { ArticleFieldName } from 'src/app/articles-setup/state/article-field-name.model';
 import { ArticleFieldNameQuery } from 'src/app/articles-setup/state/article-field-name.query';
-import { ArticleFieldNameService } from 'src/app/articles-setup/state/article-field-name.service';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
-import { ArticleTagService } from 'src/app/articles-setup/state/article-tag.service';
 import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
-import { ArticleTypeService } from 'src/app/articles-setup/state/article-type.service';
 
 import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticleService } from '../state/article.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ArticleQuery } from '../state/article.query';
 import { ArticleFieldValueQuery } from '../state/article-field-value.query';
 
@@ -24,12 +21,14 @@ import { ArticleFieldValueQuery } from '../state/article-field-value.query';
   styleUrls: ['./article-edit.component.scss']
 })
 export class ArticleEditComponent implements OnInit {
-  public loadingArticles$: Observable<boolean>;
-  public loadingFieldNames$: Observable<boolean>;
-  public loadingFieldValues$: Observable<boolean>;
-  public loadingTags$: Observable<boolean>;
-  public loadingArticleTypes$: Observable<boolean>;
+  loadingArticles$: Observable<boolean>;
+  loadingFieldNames$: Observable<boolean>;
+  loadingFieldValues$: Observable<boolean>;
+  loadingTags$: Observable<boolean>;
+  loadingArticleTypes$: Observable<boolean>;
 
+  editMode = false;
+  editedArticleId: string;
 
   articleTypes$: Observable<ArticleType[]>;
   selectedArticleType: ArticleType;
@@ -42,6 +41,7 @@ export class ArticleEditComponent implements OnInit {
   articleForm: FormGroup;
 
   constructor(private router: Router,
+              private route: ActivatedRoute,
               private articleTypeQuery: ArticleTypeQuery,
               private articleFieldNameQuery: ArticleFieldNameQuery,
               private articleTagQuery: ArticleTagQuery,
@@ -63,24 +63,65 @@ export class ArticleEditComponent implements OnInit {
 
     this.allTags$ = this.articleTagQuery.selectAll();
 
-    this.initForm();
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.editedArticleId = params.id;
+        this.editMode = params.id != null;
+        this.initForm();
+      }
+    );
+
   }
 
   initForm() {
     this.addedTags = [];
 
-    const id = guid();
-    const name = '';
-    const articleType = null;
-    const articleText = null;
-    const additionalFields = new FormArray([]);
+    let id = guid();
+    let name = '';
+    let articleTypeId = null;
+    let articleText = null;
+    const additionalArticleFields = new FormArray([]);
+
+
+    if (this.editMode) {
+      const editedArticle = this.articleQuery.getEntity(this.editedArticleId);
+      this.addedTags = this.articleTagQuery.getAll({
+        filterBy: entity => editedArticle.tagIds.includes(entity.id)
+      });
+
+      id = this.editedArticleId;
+      name = editedArticle.name;
+      articleTypeId = editedArticle.typeId;
+      articleText = editedArticle.text;
+
+      if (articleTypeId != null) {
+        this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
+        this.additionalFieldNames = this.articleFieldNameQuery.getAll({
+          filterBy: entity => this.selectedArticleType.articleFieldNameIds.includes(entity.id),
+          sortBy: 'orderNo'
+        });
+
+        const additionalFieldValues =
+            this.articleFieldValueQuery.getAll({filterBy: value => editedArticle.additionalFieldValueIds.includes(value.id)});
+
+        for (const additionalFieldName of this.additionalFieldNames) {
+          const fieldValue = additionalFieldValues.find(value => value.fieldNameId === additionalFieldName.id);
+          additionalArticleFields.push(new FormGroup({
+            id: new FormControl(fieldValue ? fieldValue.id : null),
+            fieldNameId: new FormControl(additionalFieldName.id),
+            value: new FormControl(fieldValue ? fieldValue.value : '')
+          }));
+        }
+      }
+    }
 
     this.articleForm = new FormGroup({
       id: new FormControl(id),
       name: new FormControl(name),
-      articleType: new FormControl(articleType),
+      articleType: new FormControl({value: articleTypeId, disabled: this.editMode}),
       articleText: new FormControl(articleText),
-      additionalFields
+      additionalFields: additionalArticleFields
     });
   }
 
@@ -145,7 +186,8 @@ export class ArticleEditComponent implements OnInit {
   }
 
   onSubmit() {
-    const additionalFieldValues = [];
+    const updatedFieldValues = [];
+    const addedFieldValues = [];
     const additionalFieldValueIds = [];
     if (this.articleForm.value.additionalFields != null) {
       for (const additionalField of this.articleForm.value.additionalFields) {
@@ -154,17 +196,25 @@ export class ArticleEditComponent implements OnInit {
           fieldNameId: additionalField.fieldNameId,
           value: additionalField.value
         };
-        additionalFieldValues.push(additionalFieldValue);
+
+        if (this.editMode) {
+          if (additionalFieldValue.id != null) {
+            updatedFieldValues.push(additionalFieldValue);
+          } else {
+            additionalFieldValue.id = guid();
+            addedFieldValues.push(additionalFieldValue);
+          }
+        } else {
+          addedFieldValues.push(additionalFieldValue);
+        }
         additionalFieldValueIds.push(additionalFieldValue.id);
       }
     }
-    this.articleFieldValueService.add(additionalFieldValues);
-
 
     const tagIds = this.addedTags.map(tag => tag.id);
 
     const article = {
-      id: guid(),
+      id: this.articleForm.value.id,
       typeId: this.selectedArticleType == null ? null : this.selectedArticleType.id,
       name: this.articleForm.value.name,
       text: this.articleForm.value.articleText,
@@ -172,9 +222,18 @@ export class ArticleEditComponent implements OnInit {
       tagIds
     };
 
-    this.articleService.add(article);
+    if (this.editMode) {
+      this.articleService.update(article);
+      for (const fieldValue of updatedFieldValues) {
+        this.articleFieldValueService.update(fieldValue);
+      }
+      this.articleFieldValueService.add(addedFieldValues);
+    } else {
+      this.articleService.add(article);
+      this.articleFieldValueService.add(addedFieldValues);
+    }
 
-    // this.initForm();
     this.router.navigate(['articles']);
   }
+
 }

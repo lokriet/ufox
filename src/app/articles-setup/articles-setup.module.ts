@@ -6,6 +6,7 @@ import { ArticleTypeViewComponent } from './article-type-view/article-type-view.
 import { ArticleTypeListComponent } from './article-type-list/article-type-list.component';
 import { ArticlesSetupComponent } from './articles-setup.component';
 import { ArticlesSetupRoutingModule } from './articles-setup-routing.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -19,6 +20,7 @@ import { ArticlesSetupRoutingModule } from './articles-setup-routing.module';
   imports: [
     CommonModule,
     SharedModule,
+    FormsModule,
     ArticlesSetupRoutingModule
   ],
   exports: [

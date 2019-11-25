@@ -15,5 +15,9 @@
   <div *ngFor="let tag of (tags$ | async)" class="article-tag">
     {{ tag.name }}
   </div>
-  <div><button type="button" (click)="onDeleteArticleType()">Delete</button></div>
+  <div>
+    <button type="button" (click)="onDeleteArticleType()">Delete</button>
+    <button type="button" class="nav-link" [routerLink]="'/articles-setup/edit/' + articleType.id">Edit</button>
+  </div>
+  
 </div>

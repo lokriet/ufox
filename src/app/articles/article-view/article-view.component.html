@@ -2,8 +2,9 @@
   <h1 class="article-name">{{ article.name }}</h1>
   <div class="additional-field"
        *ngFor="let additionalField of getAdditionalFields()">
+    <span class="article-field-order-no">{{ additionalField.name.orderNo + 1 }} </span>
     <span class="article-field-name">{{ additionalField.name.name }}: </span>
-    <span class="article-field-value">{{ additionalField.value.value }}</span>
+    <span class="article-field-value">{{ additionalField.value ? additionalField.value.value : '' }}</span>
   </div>
   <div class="article-text">
     {{ article.text }}
@@ -12,5 +13,6 @@
     <div class="tag" *ngFor="let tag of (articleTags | async)">{{ tag.name }}</div>
   </div>
   <button type="button" (click)="onDeleteArticle()">Delete</button>
+  <button type="button" class="nav-link" [routerLink]="'/articles/edit/' + article.id">Edit</button>
 </div>
 

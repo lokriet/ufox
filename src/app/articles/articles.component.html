@@ -1,5 +1,11 @@
-<ng-container *ngIf="(loadingArticles$ | async) || (loadingFieldNames$ | async) || (loadingFieldValues$ | async) || (loadingTags$ | async); else loaded">
+<ng-container *ngIf="(loadingArticles$ | async) || 
+                     (loadingFieldNames$ | async) || 
+                     (loadingFieldValues$ | async) || 
+                     (loadingTags$ | async) ||
+                     (loadingArticleTypes$ | async)
+                     ; else loaded">
   <h1>Loading...</h1>
+  
 </ng-container>
 
 <ng-template #loaded>

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ArticleFieldNameQuery } from '../articles-setup/state/article-field-name.query';
 import { ArticleFieldValueQuery } from './state/article-field-value.query';
 import { ArticleTagQuery } from '../articles-setup/state/article-tag.query';
+import { ArticleTypeQuery } from '../articles-setup/state/article-type.query';
 
 @Component({
   selector: 'app-articles',
@@ -11,20 +12,23 @@ import { ArticleTagQuery } from '../articles-setup/state/article-tag.query';
   styleUrls: ['./articles.component.scss']
 })
 export class ArticlesComponent implements OnInit {
-  public loadingArticles$: Observable<boolean>;
-  public loadingFieldNames$: Observable<boolean>;
-  public loadingFieldValues$: Observable<boolean>;
-  public loadingTags$: Observable<boolean>;
+  loadingArticles$: Observable<boolean>;
+  loadingFieldNames$: Observable<boolean>;
+  loadingFieldValues$: Observable<boolean>;
+  loadingTags$: Observable<boolean>;
+  loadingArticleTypes$: Observable<boolean>;
 
   constructor(private articleQuery: ArticleQuery,
               private articleFieldNameQuery: ArticleFieldNameQuery,
               private articleFieldValueQuery: ArticleFieldValueQuery,
-              private articleTagQuery: ArticleTagQuery) {}
+              private articleTagQuery: ArticleTagQuery,
+              private articleTypeQuery: ArticleTypeQuery) {}
 
   ngOnInit(): void {
     this.loadingArticles$ = this.articleQuery.selectLoading();
     this.loadingFieldNames$ = this.articleFieldNameQuery.selectLoading();
     this.loadingFieldValues$ = this.articleFieldValueQuery.selectLoading();
     this.loadingTags$ = this.articleTagQuery.selectLoading();
+    this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
   }
 }

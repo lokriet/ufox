@@ -19,6 +19,13 @@ const routes: Route[] = [
     component: ArticleTypeEditComponent,
     canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard],
     canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard]
+  },
+
+  {
+    path: 'articles-setup/edit/:id',
+    component: ArticleTypeEditComponent,
+    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard],
+    canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard]
   }
 ];
 
