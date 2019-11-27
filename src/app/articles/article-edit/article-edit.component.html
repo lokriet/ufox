@@ -41,7 +41,7 @@
 
       <label>Text</label>
       <!-- <textarea formControlName="articleText"></textarea> -->
-      <ckeditor [editor]="Editor" formControlName="articleText"></ckeditor>
+      <ckeditor [editor]="editor" [config]="ckconfig" formControlName="articleText"></ckeditor>
 
       <br><br>
       <label>Tags:</label>

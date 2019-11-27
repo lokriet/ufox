@@ -15,6 +15,11 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ArticleQuery } from '../state/article.query';
 import { ArticleFieldValueQuery } from '../state/article-field-value.query';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { FirebaseImageUploadAdapter } from './image-upload.adapter';
+import { AngularFireStorage } from '@angular/fire/storage';
+
+
+
 
 @Component({
   selector: 'app-article-edit',
@@ -22,13 +27,22 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
   styleUrls: ['./article-edit.component.scss']
 })
 export class ArticleEditComponent implements OnInit {
+  public static staticFiretorage: AngularFireStorage;
+
+
   loadingArticles$: Observable<boolean>;
   loadingFieldNames$: Observable<boolean>;
   loadingFieldValues$: Observable<boolean>;
   loadingTags$: Observable<boolean>;
   loadingArticleTypes$: Observable<boolean>;
 
-  public Editor = ClassicEditor;
+  public editor = ClassicEditor;
+  ckconfig = {
+    placeholder: 'Hello world',
+    extraPlugins: [ this.imagePluginFactory ]
+  };
+
+
 
   editMode = false;
   editedArticleId: string;
@@ -43,6 +57,8 @@ export class ArticleEditComponent implements OnInit {
 
   articleForm: FormGroup;
 
+
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private articleTypeQuery: ArticleTypeQuery,
@@ -51,7 +67,19 @@ export class ArticleEditComponent implements OnInit {
               private articleFieldValueService: ArticleFieldValueService,
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleQuery: ArticleQuery,
-              private articleService: ArticleService) { }
+              private articleService: ArticleService,
+              public fireStorage: AngularFireStorage) {
+    console.log('creating article edit component');
+    ArticleEditComponent.staticFiretorage = fireStorage;
+  }
+
+  imagePluginFactory(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      console.log('creating new upload adapter');
+      console.log(ArticleEditComponent.staticFiretorage);
+      return new FirebaseImageUploadAdapter(loader, ArticleEditComponent.staticFiretorage);
+    };
+  }
 
   ngOnInit() {
     this.loadingArticles$ = this.articleQuery.selectLoading();
