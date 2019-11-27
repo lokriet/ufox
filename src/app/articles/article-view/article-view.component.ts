@@ -11,6 +11,9 @@ import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticleService } from '../state/article.service';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
 
+
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 interface AdditionalField {
   name: ArticleFieldName;
   value: ArticleFieldValue;
@@ -23,6 +26,8 @@ interface AdditionalField {
 export class ArticleViewComponent implements OnInit {
   @Input() article: Article;
 
+  articleText: SafeHtml;
+
   additionalFields: AdditionalField[];
   articleTags: Observable<ArticleTag[]>;
 
@@ -31,12 +36,15 @@ export class ArticleViewComponent implements OnInit {
               private fieldValueService: ArticleFieldValueService,
               private tagsQuery: ArticleTagQuery,
               private articleTypeQuery: ArticleTypeQuery,
-              private articleService: ArticleService) {
+              private articleService: ArticleService,
+              private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
     this.additionalFields = null;
     this.articleTags = this.tagsQuery.selectAll({filterBy: tag => this.article.tagIds.includes(tag.id)});
+
+    this.articleText = this.sanitizer.bypassSecurityTrustHtml(this.article.text);
   }
 
 
@@ -74,4 +82,8 @@ export class ArticleViewComponent implements OnInit {
     }
     this.articleService.remove(this.article.id);
   }
+
+//   getArticleText() {
+    
+//   }
 }

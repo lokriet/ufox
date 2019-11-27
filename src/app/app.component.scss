@@ -3,6 +3,7 @@
 .main {
   display: grid;
   height: 100%;
+  width: 100%;
   grid-template-rows: $header-height auto $footer-height;
   grid-template-areas: "."
                        "main"
@@ -13,8 +14,13 @@ main {
   grid-area: main;
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 footer {
   grid-area: footer;
+}
+
+.router-outlet {
+  width: 0;
 }

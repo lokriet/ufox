@@ -8,6 +8,7 @@ import { ArticlesListComponent } from './articles-list/articles-list.component';
 import { SharedModule } from '../shared/shared.module';
 import { ArticlesRoutingModule } from './articles-routing.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { SafeHtmlPipe } from './safe-html.pipe';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     ArticleEditComponent,
     ArticleViewComponent,
     ArticlesComponent,
-    ArticlesListComponent
+    ArticlesListComponent,
+    SafeHtmlPipe
   ],
   imports: [
     CommonModule,
@@ -25,6 +27,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     ArticlesRoutingModule
   ],
   exports: [
+    SafeHtmlPipe
   ]
 })
 export class ArticlesModule {

@@ -3,4 +3,12 @@
 <button type="button" class="nav-link" [routerLink]="'/articles'">Articles</button>
 <button type="button" class="nav-link" [routerLink]="'/articles-setup'">Setup</button>
 
-<app-upload-test></app-upload-test>
+<!-- <app-upload-test></app-upload-test> -->
+
+<!-- <ckeditor [editor]="editor" [config]="ckconfig" [(ngModel)]="editorValue"></ckeditor> -->
+<br><br>
+<div [innerHtml]="hardcodedText | safeHtml" class="img-container">
+
+</div>
+<br><br>
+<!-- <div>{{editorValue}}</div> -->

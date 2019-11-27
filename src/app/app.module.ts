@@ -20,6 +20,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { UploadTestComponent } from './upload-test/upload-test.component';
 import { DropZoneDirective } from './upload-test/drop-zone.directive';
 import { FileSizePipe } from './upload-test/file-size.pipe';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { FormsModule } from '@angular/forms';
+import { SafeHtmlPipe } from './articles/safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,8 @@ import { FileSizePipe } from './upload-test/file-size.pipe';
   ],
   imports: [
     BrowserModule,
+    CKEditorModule,
+    FormsModule,
     ArticlesModule,
     ArticlesSetupModule,
     AuthModule,
@@ -45,7 +50,7 @@ import { FileSizePipe } from './upload-test/file-size.pipe';
     environment.production ? [] : AkitaNgDevtools.forRoot(),
     AkitaNgRouterStoreModule.forRoot()
   ],
-  providers: [],
+  providers: [SafeHtmlPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

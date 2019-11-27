@@ -8,17 +8,15 @@ import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
 import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
-
 import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticleService } from '../state/article.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ArticleQuery } from '../state/article.query';
-import { ArticleFieldValueQuery } from '../state/article-field-value.query';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { FirebaseImageUploadAdapter } from './image-upload.adapter';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { ArticleFieldValueQuery } from '../state/article-field-value.query';
 
-
+import * as ClassicEditor from 'src/assets/ckeditor/ckeditor';
 
 
 @Component({
@@ -39,10 +37,8 @@ export class ArticleEditComponent implements OnInit {
   public editor = ClassicEditor;
   ckconfig = {
     placeholder: 'Hello world',
-    extraPlugins: [ this.imagePluginFactory ]
+    extraPlugins: [ this.imagePluginFactory]
   };
-
-
 
   editMode = false;
   editedArticleId: string;

@@ -20,3 +20,15 @@ body {
   font-family: $main-font;
 }
 
+.img-container {
+  position: relative;
+}
+
+figure {
+  float: right;
+
+
+  img {
+    width: 100%;
+  }
+}

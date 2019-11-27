@@ -1,5 +1,5 @@
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { finalize, take } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 export class FirebaseImageUploadAdapter {
   // Main task
