@@ -17,6 +17,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { ArticleFieldValueQuery } from '../state/article-field-value.query';
 
 import * as ClassicEditor from 'src/assets/ckeditor/ckeditor';
+import { tap } from 'rxjs/operators';
 
 
 @Component({
@@ -85,7 +86,10 @@ export class ArticleEditComponent implements OnInit {
     this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
 
 
-    this.articleTypes$ = this.articleTypeQuery.selectAll();
+    this.articleTypes$ = this.articleTypeQuery.selectAll().pipe(tap(value => value.unshift({id: '-1',
+      name: 'General',
+      defaultTagIds: null,
+      articleFieldNameIds: null})));
     this.selectedArticleType = null;
 
     this.allTags$ = this.articleTagQuery.selectAll();
@@ -106,10 +110,9 @@ export class ArticleEditComponent implements OnInit {
 
     let id = guid();
     let name = '';
-    let articleTypeId = null;
+    let articleTypeId = '-1';
     let articleText = null;
     const additionalArticleFields = new FormArray([]);
-
 
     if (this.editMode) {
       const editedArticle = this.articleQuery.getEntity(this.editedArticleId);
@@ -120,9 +123,12 @@ export class ArticleEditComponent implements OnInit {
       id = this.editedArticleId;
       name = editedArticle.name;
       articleTypeId = editedArticle.typeId;
+      if (editedArticle.typeId === null) {
+        articleTypeId = '-1';
+      }
       articleText = editedArticle.text;
 
-      if (articleTypeId != null) {
+      if (articleTypeId != null && articleTypeId != '-1') {
         this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
         this.additionalFieldNames = this.articleFieldNameQuery.getAll({
           filterBy: entity => this.selectedArticleType.articleFieldNameIds.includes(entity.id),
@@ -141,6 +147,7 @@ export class ArticleEditComponent implements OnInit {
           }));
         }
       }
+
     }
 
     this.articleForm = new FormGroup({
@@ -153,8 +160,9 @@ export class ArticleEditComponent implements OnInit {
   }
 
   onArticleTypeSwitched(articleTypeId: string) {
-    if (articleTypeId === null) {
+    if (articleTypeId === null || articleTypeId === '-1') {
       (this.articleForm.get('additionalFields') as FormArray).clear();
+      this.selectedArticleType = null;
       return;
     }
 
@@ -200,10 +208,12 @@ export class ArticleEditComponent implements OnInit {
     if (!this.addedTags.includes(tag)) {
       this.addedTags.push(tag);
     }
+
   }
 
-  onDeleteArticleTag(tagIndex: number) {
-    this.addedTags.splice(tagIndex, 1);
+  onDeleteArticleTag(index: number) {
+    this.addedTags.splice(index, 1);
+    console.log('tag deleted');
   }
 
   onTagDeleted(deletedTagId: string) {

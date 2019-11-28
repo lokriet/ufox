@@ -12,7 +12,7 @@
     <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="form">
       <div class="field-group">
         <label class="article-type-label">Article Type</label>
-        <select 
+        <!-- <select 
               formControlName="articleType"
               (change)="onArticleTypeSwitched($event.target.value)">
           <option value='null' selected>
@@ -24,12 +24,22 @@
                 > 
             <div class="select-option">{{type.name}}</div>
           </option>
-        </select>
+        </select> -->
+        <ng-select [items]="articleTypes$ | async"
+             class="article-type-select"
+             bindLabel="name"
+             autofocus
+             bindValue="id"
+             [clearable]="false"
+             formControlName="articleType"
+             (change)="onArticleTypeSwitched($event.id)"
+             (keydown.enter)="$event.preventDefault()">
+        </ng-select>
       </div>
 
       <div class="article-name field-group">
         <div class="label article-name-label">Article Name</div>
-        <input formControlName="name" class="article-name-input">
+        <input formControlName="name" class="article-name-input" (keydown.enter)="$event.preventDefault()">
       </div>
 
       <div
@@ -41,7 +51,7 @@
           <div class="label">{{ additionalField.name }}</div>
           <input type="hidden" formControlName="id">
           <input type="hidden" formControlName="fieldNameId">
-          <input type="text" formControlName="value">
+          <input type="text" formControlName="value" (keydown.enter)="$event.preventDefault()">
         </ng-container>
       </div>
 
@@ -54,26 +64,41 @@
       <div class="field-group">
         <label class="tags-label">Tags</label>
         
-        <select #tagDropdown>
-          <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
-        </select>
-        <button type="button"  (click)="onAddTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Add</button>
-        <button type="button" (click)="onShowEditTags()">Edit tags</button>
-        <app-edit-tags 
-            [enabled]="showTagsEditView" 
-            (tagDeleted)="onTagDeleted($event)"
-            (viewClosed)="onTagsViewClosed()">
-        </app-edit-tags>
-        
+        <div class="edit-tags-group">
+          <select #tagDropdown>
+            <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
+          </select>
+          
+          <button 
+              type="button"  
+              class="button"
+              (click)="onAddTag(tagDropdown.value)" 
+              [disabled]="tagDropdown.selectedIndex < 0">
+            Add
+          </button>
+          <button 
+              type="button" 
+              class="button button-danger"
+              (click)="onShowEditTags()">
+            Edit tags
+          </button>
+        </div>
+
         <div class="tags">
           <div class="tag" *ngFor="let tag of addedTags; let i = index">
             <div class="tag-name">{{ tag.name }}</div>
             <div class="tag-remove-button" (click)="onDeleteArticleTag(i)">x</div>
           </div>
-        </div>
+        </div>  
       </div>
 
-      <button type="submit">{{ editMode ? 'Save' : 'Create article' }}</button>
+      <button type="submit" class="button">{{ editMode ? 'Save changes' : 'Create article' }}</button>
     </form>
+
+    <app-edit-tags 
+      [enabled]="showTagsEditView" 
+      (tagDeleted)="onTagDeleted($event)"
+      (viewClosed)="onTagsViewClosed()">
+  </app-edit-tags>
   </div>
 </ng-template>

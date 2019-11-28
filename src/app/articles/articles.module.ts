@@ -8,6 +8,7 @@ import { ArticlesListComponent } from './articles-list/articles-list.component';
 import { SharedModule } from '../shared/shared.module';
 import { ArticlesRoutingModule } from './articles-routing.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     ReactiveFormsModule,
     SharedModule,
     CKEditorModule,
+    NgSelectModule,
     ArticlesRoutingModule
   ],
   exports: [

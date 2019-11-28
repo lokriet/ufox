@@ -24,7 +24,7 @@
       <button type="button" (click)="onSaveRenamedField(i)" *ngIf="editMode && i === editedAdditionalFieldIndex">Save</button>
       <button type="button" (click)="onCancelRenamingField()" *ngIf="editMode && i === editedAdditionalFieldIndex">Cancel</button>
     </div>
-    <input placeholder="field name" #additionalFieldInput (keyup)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldName">
+    <input placeholder="field name" #additionalFieldInput (keydown)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldName">
     <button type="button" (click)="onCreateField()">Add</button>
 
     <br><br>

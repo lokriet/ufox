@@ -4,6 +4,8 @@ import { ArticleTagService } from '../../articles-setup/state/article-tag.servic
 import { ArticleTagQuery } from '../../articles-setup/state/article-tag.query';
 import { ArticleTag } from '../../articles-setup/state/article-tag.model';
 import { Observable } from 'rxjs';
+import { ArticleService } from 'src/app/articles/state/article.service';
+import { ArticleQuery } from 'src/app/articles/state/article.query';
 
 @Component({
   selector: 'app-edit-tags',
@@ -18,16 +20,30 @@ export class EditTagsComponent implements OnInit {
   @Output() tagDeleted = new EventEmitter<string>();
 
   constructor(private tagService: ArticleTagService,
-              private tagQuery: ArticleTagQuery) { }
+              private tagQuery: ArticleTagQuery,
+              private articleService: ArticleService,
+              private articleQuery: ArticleQuery) { }
 
   ngOnInit() {
     this.tags$ = this.tagQuery.selectAll();
   }
 
   onRemoveTag(selectedTagId: string) {
-    this.tagService.remove(selectedTagId);
-    console.log('removed ' + selectedTagId);
-    this.tagDeleted.emit(selectedTagId);
+    const articles = this.articleQuery.getAll({filterBy: value => value.tagIds != null && value.tagIds.includes(selectedTagId)});
+    if (articles != null && articles.length > 0) {
+      if (confirm(`AAAAAAAH!!!! There are ${articles.length} articles with this tag. Are you sure you want to delete it?`)) {
+        for (const article of articles) {
+          const newArticle = {...article};
+          newArticle.tagIds = article.tagIds.filter(value => value !== selectedTagId);
+          this.articleService.update(newArticle);
+        }
+
+        this.tagService.remove(selectedTagId);
+        console.log('removed ' + selectedTagId);
+        this.tagDeleted.emit(selectedTagId);
+      }
+    }
+
   }
 
   onCreateTag(tagName: string) {
