@@ -30,6 +30,18 @@
   }
 }
 
+.inputs-buttons-group {
+  display: flex;
+
+  * {
+    margin-right: 1rem;
+  }
+}
+
+.fields-row {
+  margin: 1rem 0;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;

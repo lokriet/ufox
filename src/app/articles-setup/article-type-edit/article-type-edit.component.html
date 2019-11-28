@@ -5,7 +5,7 @@
 
 <ng-template #loaded>
   <div class="article-type-edit">
-    <div class="fields-group">
+    <div class="fields-row">
       <label>Name</label>
       <input  #articleTypeNameInput [(ngModel)]="articleTypeName">
     </div>
@@ -40,11 +40,10 @@
       </ng-container>
     </div>
 
-    <div class="fields-group inputs-buttons-group">
+    <div class="fields-row inputs-buttons-group">
       <input placeholder="field name" #additionalFieldInput (keydown)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldName">
       <button type="button" class="button" (click)="onCreateField()">Add</button>
     </div>
-<!-- <fa-icon [icon]="faCoffee"></fa-icon> -->
 
     <div class="label section-name">Default tags</div>
 

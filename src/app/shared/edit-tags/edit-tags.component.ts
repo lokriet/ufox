@@ -14,10 +14,14 @@ import { ArticleQuery } from 'src/app/articles/state/article.query';
 })
 export class EditTagsComponent implements OnInit {
   @ViewChild('createTagInput', { static: true }) createTagInput: ElementRef;
+  @ViewChild('dialogBoxDiv', { static: false }) dialogBoxDiv: ElementRef;
   @Input() enabled: boolean;
   tags$: Observable<ArticleTag[]>;
   @Output() viewClosed = new EventEmitter();
   @Output() tagDeleted = new EventEmitter<string>();
+
+  isDown = false;
+  dragOffset: any;
 
   constructor(private tagService: ArticleTagService,
               private tagQuery: ArticleTagQuery,
@@ -39,11 +43,20 @@ export class EditTagsComponent implements OnInit {
         }
 
         this.tagService.remove(selectedTagId);
-        console.log('removed ' + selectedTagId);
         this.tagDeleted.emit(selectedTagId);
       }
+    } else {
+      this.tagService.remove(selectedTagId);
+      this.tagDeleted.emit(selectedTagId);
     }
 
+  }
+
+  onTagNameKeydown(event: KeyboardEvent, tagName: string) {
+    if (event.keyCode === 13) { // enter
+      event.stopPropagation(); // don't submit the form
+      this.onCreateTag(tagName);
+    }
   }
 
   onCreateTag(tagName: string) {
@@ -54,4 +67,31 @@ export class EditTagsComponent implements OnInit {
   onCloseView() {
     this.viewClosed.emit();
   }
+
+  mousedown($event){
+    this.isDown = true;
+    this.dragOffset = [
+        this.dialogBoxDiv.nativeElement.offsetLeft - $event.clientX,
+        this.dialogBoxDiv.nativeElement.offsetTop - $event.clientY
+    ]
+}
+
+  mouseup($event){
+      this.isDown = false;
+  }
+
+  mousemove($event){
+      $event.preventDefault();
+
+      if (this.isDown){
+          const mousePosition = {
+              x : $event.clientX,
+              y : $event.clientY
+          };
+
+          this.dialogBoxDiv.nativeElement.style.left = (mousePosition.x + this.dragOffset[0]) + 'px';
+          this.dialogBoxDiv.nativeElement.style.top  = (mousePosition.y + this.dragOffset[1]) + 'px';
+      }
+  }
+
 }

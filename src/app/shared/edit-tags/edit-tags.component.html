@@ -1,11 +1,21 @@
-<div class="edit-tags-view" [class.hide]="!enabled">
-  <button type="button" class="close-button" (click)="onCloseView()">X</button>
-  <select #tagDropdown>
-    <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>
-  </select>
-  <button type="button" (click)="onRemoveTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Delete tag</button>
-  <br>
-  <br>
-  <input placeholder="create tag" #createTagInput>
-  <button type="button" (click)="onCreateTag(createTagInput.value)">Create tag</button>
+<div  
+    class="edit-tags-view" 
+    [class.hide]="!enabled"
+    (mousedown)="mousedown($event)" 
+    (mousemove)="mousemove($event)" 
+    (mouseup)="mouseup($event)"
+    #dialogBoxDiv>
+
+  <button type="button" class="button close-button" (click)="onCloseView()">X</button>
+
+  <label>Edit tags</label>
+  <div class="inputs-grid">
+    <select #tagDropdown>
+      <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>
+    </select>
+    <button type="button" class="button button-danger" (click)="onRemoveTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Delete tag</button>
+
+    <input placeholder="tag name" (keydown)="onTagNameKeydown($event, createTagInput.value)" #createTagInput>
+    <button type="button" class="button" (click)="onCreateTag(createTagInput.value)">Create tag</button>
+  </div>
 </div>

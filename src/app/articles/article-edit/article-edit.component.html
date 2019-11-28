@@ -10,21 +10,8 @@
 <ng-template #loaded>
   <div class="edit-article">
     <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="form">
-      <div class="field-group">
+      <div class="fields-row">
         <label class="article-type-label">Article Type</label>
-        <!-- <select 
-              formControlName="articleType"
-              (change)="onArticleTypeSwitched($event.target.value)">
-          <option value='null' selected>
-            <div class="select-option">General</div>
-          </option>
-          <option
-                *ngFor="let type of (articleTypes$ | async)" 
-                [value]="type.id"
-                > 
-            <div class="select-option">{{type.name}}</div>
-          </option>
-        </select> -->
         <ng-select [items]="articleTypes$ | async"
              class="article-type-select"
              bindLabel="name"
@@ -37,14 +24,14 @@
         </ng-select>
       </div>
 
-      <div class="article-name field-group">
+      <div class="article-name fields-row">
         <div class="label article-name-label">Article Name</div>
         <input formControlName="name" class="article-name-input" (keydown.enter)="$event.preventDefault()">
       </div>
 
       <div
           formArrayName="additionalFields" 
-          class="additonal-fields field-group"
+          class="additonal-fields fields-row"
           *ngIf="selectedArticleType != null">
         <ng-container class="additional-field" *ngFor="let additionalField of additionalFieldNames; let i = index" [formGroupName]="i">
           <span class="additional-field-no">{{ additionalField.orderNo + 1}} </span>
@@ -55,16 +42,16 @@
         </ng-container>
       </div>
 
-      <div class="field-group">
-        <label class="text-label">Text</label>
+      <div class="fields-row">
+        <label class="section-name">Text</label>
         <ckeditor [editor]="editor" [config]="ckconfig" formControlName="articleText"></ckeditor>
       </div>
 
 
-      <div class="field-group">
-        <label class="tags-label">Tags</label>
+      <div class="fields-row">
+        <label class="section-name">Tags</label>
         
-        <div class="edit-tags-group">
+        <div class="inputs-buttons-group ">
           <select #tagDropdown>
             <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
           </select>
@@ -92,8 +79,10 @@
         </div>  
       </div>
 
-      <button type="submit" class="button">{{ editMode ? 'Save changes' : 'Create article' }}</button>
-      <button class="button" type="button" [routerLink]="'/articles'">Cancel</button>
+      <div class="inputs-buttons-group">
+        <button type="submit" class="button">{{ editMode ? 'Save changes' : 'Create article' }}</button>
+        <button class="button" type="button" [routerLink]="'/articles'">Cancel</button>
+      </div>
     </form>
 
     <app-edit-tags 
