@@ -1,0 +1,35 @@
+@import './variables';
+@import './colors';
+
+.form {
+  width: 100%;
+}
+
+label, .label {
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-block;
+  margin-right: 1rem;
+  text-transform: capitalize;
+}
+
+select,
+input {
+  border: 1px solid $main-color;
+  padding: 0.5rem;
+
+  font-size: 1rem;
+  font-family: $main-font;
+}
+
+select>option {
+  padding: 0.5rem;
+
+  font-size: 1rem;
+  font-family: $main-font;
+
+  &:hover {
+    background-color: $main-color;
+    color: white;
+  }
+}

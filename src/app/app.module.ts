@@ -22,7 +22,8 @@ import { DropZoneDirective } from './upload-test/drop-zone.directive';
 import { FileSizePipe } from './upload-test/file-size.pipe';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FormsModule } from '@angular/forms';
-import { SafeHtmlPipe } from './articles/safe-html.pipe';
+import { SafeHtmlPipe } from './shared/safe-html.pipe';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { SafeHtmlPipe } from './articles/safe-html.pipe';
     BrowserModule,
     CKEditorModule,
     FormsModule,
+    SharedModule,
     ArticlesModule,
     ArticlesSetupModule,
     AuthModule,
@@ -50,7 +52,7 @@ import { SafeHtmlPipe } from './articles/safe-html.pipe';
     environment.production ? [] : AkitaNgDevtools.forRoot(),
     AkitaNgRouterStoreModule.forRoot()
   ],
-  providers: [SafeHtmlPipe],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

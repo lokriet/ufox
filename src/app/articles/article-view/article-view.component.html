@@ -1,18 +1,21 @@
 <div class="article">
-  <h1 class="article-name">{{ article.name }}</h1>
+  <h1 class="article-name">{{ article.name?.length ? article.name : "&lt;name meee&gt;"}}</h1>
   <div class="additional-field"
        *ngFor="let additionalField of getAdditionalFields()">
     <span class="article-field-order-no">{{ additionalField.name.orderNo + 1 }} </span>
     <span class="article-field-name">{{ additionalField.name.name }}: </span>
     <span class="article-field-value">{{ additionalField.value ? additionalField.value.value : '' }}</span>
   </div>
-  <div class="article-text" [innerHTML]="articleText">
-    <!-- {{ article.text }} -->
+  <div class="article-text" [innerHTML]="article.text | safeHtml">
   </div>
   <div class="tags">
-    <div class="tag" *ngFor="let tag of (articleTags | async)">{{ tag.name }}</div>
+    <div class="tag tag-button" *ngFor="let tag of (articleTags | async)" (click)="onShowArticlesByTag(tag.id)">
+      {{ tag.name }}
+    </div>
   </div>
-  <button type="button" (click)="onDeleteArticle()">Delete</button>
-  <button type="button" class="nav-link" [routerLink]="'/articles/edit/' + article.id">Edit</button>
+  <div class="buttons">
+    <button type="button" class="button button-danger" (click)="onDeleteArticle()">Delete</button>
+    <button type="button" class="button" [routerLink]="'/articles/edit/' + article.id">Edit</button>
+  </div>
 </div>
 

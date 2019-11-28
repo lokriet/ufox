@@ -1,0 +1,44 @@
+@import '../../../assets/scss/partials/shared-styles';
+@import '../../../assets/scss/partials/colors';
+@import '../../../assets/scss/partials/variables';
+
+.article {
+  margin: 2rem 0;
+}
+
+.article-name {
+  font-family: $header-font;
+  font-size: 2rem;
+  font-weight: 900;
+  color: $accent-color-red--dark;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.additional-field {
+  margin: 0.25rem 0;
+}
+
+.article-field-order-no {
+  display: none;  
+}
+
+.article-field-name {
+  text-transform: capitalize;
+  font-weight: 700;
+}
+
+.tag-button:hover {
+  cursor: pointer;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+
+  button {
+    margin-right: 0.5rem;
+  }
+}

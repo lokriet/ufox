@@ -1,4 +1,5 @@
-@import "./partials/variables";
+@import './partials/variables';
+@import './partials/colors';
 
 @import url('https://fonts.googleapis.com/css?family=Nunito:400,400i,700,700i,900,900i|Quicksand:300,400&display=swap');
 
@@ -16,17 +17,39 @@
 body {
   height: 100vh;
   margin: 0;
-  // background-color: $background-color;
+  background-color: $background-color;
   font-family: $main-font;
 }
 
+// select text colors
+::selection {
+  background: $main-color--dark; /* WebKit/Blink Browsers */
+  color: white;
+}
+::-moz-selection {
+  background: $main-color--dark; /* Gecko Browsers */
+  color: white;
+}
+
+
+// ckeditor images styling
 .img-container {
   position: relative;
 }
 
 figure {
-  float: right;
+  margin-inline-start: 2rem;
+  margin-inline-end: 2rem;
 
+  &.image-style-align-left {
+    float: left;
+    margin-inline-start: 0;
+  }
+
+  &.image-style-align-right {
+    float: right;
+    margin-inline-end: 0;
+  }
 
   img {
     width: 100%;

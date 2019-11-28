@@ -1,0 +1,60 @@
+@import './variables';
+@import './colors';
+
+.button {
+  font-family: $main-font;
+  font-size: 1rem;
+  color: white;
+
+  background-color: $main-color;
+  border: none;
+  border-radius: $border-radius;
+
+  padding: 0.5rem 1rem;
+
+  &.button-danger {
+    background-color: $accent-color-orange;
+  }
+
+  &:hover {
+    background-color: $accent-color-red;
+    cursor: pointer;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+}
+
+.tag {
+  display: flex;
+  align-content: center;
+  padding: 0.3rem 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: $main-color--dark;
+  color: white;
+
+  .tag-name {
+    display: inline-block;
+  }
+
+  .tag-remove-button {
+    display: inline-block;
+    margin: 0 -0.5rem 0 0.5rem;
+    height: 100%;
+    width: 1.5rem;
+    padding: 0 0.25rem 0 0.4rem;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-left: 1px solid transparent;
+    cursor: pointer;
+
+    &:hover {
+      border-left: 1px solid white;
+    }
+  }
+}

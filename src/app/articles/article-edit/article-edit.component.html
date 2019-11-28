@@ -9,58 +9,71 @@
 
 <ng-template #loaded>
   <div class="edit-article">
-    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
-      <select 
-            formControlName="articleType"
-            (change)="onArticleTypeSwitched($event.target.value)">
-        <option value='null' selected>General</option>
-        <option 
-              *ngFor="let type of (articleTypes$ | async)" 
-              [value]="type.id"
-              > {{type.name}}</option>
-      </select>
+    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="form">
+      <div class="field-group">
+        <label class="article-type-label">Article Type</label>
+        <select 
+              formControlName="articleType"
+              (change)="onArticleTypeSwitched($event.target.value)">
+          <option value='null' selected>
+            <div class="select-option">General</div>
+          </option>
+          <option
+                *ngFor="let type of (articleTypes$ | async)" 
+                [value]="type.id"
+                > 
+            <div class="select-option">{{type.name}}</div>
+          </option>
+        </select>
+      </div>
 
-      <br><br>
-
-      <label>Article Name</label>
-      <input formControlName="name">
-
-      <br><br>
+      <div class="article-name field-group">
+        <div class="label article-name-label">Article Name</div>
+        <input formControlName="name" class="article-name-input">
+      </div>
 
       <div
           formArrayName="additionalFields" 
+          class="additonal-fields field-group"
           *ngIf="selectedArticleType != null">
-        <div class="additional-field" *ngFor="let additionalField of additionalFieldNames; let i = index" [formGroupName]="i">
-          <span>{{ additionalField.orderNo + 1}} </span>
-          <label>{{ additionalField.name }}</label>
+        <ng-container class="additional-field" *ngFor="let additionalField of additionalFieldNames; let i = index" [formGroupName]="i">
+          <span class="additional-field-no">{{ additionalField.orderNo + 1}} </span>
+          <div class="label">{{ additionalField.name }}</div>
           <input type="hidden" formControlName="id">
           <input type="hidden" formControlName="fieldNameId">
           <input type="text" formControlName="value">
+        </ng-container>
+      </div>
+
+      <div class="field-group">
+        <label class="text-label">Text</label>
+        <ckeditor [editor]="editor" [config]="ckconfig" formControlName="articleText"></ckeditor>
+      </div>
+
+
+      <div class="field-group">
+        <label class="tags-label">Tags</label>
+        
+        <select #tagDropdown>
+          <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
+        </select>
+        <button type="button"  (click)="onAddTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Add</button>
+        <button type="button" (click)="onShowEditTags()">Edit tags</button>
+        <app-edit-tags 
+            [enabled]="showTagsEditView" 
+            (tagDeleted)="onTagDeleted($event)"
+            (viewClosed)="onTagsViewClosed()">
+        </app-edit-tags>
+        
+        <div class="tags">
+          <div class="tag" *ngFor="let tag of addedTags; let i = index">
+            <div class="tag-name">{{ tag.name }}</div>
+            <div class="tag-remove-button" (click)="onDeleteArticleTag(i)">x</div>
+          </div>
         </div>
       </div>
 
-      <label>Text</label>
-      <!-- <textarea formControlName="articleText"></textarea> -->
-      <ckeditor [editor]="editor" [config]="ckconfig" formControlName="articleText"></ckeditor>
-
-      <br><br>
-      <label>Tags:</label>
-    <div *ngFor="let tag of addedTags; let i = index">
-      <span>{{ tag.name }}</span><span><button type="button" (click)="onDeleteArticleTag(i)">X</button></span>
-    </div>
-    <select #tagDropdown>
-      <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
-    </select>
-    <button type="button"  (click)="onAddTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Add</button>
-    <button type="button" (click)="onShowEditTags()">Edit tags</button>
-    <app-edit-tags 
-        [enabled]="showTagsEditView" 
-        (tagDeleted)="onTagDeleted($event)"
-        (viewClosed)="onTagsViewClosed()"></app-edit-tags>
-    
-    <br><br>
-
-    <button type="submit">{{ editMode ? 'Save' : 'Create article' }}</button>
+      <button type="submit">{{ editMode ? 'Save' : 'Create article' }}</button>
     </form>
   </div>
 </ng-template>

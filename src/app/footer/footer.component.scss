@@ -1,7 +1,12 @@
+@import '../../assets/scss/partials/colors';
+
 .footer-content {
   width: 100%;
   height: 100%;
-  background-image: url('../../assets/img/catPaws.png');
+  background-image: url('../../assets/img/catPaws-white.png');
   background-size: contain;
+  background-origin: content-box;
   background-repeat: repeat-x;
+  background-color: $main-color--dark;
+  padding: 1rem 0;
 }
