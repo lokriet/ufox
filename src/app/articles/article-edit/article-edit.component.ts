@@ -18,6 +18,7 @@ import { ArticleFieldValueQuery } from '../state/article-field-value.query';
 
 import * as ClassicEditor from 'src/assets/ckeditor/ckeditor';
 import { tap } from 'rxjs/operators';
+import { ImageService } from '../state/image.service';
 
 
 @Component({
@@ -27,6 +28,7 @@ import { tap } from 'rxjs/operators';
 })
 export class ArticleEditComponent implements OnInit {
   public static staticFiretorage: AngularFireStorage;
+  public static staticImageService: ImageService;
 
 
   loadingArticles$: Observable<boolean>;
@@ -65,16 +67,18 @@ export class ArticleEditComponent implements OnInit {
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleQuery: ArticleQuery,
               private articleService: ArticleService,
-              public fireStorage: AngularFireStorage) {
+              private fireStorage: AngularFireStorage,
+              private imageService: ImageService) {
     console.log('creating article edit component');
     ArticleEditComponent.staticFiretorage = fireStorage;
+    ArticleEditComponent.staticImageService = imageService;
   }
 
   imagePluginFactory(editor) {
     editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
       console.log('creating new upload adapter');
       console.log(ArticleEditComponent.staticFiretorage);
-      return new FirebaseImageUploadAdapter(loader, ArticleEditComponent.staticFiretorage);
+      return new FirebaseImageUploadAdapter(loader, ArticleEditComponent.staticFiretorage, ArticleEditComponent.staticImageService);
     };
   }
 

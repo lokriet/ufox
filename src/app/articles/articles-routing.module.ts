@@ -7,6 +7,7 @@ import { ArticleTagGuard } from '../articles-setup/state/article-tag.guard';
 import { ArticleFieldNameGuard } from '../articles-setup/state/article-field-name.guard';
 import { ArticleFieldValueGuard } from './state/article-field-value.guard';
 import { ArticleTypeGuard } from '../articles-setup/state/article-type.guard';
+import { ImageGuard } from './state/image.guard';
 
 const routes: Route[] = [
   {
@@ -18,14 +19,14 @@ const routes: Route[] = [
   {
     path: 'articles/new',
     component: ArticleEditComponent,
-    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard],
-    canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard]
+    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard],
+    canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard]
   },
   {
     path: 'articles/edit/:id',
     component: ArticleEditComponent,
-    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard],
-    canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard]
+    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard],
+    canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard]
   }
 ];
 

@@ -12,13 +12,13 @@ import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  public static staticFiretorage: AngularFireStorage;
+  // public static staticFiretorage: AngularFireStorage;
 
-  public editor = ClassicEditor;
-  ckconfig = {
-    placeholder: 'Hello world',
-    extraPlugins: [ this.imagePluginFactory]
-  };
+  // public editor = ClassicEditor;
+  // ckconfig = {
+  //   placeholder: 'Hello world',
+  //   extraPlugins: [ this.imagePluginFactory]
+  // };
 
   editorValue: string;
 
@@ -27,18 +27,18 @@ export class HomeComponent implements OnInit {
 
   constructor(private fireStorage: AngularFireStorage,
               private sanitizer: DomSanitizer) {
-    HomeComponent.staticFiretorage = fireStorage;
+    // HomeComponent.staticFiretorage = fireStorage;
   }
 
   ngOnInit() {
   }
 
-  imagePluginFactory(editor) {
-    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-      console.log('creating new upload adapter');
-      console.log(HomeComponent.staticFiretorage);
-      return new FirebaseImageUploadAdapter(loader, HomeComponent.staticFiretorage);
-    };
-  }
+  // imagePluginFactory(editor) {
+  //   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+  //     console.log('creating new upload adapter');
+  //     console.log(HomeComponent.staticFiretorage);
+  //     return new FirebaseImageUploadAdapter(loader, HomeComponent.staticFiretorage);
+  //   };
+  // }
 
 }

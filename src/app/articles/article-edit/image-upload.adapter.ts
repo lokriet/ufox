@@ -1,13 +1,15 @@
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { finalize } from 'rxjs/operators';
+import { ImageService } from '../state/image.service';
+import { guid } from '@datorama/akita';
 
 export class FirebaseImageUploadAdapter {
   // Main task
   private task: AngularFireUploadTask;
-  // private fireStorage: AngularFireStorage;
 
   constructor(private loader,
-              private fireStorage: AngularFireStorage
+              private fireStorage: AngularFireStorage,
+              private imageService: ImageService
               ) {}
 
   upload(): Promise<{default: string}> {
@@ -15,7 +17,7 @@ export class FirebaseImageUploadAdapter {
       (file: File) => 
         new Promise((resolve, reject) => {
           try {
-            const path = `test/${new Date().getTime()}_${file.name}`;
+            const path = `images/${new Date().getTime()}_${file.name}`;
 
             // Totally optional metadata
             const customMetadata = { app: 'My AngularFire-powered PWA!' };
@@ -37,6 +39,7 @@ export class FirebaseImageUploadAdapter {
                 console.log('uploaded. getting url..');
                 ref.getDownloadURL().subscribe(url => {
                   console.log('uploaded image. url is ' + url);
+                  this.imageService.add({id: guid(), url});
                   resolve({default: url});
                 });
               })
