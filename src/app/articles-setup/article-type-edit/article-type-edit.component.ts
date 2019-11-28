@@ -13,6 +13,7 @@ import { ArticleTypeQuery } from '../state/article-type.query';
 import { ArticleType } from '../state/article-type.model';
 import { ArticleFieldValueService } from 'src/app/articles/state/article-field-value.service';
 import { ArticleFieldValueQuery } from 'src/app/articles/state/article-field-value.query';
+import { faChevronUp, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-article-type-edit',
@@ -23,6 +24,10 @@ export class ArticleTypeEditComponent implements OnInit {
   loadingArticleTypes$: Observable<boolean>;
   loadingTags$: Observable<boolean>;
   loadingFieldNames$: Observable<boolean>;
+
+  faChevronUp = faChevronUp;
+  faChevronDown = faChevronDown;
+  faTimes = faTimes;
 
   editMode = false;
   editedArticleType: ArticleType;

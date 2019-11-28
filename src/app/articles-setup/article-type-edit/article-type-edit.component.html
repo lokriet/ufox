@@ -5,48 +5,84 @@
 
 <ng-template #loaded>
   <div class="article-type-edit">
-    <label>Name:</label>
-    <input placeholder="name" #articleTypeNameInput [(ngModel)]="articleTypeName">
-    <br><br>
-    <label>Additional fields:</label>
-    <br><br>
-    <div *ngFor="let additionalField of additionalFields; let i = index">
-      <span class="field-order-no">{{ (additionalField.orderNo + 1) }} </span>
-      <span *ngIf="i !== editedAdditionalFieldIndex" class="field-name">{{ additionalField.name }}</span>
-      <input *ngIf="i === editedAdditionalFieldIndex" [(ngModel)]="editedAdditionalFieldName">
-      
-      <button type="button" [disabled]="i == 0" (click)="onMoveFieldUp(i)">Up</button>
-      <button type="button" [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">Down</button>
-
-      <button type="button" (click)="onDeleteField(i)">X</button>
-      
-      <button type="button" (click)="onRenameField(i)" *ngIf="editMode && i !== editedAdditionalFieldIndex">Rename</button>
-      <button type="button" (click)="onSaveRenamedField(i)" *ngIf="editMode && i === editedAdditionalFieldIndex">Save</button>
-      <button type="button" (click)="onCancelRenamingField()" *ngIf="editMode && i === editedAdditionalFieldIndex">Cancel</button>
+    <div class="fields-group">
+      <label>Name</label>
+      <input  #articleTypeNameInput [(ngModel)]="articleTypeName">
     </div>
-    <input placeholder="field name" #additionalFieldInput (keydown)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldName">
-    <button type="button" (click)="onCreateField()">Add</button>
 
-    <br><br>
 
-    <label>Default tags:</label>
-    <div *ngFor="let tag of defaultTags; let i = index">
-      <span>{{ tag.name }}</span><span><button type="button" (click)="onArticleTypeTagDeleted(i)">X</button></span>
+    <div class="label">Additional fields</div>
+
+    <div class="added-fields" [class.editmode]="editMode" *ngIf="additionalFields.length > 0">
+      <ng-container *ngFor="let additionalField of additionalFields; let i = index" >
+        <div class="field-order-no">{{ (additionalField.orderNo + 1) }}. </div>
+        <div *ngIf="i !== editedAdditionalFieldIndex" class="field-name">{{ additionalField.name }}</div>
+        <input *ngIf="i === editedAdditionalFieldIndex" [(ngModel)]="editedAdditionalFieldName">
+        
+        <button type="button" class="button" [disabled]="i == 0" (click)="onMoveFieldUp(i)">
+          <fa-icon [icon]="faChevronUp"></fa-icon>
+        </button>
+        <button type="button" class="button" [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">
+          <fa-icon [icon]="faChevronDown"></fa-icon>
+        </button>
+  
+        <button type="button" class="button button-danger" (click)="onDeleteField(i)">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+        
+        <div class="col-6" *ngIf="editMode">
+          <button type="button" class="button" (click)="onRenameField(i)" *ngIf="i !== editedAdditionalFieldIndex">Rename</button>
+          <button type="button" class="button" (click)="onSaveRenamedField(i)" *ngIf="i === editedAdditionalFieldIndex">Save</button>
+        </div>
+        <div class="col-7" *ngIf="editMode">
+          <button type="button" class="button" (click)="onCancelRenamingField()" *ngIf="i === editedAdditionalFieldIndex">Cancel</button>
+        </div>
+      </ng-container>
     </div>
-    <select #tagDropdown>
-      <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>
-    </select>
-    <button (click)="onAddTag(tagDropdown.value)" [disabled]="tagDropdown.selectedIndex < 0">Add</button>
-    <button (click)="onShowEditTags()">Edit tags</button>
+
+    <div class="fields-group inputs-buttons-group">
+      <input placeholder="field name" #additionalFieldInput (keydown)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldName">
+      <button type="button" class="button" (click)="onCreateField()">Add</button>
+    </div>
+<!-- <fa-icon [icon]="faCoffee"></fa-icon> -->
+
+    <div class="label section-name">Default tags</div>
+
+    <div class="inputs-buttons-group">
+      <select #tagDropdown>
+          <option *ngFor="let tag of (tags$ | async)" [value]="tag.id">{{tag.name}}</option>
+      </select>
+      
+      <button 
+          type="button"  
+          class="button"
+          (click)="onAddTag(tagDropdown.value)" 
+          [disabled]="tagDropdown.selectedIndex < 0">
+        Add
+      </button>
+      <button 
+          type="button" 
+          class="button button-danger"
+          (click)="onShowEditTags()">
+        Edit tags
+      </button>
+    </div>
+
+    <div class="tags">
+      <div class="tag" *ngFor="let tag of defaultTags; let i = index">
+        <div class="tag-name">{{ tag.name }}</div>
+        <div class="tag-remove-button" (click)="onArticleTypeTagDeleted(i)">x</div>
+      </div>
+    </div> 
 
     <app-edit-tags 
         [enabled]="showTagsEditView" 
         (tagDeleted)="onTagDeleted($event)"
         (viewClosed)="onTagsViewClosed()"></app-edit-tags>
 
-    <div>
-      <button (click)="onSaveArticleType()">Save</button>
-      <button type="button" class="nav-link" [routerLink]="'/articles-setup'">Cancel</button>
+    <div class="inputs-buttons-group">
+      <button class="button" (click)="onSaveArticleType()">Save</button>
+      <button class="button" type="button" [routerLink]="'/articles-setup'">Cancel</button>
     </div>
   </div>
 </ng-template>

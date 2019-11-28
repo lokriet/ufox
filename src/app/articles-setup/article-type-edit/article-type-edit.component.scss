@@ -1,0 +1,56 @@
+@import '../../../assets/scss/partials/colors';
+@import '../../../assets/scss/partials/variables';
+@import '../../../assets/scss/partials/shared-styles';
+@import '../../../assets/scss/partials/form-styles';
+
+
+.section-name {
+  margin: 1rem 0;
+}
+
+.fields-group {
+  margin: 1rem 0;
+}
+
+.inputs-buttons-group {
+  display: flex;
+
+  * {
+    margin-right: 1rem;
+  }
+}
+
+.added-fields {
+  margin-top: 1rem;
+  display: grid;
+  grid-auto-flow: row;
+  gap: 1rem;
+  align-items: center;
+  grid-template-columns: 1rem max-content 3rem 3rem 3rem;
+  
+
+  &.editmode {
+    grid-template-columns: 1rem 10rem 3rem 3rem 3rem max-content 7rem;
+  }
+
+  .field-order-no {
+    text-align: right;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  button {
+    width: 100%;
+  }
+
+}
+
+.field-name {
+  text-transform: capitalize;
+}
+
+.tags {
+  max-width: 20rem;
+}

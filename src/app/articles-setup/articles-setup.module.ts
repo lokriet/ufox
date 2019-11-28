@@ -7,7 +7,7 @@ import { ArticleTypeListComponent } from './article-type-list/article-type-list.
 import { ArticlesSetupComponent } from './articles-setup.component';
 import { ArticlesSetupRoutingModule } from './articles-setup-routing.module';
 import { FormsModule } from '@angular/forms';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     SharedModule,
     FormsModule,
+    FontAwesomeModule,
     ArticlesSetupRoutingModule
   ],
   exports: [

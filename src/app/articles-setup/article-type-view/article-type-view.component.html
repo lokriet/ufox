@@ -3,21 +3,30 @@
   <h1 class="article-type-name">
     {{ articleType.name }}
   </h1>
-  <div class="section-name">
-    Extra fields
+
+  <div class="extra-fields-section" *ngIf="(fieldNames$ | async).length > 0">
+    <div class="section-name">
+      Extra fields
+    </div>
+    <ul>
+      <li *ngFor="let fieldName of (fieldNames$ | async)" class="article-field-name">{{ fieldName.name }}</li>
+    </ul>
   </div>
-  <div *ngFor="let fieldName of (fieldNames$ | async)" class="article-field-name">
-    {{ fieldName.name }}
+
+  <div class="tags-section"  *ngIf="(tags$ | async).length > 0">
+    <div class="section-name">
+      Default tags
+    </div>
+    <div class="tags">
+      <div *ngFor="let tag of (tags$ | async)" class="tag">
+        {{ tag.name }}
+      </div>
+    </div>
   </div>
-  <div class="section-name">
-    Default tags
-  </div>
-  <div *ngFor="let tag of (tags$ | async)" class="article-tag">
-    {{ tag.name }}
-  </div>
+
   <div>
-    <button type="button" (click)="onDeleteArticleType()">Delete</button>
-    <button type="button" class="nav-link" [routerLink]="'/articles-setup/edit/' + articleType.id">Edit</button>
+    <button type="button" class="button" [routerLink]="'/articles-setup/edit/' + articleType.id">Edit</button>
+    <button type="button" class="button button-danger" (click)="onDeleteArticleType()">Delete</button>
   </div>
   
 </div>

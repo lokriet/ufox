@@ -93,6 +93,7 @@
       </div>
 
       <button type="submit" class="button">{{ editMode ? 'Save changes' : 'Create article' }}</button>
+      <button class="button" type="button" [routerLink]="'/articles'">Cancel</button>
     </form>
 
     <app-edit-tags 

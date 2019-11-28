@@ -1,0 +1,27 @@
+@import "../../../assets/scss/partials/variables";
+@import "../../../assets/scss/partials/colors";
+@import "../../../assets/scss/partials/shared-styles";
+
+
+.article-type-name {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 900;
+  font-family: $header-font;
+  color: $accent-color-red--dark;
+  text-align: center;
+  margin: 1rem;
+}
+
+.section-name {
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
+.article-field-name {
+  text-transform: capitalize;
+}
+
+.button {
+  margin-right: 1rem;
+}

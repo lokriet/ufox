@@ -7,18 +7,26 @@
   color: white;
 
   background-color: $main-color;
-  border: none;
+  border: 1px solid $main-color;
   border-radius: $border-radius;
 
   padding: 0.5rem 1rem;
 
   &.button-danger {
     background-color: $accent-color-orange;
+    border-color: $accent-color-orange;
   }
 
   &:hover {
     background-color: $accent-color-red;
+    border-color: $accent-color-red;
     cursor: pointer;
+  }
+
+  &:disabled, &:disabled:hover {
+    background-color: $background-color;
+    border-color: $main-color;
+    cursor: default;
   }
 }
 
