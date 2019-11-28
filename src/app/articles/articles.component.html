@@ -10,7 +10,10 @@
   </ng-container>
   
   <ng-template #loaded>
-    <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>
+    <div class="inputs-buttons-group">
+      <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>
+      <a class="button" href="https://www.youtube.com/results?search_query=foxes+are+cute" target="_blank">Alisa I'm bored!</a>
+    </div>
   
     <app-articles-list></app-articles-list>
   </ng-template>
