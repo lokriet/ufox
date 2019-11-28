@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { guid } from '@datorama/akita';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { ArticleFieldName } from 'src/app/articles-setup/state/article-field-name.model';
 import { ArticleFieldNameQuery } from 'src/app/articles-setup/state/article-field-name.query';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
 import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
-import { ArticleFieldValueService } from '../state/article-field-value.service';
-import { ArticleService } from '../state/article.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { ArticleQuery } from '../state/article.query';
-import { FirebaseImageUploadAdapter } from './image-upload.adapter';
-import { AngularFireStorage } from '@angular/fire/storage';
-import { ArticleFieldValueQuery } from '../state/article-field-value.query';
-
 import * as ClassicEditor from 'src/assets/ckeditor/ckeditor';
-import { tap } from 'rxjs/operators';
-import { ImageService } from '../state/image.service';
+
+import { ImageService } from '../../shared/image/state/image.service';
+import { ArticleFieldValueQuery } from '../state/article-field-value.query';
+import { ArticleFieldValueService } from '../state/article-field-value.service';
+import { ArticleQuery } from '../state/article.query';
+import { ArticleService } from '../state/article.service';
+import { FirebaseImageUploadAdapter } from './image-upload.adapter';
 
 
 @Component({
@@ -54,6 +54,8 @@ export class ArticleEditComponent implements OnInit {
   allTags$: Observable<ArticleTag[]>;
   showTagsEditView = false;
 
+  showingPictureInput = false;
+
   articleForm: FormGroup;
 
 
@@ -67,8 +69,8 @@ export class ArticleEditComponent implements OnInit {
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleQuery: ArticleQuery,
               private articleService: ArticleService,
-              private fireStorage: AngularFireStorage,
-              private imageService: ImageService) {
+              fireStorage: AngularFireStorage,
+              imageService: ImageService) {
     console.log('creating article edit component');
     ArticleEditComponent.staticFiretorage = fireStorage;
     ArticleEditComponent.staticImageService = imageService;
@@ -116,6 +118,7 @@ export class ArticleEditComponent implements OnInit {
     let name = '';
     let articleTypeId = '-1';
     let articleText = null;
+    let imageUrl = null;
     const additionalArticleFields = new FormArray([]);
 
     if (this.editMode) {
@@ -132,7 +135,10 @@ export class ArticleEditComponent implements OnInit {
       }
       articleText = editedArticle.text;
 
-      if (articleTypeId != null && articleTypeId != '-1') {
+      imageUrl = editedArticle.imageUrl;
+      this.showingPictureInput = !!imageUrl;
+
+      if (articleTypeId != null && articleTypeId !== '-1') {
         this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
         this.additionalFieldNames = this.articleFieldNameQuery.getAll({
           filterBy: entity => this.selectedArticleType.articleFieldNameIds.includes(entity.id),
@@ -157,6 +163,7 @@ export class ArticleEditComponent implements OnInit {
     this.articleForm = new FormGroup({
       id: new FormControl(id),
       name: new FormControl(name),
+      imageUrl: new FormControl(imageUrl),
       articleType: new FormControl({value: articleTypeId, disabled: this.editMode}),
       articleText: new FormControl(articleText),
       additionalFields: additionalArticleFields
@@ -226,6 +233,10 @@ export class ArticleEditComponent implements OnInit {
     }
   }
 
+  onSwitchAddingPicture() {
+    this.showingPictureInput = !this.showingPictureInput;
+  }
+
   onSubmit() {
     const updatedFieldValues = [];
     const addedFieldValues = [];
@@ -259,6 +270,7 @@ export class ArticleEditComponent implements OnInit {
       typeId: this.selectedArticleType == null ? null : this.selectedArticleType.id,
       name: this.articleForm.value.name,
       text: this.articleForm.value.articleText,
+      imageUrl: this.showingPictureInput ? this.articleForm.value.imageUrl : null,
       additionalFieldValueIds,
       tagIds
     };

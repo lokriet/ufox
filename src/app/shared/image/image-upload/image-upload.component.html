@@ -1,0 +1,27 @@
+<div 
+    class="popup-window"    
+    [class.hidden]="!enabled"
+    #popupBoxDiv>
+
+  <div 
+      class="moving-header"
+      (mousedown)="mousedownMove($event)"
+      (mouseup)="mouseupMove($event)">
+    Select an image
+  </div>
+  <button type="button" class="button close-button" (click)="onCloseView()">X</button>
+  <div 
+      class="resize-corner"
+      (mousedown)="mousedownResize($event)"
+      (mouseup)="mouseupResize($event)">
+  </div>
+
+  <div class="images-scroll-container">
+    <div class="images-container">
+      <div class="image" *ngFor="let image of (images$ | async)">
+        <img [src]="image.url" (click)="onImageSelected(image)" >
+        <button type="button" class="button button-danger" (click)="onDeleteImage(image)">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

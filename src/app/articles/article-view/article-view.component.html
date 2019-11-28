@@ -6,6 +6,9 @@
     <span class="article-field-name">{{ additionalField.name.name }}: </span>
     <span class="article-field-value">{{ additionalField.value ? additionalField.value.value : '' }}</span>
   </div>
+  <div class="picture" *ngIf="article.imageUrl != null">
+    <img [src]="article.imageUrl">
+  </div>
   <div class="article-text" [innerHTML]="article.text | safeHtml">
   </div>
   <div class="tags">

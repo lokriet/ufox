@@ -5,6 +5,7 @@ export interface Article {
   text: string;
   additionalFieldValueIds: string[];
   tagIds: string[];
+  imageUrl: string;
 }
 
 export function createArticle(params: Partial<Article>) {

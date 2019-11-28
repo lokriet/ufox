@@ -29,6 +29,13 @@
         <input formControlName="name" class="article-name-input" (keydown.enter)="$event.preventDefault()">
       </div>
 
+      <button type="button" class="button" [class.button-danger]="showingPictureInput" (click)="onSwitchAddingPicture()">
+        {{ showingPictureInput ? 'Actually, no picture' : 'Add picture' }}
+      </button>
+      <div class="picture-input" [class.hidden]="!showingPictureInput">
+        <app-image formControlName="imageUrl"></app-image>
+      </div>
+
       <div
           formArrayName="additionalFields" 
           class="additonal-fields fields-row"

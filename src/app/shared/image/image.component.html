@@ -1,0 +1,46 @@
+<div class="image-view">
+  <div class="dropzone" 
+      appDropZone
+      (hovered)="toggleHover($event)"
+      (dropped)="startUpload($event)"
+      [class.hovering]="isHovering">
+
+    <div class="drop-prompt">Drop image here</div>
+
+  </div>
+  
+  <div class="inputs-buttons-group">
+    <label class="file-input">
+        <input type="file" (change)="startUpload($event.target.files)" />
+        <div class="button">Select file</div>
+    </label>
+    <button type="button" class="button" (click)="onGetImageFromServer()">Choose from uploaded</button>
+    <button type="button" class="button button-danger" (click)="onClear()">Clear</button>
+  </div>
+
+  <div *ngIf="(percentage$ | async) as percent">
+      <progress class="progress " 
+                [value]="percent" 
+                max="100">        
+      </progress>
+      <span> {{ percent | number }}%</span>
+    </div>
+
+  
+  <div *ngIf="(snapshot$ | async) as snapshot">
+    <span class="bytes-counter">{{ snapshot.bytesTransferred | fileSize }} of {{ snapshot.totalBytes | fileSize }} </span>
+  
+    <div class="inputs-buttons-group" *ngIf="isActive(snapshot)">
+      <button (click)="task.pause()" class="button" [disabled]="!isActive(snapshot)">Pause</button>
+      <button (click)="task.cancel()" class="button button-danger" [disabled]="!isActive(snapshot)">Cancel</button>
+      <button (click)="task.resume()" class="button"   [disabled]="!(snapshot?.state === 'paused')">Resume</button>
+    </div>
+  </div>
+
+
+  <div class="image-preview-container">
+    <img [src]="imageUrl" class="image-preview" *ngIf="!!imageUrl">
+  </div>
+</div>
+
+<app-image-upload [(enabled)]="showChooseFromServerImagesPopup" (img)="onImageSelectedFromServer($event)"></app-image-upload>

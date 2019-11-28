@@ -3,7 +3,9 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { AkitaNgRouterStoreModule } from '@datorama/akita-ng-router-store';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { environment } from 'src/environments/environment';
@@ -17,13 +19,8 @@ import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { UploadTestComponent } from './upload-test/upload-test.component';
-import { DropZoneDirective } from './upload-test/drop-zone.directive';
-import { FileSizePipe } from './upload-test/file-size.pipe';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { FormsModule } from '@angular/forms';
-import { SafeHtmlPipe } from './shared/safe-html.pipe';
 import { SharedModule } from './shared/shared.module';
+import { UploadTestComponent } from './upload-test/upload-test.component';
 
 @NgModule({
   declarations: [
@@ -32,9 +29,7 @@ import { SharedModule } from './shared/shared.module';
     PageNotFoundComponent,
     HeaderComponent,
     FooterComponent,
-    UploadTestComponent,
-    DropZoneDirective,
-    FileSizePipe
+    UploadTestComponent
   ],
   imports: [
     BrowserModule,

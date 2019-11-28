@@ -1,13 +1,14 @@
-import { RouterModule, Route } from '@angular/router';
 import { NgModule } from '@angular/core';
+import { Route, RouterModule } from '@angular/router';
+
+import { ArticleFieldNameGuard } from '../articles-setup/state/article-field-name.guard';
+import { ArticleTagGuard } from '../articles-setup/state/article-tag.guard';
+import { ArticleTypeGuard } from '../articles-setup/state/article-type.guard';
+import { ImageGuard } from '../shared/image/state/image.guard';
 import { ArticleEditComponent } from './article-edit/article-edit.component';
 import { ArticlesComponent } from './articles.component';
-import { ArticleGuard } from './state/article.guard';
-import { ArticleTagGuard } from '../articles-setup/state/article-tag.guard';
-import { ArticleFieldNameGuard } from '../articles-setup/state/article-field-name.guard';
 import { ArticleFieldValueGuard } from './state/article-field-value.guard';
-import { ArticleTypeGuard } from '../articles-setup/state/article-type.guard';
-import { ImageGuard } from './state/image.guard';
+import { ArticleGuard } from './state/article.guard';
 
 const routes: Route[] = [
   {
