@@ -42,3 +42,28 @@
     margin-right: 0.5rem;
   }
 }
+
+.picture {
+  margin: 0 2rem 1rem 2rem;
+
+  img {
+    max-width: 20rem;
+    max-height: 35rem;
+  }
+
+  &.right {
+    float: right;
+    margin-right: 0;
+  }
+
+  &.left {
+    float: left;
+    margin-left: 0;
+  }
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}

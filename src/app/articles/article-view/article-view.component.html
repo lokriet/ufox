@@ -1,15 +1,25 @@
 <div class="article">
-  <h1 class="article-name">{{ article.name?.length ? article.name : "&lt;name meee&gt;"}}</h1>
-  <div class="additional-field"
-       *ngFor="let additionalField of getAdditionalFields()">
-    <span class="article-field-order-no">{{ additionalField.name.orderNo + 1 }} </span>
-    <span class="article-field-name">{{ additionalField.name.name }}: </span>
-    <span class="article-field-value">{{ additionalField.value ? additionalField.value.value : '' }}</span>
-  </div>
-  <div class="picture" *ngIf="article.imageUrl != null">
-    <img [src]="article.imageUrl">
-  </div>
-  <div class="article-text" [innerHTML]="article.text | safeHtml">
+
+  <div class="clearfix">
+    <h1 class="article-name">{{ article.name?.length ? article.name : "&lt;name meee&gt;"}}</h1>
+  
+    <div 
+        class="picture" 
+        [class.right]="isOdd"
+        [class.left]="!isOdd"
+        *ngIf="article.imageUrl != null">
+      <img [src]="article.imageUrl">
+    </div>
+  
+    <div class="additional-field"
+         *ngFor="let additionalField of getAdditionalFields()">
+      <span class="article-field-order-no">{{ additionalField.name.orderNo + 1 }} </span>
+      <span class="article-field-name">{{ additionalField.name.name }}: </span>
+      <span class="article-field-value">{{ additionalField.value ? additionalField.value.value : '' }}</span>
+    </div>
+    
+    <div class="article-text" [innerHTML]="article.text | safeHtml">
+    </div>
   </div>
   <div class="tags">
     <div class="tag tag-button" *ngFor="let tag of (articleTags | async)" (click)="onShowArticlesByTag(tag.id)">

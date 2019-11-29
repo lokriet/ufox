@@ -11,9 +11,6 @@ import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticleService } from '../state/article.service';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
 
-
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
 interface AdditionalField {
   name: ArticleFieldName;
   value: ArticleFieldValue;
@@ -25,6 +22,7 @@ interface AdditionalField {
 })
 export class ArticleViewComponent implements OnInit {
   @Input() article: Article;
+  @Input() isOdd = true;
 
   additionalFields: AdditionalField[];
   articleTags: Observable<ArticleTag[]>;
