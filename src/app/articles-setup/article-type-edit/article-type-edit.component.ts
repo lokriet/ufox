@@ -14,6 +14,7 @@ import { ArticleType } from '../state/article-type.model';
 import { ArticleFieldValueService } from 'src/app/articles/state/article-field-value.service';
 import { ArticleFieldValueQuery } from 'src/app/articles/state/article-field-value.query';
 import { faChevronUp, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-article-type-edit',
@@ -147,59 +148,47 @@ export class ArticleTypeEditComponent implements OnInit {
     this.defaultTags = this.defaultTags.filter(tag => tag.id !== tagId);
   }
 
-  onMoveFieldUp(index: number) {
-    const upperField = this.additionalFields[index - 1];
-    this.additionalFields[index - 1] = this.additionalFields[index];
-    this.additionalFields[index] = upperField;
-    upperField.orderNo = index;
-    this.additionalFields[index - 1].orderNo = index - 1;
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
 
-    if (this.editMode) {
-      if (!this.addedAdditionalFields.includes(this.additionalFields[index])) {
-        if (!this.updatedAdditionalFields.includes(this.additionalFields[index])) {
-          this.updatedAdditionalFields.push(this.additionalFields[index]);
-        }
-      }
-      if (!this.addedAdditionalFields.includes(this.additionalFields[index - 1])) {
-        if (!this.updatedAdditionalFields.includes(this.additionalFields[index - 1])) {
-          this.updatedAdditionalFields.push(this.additionalFields[index - 1]);
-        }
-      }
+    moveItemInArray(this.additionalFields, event.previousIndex, event.currentIndex);
+    this.additionalFields[event.currentIndex].orderNo = event.currentIndex;
+    this.checkAdditionalFieldChangeStatus(this.additionalFields[event.currentIndex]);
 
-      if (this.editedAdditionalFieldIndex !== -1) {
-        if (this.editedAdditionalFieldIndex === index) {
-          this.editedAdditionalFieldIndex = index - 1;
-        } else if (this.editedAdditionalFieldIndex === index - 1) {
-          this.editedAdditionalFieldIndex = index;
-        }
+    if (event.currentIndex < event.previousIndex) {
+      for (let i = event.currentIndex + 1; i <= event.previousIndex; i++) {
+        this.additionalFields[i].orderNo++;
+        this.checkAdditionalFieldChangeStatus(this.additionalFields[i]);
+      }
+    } else {
+      for (let i = event.previousIndex; i < event.currentIndex; i++) {
+        this.additionalFields[i].orderNo--;
+        this.checkAdditionalFieldChangeStatus(this.additionalFields[i]);
+      }
+    }
+
+    if (this.editedAdditionalFieldIndex !== -1) {
+      if (this.editedAdditionalFieldIndex === event.previousIndex) {
+        this.editedAdditionalFieldIndex = event.currentIndex;
+      } else if (event.currentIndex < event.previousIndex &&
+                 this.editedAdditionalFieldIndex >= event.currentIndex &&
+                 this.editedAdditionalFieldIndex < event.previousIndex) {
+        this.editedAdditionalFieldIndex++;
+      } else if (event.currentIndex > event.previousIndex &&
+                 this.editedAdditionalFieldIndex <= event.currentIndex &&
+                 this.editedAdditionalFieldIndex > event.previousIndex) {
+        this.editedAdditionalFieldIndex--;
       }
     }
   }
 
-  onMoveFieldDown(index: number) {
-    const lowerField = this.additionalFields[index + 1];
-    this.additionalFields[index + 1] = this.additionalFields[index];
-    this.additionalFields[index] = lowerField;
-    lowerField.orderNo = index;
-    this.additionalFields[index + 1].orderNo = index + 1;
-
+  private checkAdditionalFieldChangeStatus(additionalField: ArticleFieldName) {
     if (this.editMode) {
-      if (!this.addedAdditionalFields.includes(this.additionalFields[index])) {
-        if (!this.updatedAdditionalFields.includes(this.additionalFields[index])) {
-          this.updatedAdditionalFields.push(this.additionalFields[index]);
-        }
-      }
-      if (!this.addedAdditionalFields.includes(this.additionalFields[index + 1])) {
-        if (!this.updatedAdditionalFields.includes(this.additionalFields[index + 1])) {
-          this.updatedAdditionalFields.push(this.additionalFields[index + 1]);
-        }
-      }
-
-      if (this.editedAdditionalFieldIndex !== -1) {
-        if (this.editedAdditionalFieldIndex === index) {
-          this.editedAdditionalFieldIndex = index + 1;
-        } else if (this.editedAdditionalFieldIndex === index + 1) {
-          this.editedAdditionalFieldIndex = index;
+      if (!this.addedAdditionalFields.includes(additionalField)) {
+        if (!this.updatedAdditionalFields.includes(additionalField)) {
+          this.updatedAdditionalFields.push(additionalField);
         }
       }
     }
@@ -296,6 +285,13 @@ export class ArticleTypeEditComponent implements OnInit {
     if (this.editedAdditionalFieldIndex !== index) {
       this.editedAdditionalFieldIndex = index;
       this.editedAdditionalFieldName = this.additionalFields[index].name;
+    }
+  }
+
+  onAdditionalFieldRename(event, i) {
+    if (event.keyCode === 13) { // enter
+      event.stopPropagation(); // don't submit the form
+      this.onSaveRenamedField(i);
     }
   }
 

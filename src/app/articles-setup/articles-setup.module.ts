@@ -8,6 +8,7 @@ import { ArticlesSetupComponent } from './articles-setup.component';
 import { ArticlesSetupRoutingModule } from './articles-setup-routing.module';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SharedModule,
     FormsModule,
     FontAwesomeModule,
+    DragDropModule,
     ArticlesSetupRoutingModule
   ],
   exports: [

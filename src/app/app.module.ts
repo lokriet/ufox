@@ -21,6 +21,7 @@ import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { SharedModule } from './shared/shared.module';
 import { UploadTestComponent } from './upload-test/upload-test.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { UploadTestComponent } from './upload-test/upload-test.component';
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features,
     AngularFireStorageModule,  // imports firebase/storage only needed for storage features
     environment.production ? [] : AkitaNgDevtools.forRoot(),
-    AkitaNgRouterStoreModule.forRoot()
+    AkitaNgRouterStoreModule.forRoot(),
+    NoopAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

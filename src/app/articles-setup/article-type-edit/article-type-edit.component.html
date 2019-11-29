@@ -13,31 +13,28 @@
 
     <div class="label">Additional fields</div>
 
-    <div class="added-fields" [class.editmode]="editMode" *ngIf="additionalFields.length > 0">
-      <ng-container *ngFor="let additionalField of additionalFields; let i = index" >
+    <div class="added-fields" [class.editmode]="editMode" *ngIf="additionalFields.length > 0" cdkDropList  (cdkDropListDropped)="drop($event)">
+      <div *ngFor="let additionalField of additionalFields; let i = index" cdkDrag class="inputs-buttons-group field-row">
         <div class="field-order-no">{{ (additionalField.orderNo + 1) }}. </div>
         <div *ngIf="i !== editedAdditionalFieldIndex" class="field-name">{{ additionalField.name }}</div>
-        <input *ngIf="i === editedAdditionalFieldIndex" [(ngModel)]="editedAdditionalFieldName">
-        
-        <button type="button" class="button" [disabled]="i == 0" (click)="onMoveFieldUp(i)">
-          <fa-icon [icon]="faChevronUp"></fa-icon>
-        </button>
-        <button type="button" class="button" [disabled]="i == additionalFields.length - 1" (click)="onMoveFieldDown(i)">
-          <fa-icon [icon]="faChevronDown"></fa-icon>
-        </button>
+        <input 
+          *ngIf="i === editedAdditionalFieldIndex" 
+          [(ngModel)]="editedAdditionalFieldName" 
+          (keydown)="onAdditionalFieldRename($event, i)"
+          class="field-name-input">
   
-        <button type="button" class="button button-danger" (click)="onDeleteField(i)">
+        <button type="button" class="button button-danger short-button" (click)="onDeleteField(i)">
           <fa-icon [icon]="faTimes"></fa-icon>
         </button>
         
-        <div class="col-6" *ngIf="editMode">
-          <button type="button" class="button" (click)="onRenameField(i)" *ngIf="i !== editedAdditionalFieldIndex">Rename</button>
-          <button type="button" class="button" (click)="onSaveRenamedField(i)" *ngIf="i === editedAdditionalFieldIndex">Save</button>
+        <div class="long-button" *ngIf="editMode">
+          <button type="button" class="button long-button" (click)="onRenameField(i)" *ngIf="i !== editedAdditionalFieldIndex">Rename</button>
+          <button type="button" class="button long-button" (click)="onSaveRenamedField(i)" *ngIf="i === editedAdditionalFieldIndex">Save</button>
         </div>
-        <div class="col-7" *ngIf="editMode">
+        <div class="long-button" *ngIf="editMode">
           <button type="button" class="button" (click)="onCancelRenamingField()" *ngIf="i === editedAdditionalFieldIndex">Cancel</button>
         </div>
-      </ng-container>
+      </div>
     </div>
 
     <div class="fields-row inputs-buttons-group">

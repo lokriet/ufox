@@ -10,33 +10,47 @@
 
 .added-fields {
   margin-top: 1rem;
-  display: grid;
-  grid-auto-flow: row;
-  gap: 1rem;
-  align-items: center;
-  grid-template-columns: 1rem max-content 3rem 3rem 3rem;
+
+  display: flex;
+  flex-direction: column;
+
+  // display: grid;
+  // grid-auto-flow: row;
+  // gap: 1rem;
+  // align-items: center;
+  // grid-template-columns: 1rem max-content 3rem 3rem 3rem;
   
 
-  &.editmode {
-    grid-template-columns: 1rem 10rem 3rem 3rem 3rem max-content 7rem;
+  // &.editmode {
+  //   grid-template-columns: 1rem 10rem 3rem 3rem 3rem max-content 7rem;
+  // }
+
+  input {
+    width: 10rem;
+  }
+
+  .short-button {
+    width: 3rem;
+  }
+
+  .long-button {
+    width: 7rem;
   }
 
   .field-order-no {
     text-align: right;
+    width: 1rem; 
   }
-
-  input {
-    width: 100%;
+  
+  .field-name {
+    text-transform: capitalize;
+    width: 10rem;
   }
-
-  button {
-    width: 100%;
-  }
-
 }
 
-.field-name {
-  text-transform: capitalize;
+.field-row {
+  align-content: center;
+  align-items: center;
 }
 
 .tags {
