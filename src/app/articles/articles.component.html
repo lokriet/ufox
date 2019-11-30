@@ -1,20 +1,27 @@
-<div class="articles">
+
   <ng-container *ngIf="(loadingArticles$ | async) || 
                        (loadingFieldNames$ | async) || 
                        (loadingFieldValues$ | async) || 
                        (loadingTags$ | async) ||
                        (loadingArticleTypes$ | async)
                        ; else loaded">
-    <h1>Loading...</h1>
+    <h1 class="loading-text">Loading...</h1>
     
   </ng-container>
   
   <ng-template #loaded>
-    <div class="inputs-buttons-group">
-      <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>
-      <a class="button" href="https://www.youtube.com/results?search_query=foxes+are+cute" target="_blank">Alisa I'm bored!</a>
+    <div class="articles-view">
+      <div class="filter-view">
+        <app-articles-filter-panel [(expanded)]="filterPanelExpanded"></app-articles-filter-panel>
+      </div>
+      <div class="main-view" [class.filters-expanded]="filterPanelExpanded">
+        <div class="articles">
+          <div class="inputs-buttons-group">
+            <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>
+            <a class="button" href="https://www.youtube.com/results?search_query=foxes+are+cute" target="_blank">Alisa I'm bored!</a>
+          </div>
+          <app-articles-list [articles]="filteredArticles"></app-articles-list>
+        </div>
+      </div>
     </div>
-  
-    <app-articles-list></app-articles-list>
   </ng-template>
-</div>

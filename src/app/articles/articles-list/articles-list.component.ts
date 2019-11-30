@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Article } from '../state/article.model';
@@ -10,13 +10,11 @@ import { ArticleQuery } from '../state/article.query';
   styleUrls: ['./articles-list.component.scss']
 })
 export class ArticlesListComponent implements OnInit {
+  @Input() articles: Article[];
 
-  articles$: Observable<Article[]>;
-
-  constructor(private articleQuery: ArticleQuery) { }
+  constructor() { }
 
   ngOnInit() {
-    this.articles$ = this.articleQuery.selectAll();
   }
 
 }

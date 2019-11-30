@@ -8,10 +8,7 @@ export interface ArticleState extends CollectionState<Article>, ActiveState<stri
 @Injectable({ providedIn: 'root' })
 @StoreConfig({ name: 'article' })
 export class ArticleStore extends EntityStore<ArticleState> {
-
   constructor() {
     super();
   }
-
 }
-

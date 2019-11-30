@@ -1,4 +1,18 @@
 @import '../../assets/scss/partials/shared-styles';
+@import '../../assets/scss/partials/variables';
+
+.loading-text {
+  width: 90%;
+  text-align: center;
+}
+
+.main-view {
+  margin-left: $filter-panel-collapsed-width;
+
+  &.filters-expanded {
+    margin-left: $filter-panel-full-width;
+  }
+}
 
 .articles {
   width: 90%;

@@ -10,6 +10,7 @@ import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticleService } from '../state/article.service';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
+import { ArticlesUiStore } from '../state/article-ui.store';
 
 interface AdditionalField {
   name: ArticleFieldName;
@@ -32,7 +33,8 @@ export class ArticleViewComponent implements OnInit {
               private fieldValueService: ArticleFieldValueService,
               private tagsQuery: ArticleTagQuery,
               private articleTypeQuery: ArticleTypeQuery,
-              private articleService: ArticleService) {
+              private articleService: ArticleService,
+              private articlesUiStore: ArticlesUiStore) {
   }
 
   ngOnInit() {
@@ -76,6 +78,6 @@ export class ArticleViewComponent implements OnInit {
   }
 
   onShowArticlesByTag(tagId: string) {
-    //TODO
+    this.articlesUiStore.updateFilterTags([tagId]);
   }
 }

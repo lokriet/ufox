@@ -1,6 +1,5 @@
 <div class="articles-list">
-  <ng-container *ngFor="let article of (articles$ | async); let i = index">
-    <!-- <div class="divider" *ngIf="i !== 0"></div> -->
+  <ng-container *ngFor="let article of articles; let i = index">
     <app-article-view  [article]="article" [isOdd]="i % 2 === 1"></app-article-view>
   </ng-container>
 </div>
