@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { faTimes, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faChevronRight, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
@@ -16,16 +16,16 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   styleUrls: ['./articles-filter-panel.component.scss'],
   animations: [
     trigger('collapse', [
-      state('collapsed', style({ height: 0 })),
-      state('expanded', style({ height: '*' })),
-      transition('collapsed => expanded', animate('400ms')),
-      transition('expanded => collapsed', animate('400ms'))
+      state('subsectionCollapsed', style({ height: '0px' })),
+      state('subsectionExpanded', style({ height: '*' })),
+      transition('subsectionCollapsed <=> subsectionExpanded', [animate('1s')])
     ])
   ]
 })
 export class ArticlesFilterPanelComponent implements OnInit {
   faTimes = faTimes;
   faRight = faChevronRight;
+  faCheck = faCheck;
 
   @Input() expanded = false;
   @Output() expandedChange = new EventEmitter<boolean>();
@@ -35,14 +35,15 @@ export class ArticlesFilterPanelComponent implements OnInit {
 
   allTags$: Observable<ArticleTag[]>;
   tagsFiltersExpanded = true;
-  tagsFilterAnimationState = 'expanded';
 
   filterArticleTypeIds: string[] = [];
   allArticleTypes$: Observable<ArticleType[]>;
+  typeFiltersExpanded = true;
 
   fieldValuesFilterType: FilterType;
   fieldValueFilters: FieldValueFilter[];
   showFieldValuesError = false;
+  fieldFiltersExpanded = true;
 
   constructor(private tagsQuery: ArticleTagQuery,
               private articlesUiQuery: ArticlesUiQuery,
@@ -112,8 +113,10 @@ export class ArticlesFilterPanelComponent implements OnInit {
   }
 
   onFieldValuesFilterTypeChanged(fieldValuesFilterType: FilterType) {
+    const saveFieldValueFilters = this.fieldValueFilters;
     this.fieldValuesFilterType = fieldValuesFilterType;
     this.articlesUiStore.updateFieldValuesFilterType(this.fieldValuesFilterType);
+    this.fieldValueFilters = saveFieldValueFilters;
   }
 
   onAddFieldValueFilter() {
@@ -122,10 +125,22 @@ export class ArticlesFilterPanelComponent implements OnInit {
 
   onDeleteFieldValueFilter(i: number) {
     this.fieldValueFilters.splice(i, 1);
-    this.articlesUiStore.updateFilterFieldValues(this.fieldValueFilters);
+
+    if (this.allFieldsFilled()) {
+      this.articlesUiStore.updateFilterFieldValues(this.fieldValueFilters);
+    }
   }
 
   onSaveFieldValueFilters() {
+    if (this.allFieldsFilled()) {
+      this.articlesUiStore.updateFilterFieldValues(this.fieldValueFilters);
+      this.showFieldValuesError = false;
+    } else {
+      this.showFieldValuesError = true;
+    }
+  }
+
+  allFieldsFilled(): boolean {
     let allFieldsFilled = true;
     for (const fieldValueFilter of this.fieldValueFilters) {
       if (fieldValueFilter.name === null ||
@@ -136,17 +151,6 @@ export class ArticlesFilterPanelComponent implements OnInit {
         break;
       }
     }
-
-    if (allFieldsFilled) {
-      this.articlesUiStore.updateFilterFieldValues(this.fieldValueFilters);
-      this.showFieldValuesError = false;
-    } else {
-      this.showFieldValuesError = true;
-    }
-  }
-
-  onTagsSectionExpandSwitched() {
-    this.tagsFiltersExpanded = !this.tagsFiltersExpanded;
-    this.tagsFilterAnimationState = this.tagsFiltersExpanded ? 'expanded' : 'collapsed';
+    return allFieldsFilled;
   }
 }

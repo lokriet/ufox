@@ -13,13 +13,13 @@
             type="button" 
             class="expand-button" 
             [class.expanded]="tagsFiltersExpanded"
-            (click)="onTagsSectionExpandSwitched()">
+            (click)="tagsFiltersExpanded = !tagsFiltersExpanded">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
       <div class="header-text">Tags</div>
     </div>
-    
-    <div class="subsection" [@collapse]="tagsFilterAnimationState">
+
+    <div class="subsection" [@collapse]="tagsFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
       <div class="inputs-buttons-group">
         <select #tagDropdown>
           <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
@@ -32,7 +32,7 @@
           Add to filter
         </button>
       </div>
-      <div class="inputs-buttons-group">
+      <div class="inputs-buttons-group radio-buttons" *ngIf="filterTags && filterTags.length > 1">
         <label class="clickable-label">
           <input 
                 type="radio" 
@@ -40,6 +40,9 @@
                 [value]="0" 
                 [ngModel]="tagsFilterType" 
                 (ngModelChange)="onTagsFilterTypeChanged(0)">
+          <span class="checkbox-icon radio">
+            <fa-icon [icon]="faCheck" [class.checked]="tagsFilterType === 0"></fa-icon>
+          </span>
           One of the tags
         </label>
         <label class="clickable-label">
@@ -49,10 +52,13 @@
                 [value]="1" 
                 [ngModel]="tagsFilterType" 
                 (ngModelChange)="onTagsFilterTypeChanged(1)">
+          <span class="checkbox-icon radio">
+            <fa-icon [icon]="faCheck" [class.checked]="tagsFilterType === 1"></fa-icon>
+          </span>
           All of them
         </label>
       </div>
-      <div class="tags">
+      <div class="tags" *ngIf="filterTags && filterTags.length > 0">
         <div class="tag" *ngFor="let tag of filterTags; let i = index">
           <div class="tag-name">{{ tag.name }}</div>
           <div class="tag-remove-button" (click)="onDeleteFilterTag(i)">x</div>
@@ -60,61 +66,96 @@
       </div> 
     </div>
 
-    <div class="subsection-header">Article types</div>
-    <div class="article-types-list">
-      <div class="clickable-label" (click)="onChangeArticleTypeFilter(null)">
-        <input type="checkbox" [ngModel]="isInFilterList(null)">
-        General
-      </div>
-      <div class="clickable-label" *ngFor="let articleType of (allArticleTypes$ | async)" (click)="onChangeArticleTypeFilter(articleType.id)">
-        <input type="checkbox" [ngModel]="isInFilterList(articleType.id)">
-        {{ articleType.name }}
-      </div> 
+    <div class="subsection-header">
+      <button 
+            type="button" 
+            class="expand-button" 
+            [class.expanded]="typeFiltersExpanded"
+            (click)="typeFiltersExpanded = !typeFiltersExpanded">
+        <fa-icon [icon]="faRight"></fa-icon>
+      </button>
+      <div class="header-text">Article types</div>
     </div>
 
-    <div class="subsection-header">Field values</div>
-    <div class="inputs-buttons-group">
-      <label class="clickable-label">
-        <input 
-              type="radio" 
-              name="fieldValuesFilterTypeField" 
-              [value]="0" 
-              [ngModel]="fieldValuesFilterType" 
-              (ngModelChange)="onFieldValuesFilterTypeChanged(0)">
-        One of the values
-      </label>
-      <label class="clickable-label">
-        <input 
-              type="radio" 
-              name="fieldValuesFilterTypeField" 
-              [value]="1" 
-              [ngModel]="fieldValuesFilterType" 
-              (ngModelChange)="onFieldValuesFilterTypeChanged(1)">
-        All of them
-      </label>
+    <div class="subsection" [@collapse]="typeFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+      <div class="article-types-list">
+        <div class="clickable-label article-type" (click)="onChangeArticleTypeFilter(null)">
+          <input type="checkbox" [ngModel]="isInFilterList(null)">
+          <span class="checkbox-icon">
+            <fa-icon [icon]="faCheck" [class.checked]="isInFilterList(null)"></fa-icon>
+          </span>
+          General
+        </div>
+        <div class="clickable-label article-type" *ngFor="let articleType of (allArticleTypes$ | async)" (click)="onChangeArticleTypeFilter(articleType.id)">
+          <input type="checkbox" [ngModel]="isInFilterList(articleType.id)">
+          <span class="checkbox-icon">
+            <fa-icon [icon]="faCheck" [class.checked]="isInFilterList(articleType.id)"></fa-icon>
+          </span>
+          {{ articleType.name }}
+        </div> 
+      </div>
     </div>
-    <div class="name-value-pair" *ngFor="let fieldValueFilter of fieldValueFilters; let i = index">
-      <input 
-          type="text" 
-          placeholder="Name" 
-          [(ngModel)]="fieldValueFilter.name">
-      <input 
-          type="text" 
-          placeholder="Value" 
-          [(ngModel)]="fieldValueFilter.value">
+
+    <div class="subsection-header">
       <button 
-          class="button button-danger"
-          type="button"
-          (click)="onDeleteFieldValueFilter(i)">
-        <fa-icon [icon]="faTimes"></fa-icon>
+            type="button" 
+            class="expand-button" 
+            [class.expanded]="fieldFiltersExpanded"
+            (click)="fieldFiltersExpanded = !fieldFiltersExpanded">
+        <fa-icon [icon]="faRight"></fa-icon>
       </button>
+      <div class="header-text">Field values</div>
     </div>
-    <div class="error-message" [class.hidden]="!showFieldValuesError">Fill all values and apply again</div>
-    <div class="inputs-buttons-group">
-      <button class="button" type="button" (click)="onSaveFieldValueFilters()">Apply</button>
-      <button class="button" type="button" (click)="onAddFieldValueFilter()">
-        Add value
-      </button>
+    <div class="subsection" [@collapse]="fieldFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+      <div class="inputs-buttons-group radio-buttons" *ngIf="fieldValueFilters && fieldValueFilters.length > 1">
+        <label class="clickable-label">
+          <input 
+                type="radio" 
+                name="fieldValuesFilterTypeField" 
+                [value]="0" 
+                [ngModel]="fieldValuesFilterType" 
+                (ngModelChange)="onFieldValuesFilterTypeChanged(0)">
+          <span class="checkbox-icon radio">
+            <fa-icon [icon]="faCheck" [class.checked]="fieldValuesFilterType === 0"></fa-icon>
+          </span>
+          One of the values
+        </label>
+        <label class="clickable-label">
+          <input 
+                type="radio" 
+                name="fieldValuesFilterTypeField" 
+                [value]="1" 
+                [ngModel]="fieldValuesFilterType" 
+                (ngModelChange)="onFieldValuesFilterTypeChanged(1)">
+          <span class="checkbox-icon radio">
+            <fa-icon [icon]="faCheck" [class.checked]="fieldValuesFilterType === 1"></fa-icon>
+          </span>
+          All of them
+        </label>
+      </div>
+      <div class="name-value-pair" *ngFor="let fieldValueFilter of fieldValueFilters; let i = index">
+        <input 
+            type="text" 
+            placeholder="Name" 
+            [(ngModel)]="fieldValueFilter.name">
+        <input 
+            type="text" 
+            placeholder="Value" 
+            [(ngModel)]="fieldValueFilter.value">
+        <button 
+            class="button button-danger"
+            type="button"
+            (click)="onDeleteFieldValueFilter(i)">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+      <div class="error-message" [class.hidden]="!showFieldValuesError">Fill all values and apply again</div>
+      <div class="inputs-buttons-group">
+        <button class="button" type="button" (click)="onSaveFieldValueFilters()">Apply</button>
+        <button class="button" type="button" (click)="onAddFieldValueFilter()">
+          Add value
+        </button>
+      </div>
     </div>
 
     <button class="button button-danger" type="button" (click)="onClearAllFilters()">Clear all filters</button>
