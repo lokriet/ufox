@@ -9,7 +9,7 @@ export class HighlightPipe implements PipeTransform {
     if (highlightString && highlightString.length > 0 && value.toLowerCase().includes(highlightString.toLowerCase())) {
       // value.replace(highlightString, `<&lt;>span class="highlight"&gt;${highlightString}&lt;/span&gt;`);
 
-      // const esc = highlightString.toLowerCase().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const esc = highlightString.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       // const esc = highlightString.toLowerCase();
 
       const reg = new RegExp(`(${highlightString})`, 'ig');
