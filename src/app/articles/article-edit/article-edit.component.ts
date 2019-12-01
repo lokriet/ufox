@@ -92,13 +92,10 @@ export class ArticleEditComponent implements OnInit {
     this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
 
 
-    this.articleTypes$ = this.articleTypeQuery.selectAll().pipe(tap(value => value.unshift({id: '-1',
-      name: 'General',
-      defaultTagIds: null,
-      articleFieldNameIds: null})));
+    this.articleTypes$ = this.articleTypeQuery.selectAll({sortBy: 'sortingOrder'});
     this.selectedArticleType = null;
 
-    this.allTags$ = this.articleTagQuery.selectAll();
+    this.allTags$ = this.articleTagQuery.selectAll({sortBy: 'name'});
 
 
     this.route.params.subscribe(
@@ -116,7 +113,7 @@ export class ArticleEditComponent implements OnInit {
 
     let id = guid();
     let name = '';
-    let articleTypeId = '-1';
+    let articleTypeId = null;
     let articleText = null;
     let imageUrl = null;
     const additionalArticleFields = new FormArray([]);
@@ -130,15 +127,12 @@ export class ArticleEditComponent implements OnInit {
       id = this.editedArticleId;
       name = editedArticle.name;
       articleTypeId = editedArticle.typeId;
-      if (editedArticle.typeId === null) {
-        articleTypeId = '-1';
-      }
       articleText = editedArticle.text;
 
       imageUrl = editedArticle.imageUrl;
       this.showingPictureInput = !!imageUrl;
 
-      if (articleTypeId != null && articleTypeId !== '-1') {
+      if (articleTypeId != null) {
         this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
         this.additionalFieldNames = this.articleFieldNameQuery.getAll({
           filterBy: entity => this.selectedArticleType.articleFieldNameIds.includes(entity.id),
@@ -171,7 +165,7 @@ export class ArticleEditComponent implements OnInit {
   }
 
   onArticleTypeSwitched(articleTypeId: string) {
-    if (articleTypeId === null || articleTypeId === '-1') {
+    if (articleTypeId === null) {
       (this.articleForm.get('additionalFields') as FormArray).clear();
       this.selectedArticleType = null;
       return;
@@ -267,7 +261,7 @@ export class ArticleEditComponent implements OnInit {
 
     const article = {
       id: this.articleForm.value.id,
-      typeId: this.selectedArticleType == null ? null : this.selectedArticleType.id,
+      typeId: this.selectedArticleType.id,
       name: this.articleForm.value.name,
       text: this.articleForm.value.articleText,
       imageUrl: this.showingPictureInput ? this.articleForm.value.imageUrl : null,

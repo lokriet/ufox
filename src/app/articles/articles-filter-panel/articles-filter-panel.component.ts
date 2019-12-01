@@ -1,5 +1,6 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { faTimes, faChevronRight, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faChevronRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
@@ -7,8 +8,8 @@ import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
 
 import { ArticlesUiQuery } from '../state/article-ui.query';
-import { ArticlesUiStore, FieldValueFilter, FilterType } from '../state/article-ui.store';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ArticlesUiStore, FieldValueFilter, FilterType, SortItem, SortItemType, SortOrder } from '../state/article-ui.store';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-articles-filter-panel',
@@ -42,8 +43,13 @@ export class ArticlesFilterPanelComponent implements OnInit {
 
   fieldValuesFilterType: FilterType;
   fieldValueFilters: FieldValueFilter[];
-  showFieldValuesError = false;
+  showFieldValuesFilterError = false;
   fieldFiltersExpanded = true;
+
+  sorting: SortItem[];
+  showFieldValueSortingError = false;
+  sortingOrderExpanded = true;
+  sortingFieldsExpanded = false;
 
   constructor(private tagsQuery: ArticleTagQuery,
               private articlesUiQuery: ArticlesUiQuery,
@@ -51,8 +57,8 @@ export class ArticlesFilterPanelComponent implements OnInit {
               private articleTypesQuery: ArticleTypeQuery) { }
 
   ngOnInit() {
-    this.allTags$ = this.tagsQuery.selectAll();
-    this.allArticleTypes$ = this.articleTypesQuery.selectAll();
+    this.allTags$ = this.tagsQuery.selectAll({sortBy: 'name'});
+    this.allArticleTypes$ = this.articleTypesQuery.selectAll({sortBy: 'sortingOrder'});
 
     this.articlesUiQuery.select().subscribe(value => {
       this.filterTags = this.tagsQuery.getAll({
@@ -68,7 +74,29 @@ export class ArticlesFilterPanelComponent implements OnInit {
       for (const fieldValue of value.filters.fieldValues) {
         this.fieldValueFilters.push({...fieldValue});
       }
+
+
+      this.sorting = [];
+      for(const sortItem of value.sorting.sortItems) {
+        this.sorting.push({...sortItem});
+      }
     });
+  }
+
+  filtersEmpty(): boolean {
+    if (this.filterTags && this.filterTags.length > 0) {
+       return false;
+    }
+
+    if (this.filterArticleTypeIds && this.filterArticleTypeIds.length > 0) {
+      return false;
+    }
+
+    if (this.fieldValueFilters && this.fieldValueFilters.length > 0) {
+      return false;
+    }
+
+    return true;
   }
 
   onDeleteFilterTag(i: number) {
@@ -95,7 +123,7 @@ export class ArticlesFilterPanelComponent implements OnInit {
   }
 
   onClearAllFilters() {
-    this.articlesUiStore.reset();
+    this.articlesUiStore.resetFilters();
   }
 
   isInFilterList(articleTypeId: string) {
@@ -134,9 +162,9 @@ export class ArticlesFilterPanelComponent implements OnInit {
   onSaveFieldValueFilters() {
     if (this.allFieldsFilled()) {
       this.articlesUiStore.updateFilterFieldValues(this.fieldValueFilters);
-      this.showFieldValuesError = false;
+      this.showFieldValuesFilterError = false;
     } else {
-      this.showFieldValuesError = true;
+      this.showFieldValuesFilterError = true;
     }
   }
 
@@ -153,4 +181,56 @@ export class ArticlesFilterPanelComponent implements OnInit {
     }
     return allFieldsFilled;
   }
+
+  sortingTypeAdded(sortItemType: SortItemType): boolean {
+    return this.sorting && this.sorting.some(sortItem => sortItem.sortItemType === sortItemType);
+  }
+
+  addSorting(sortItemType: SortItemType, sortOrder: SortOrder, sortItemName: string) {
+    if (!this.sorting) {
+      this.sorting = [];
+    }
+
+    if (sortItemType === SortItemType.ArticleField && !sortItemName) {
+      this.showFieldValueSortingError = true;
+      return;
+    } else {
+      this.showFieldValueSortingError = false;
+      this.sorting.push({sortItemType, sortOrder, sortItemName});
+      this.articlesUiStore.updateSortingOrder(this.sorting);
+    }
+  }
+
+  onRemoveSortingOrderItem(i: number) {
+    this.sorting.splice(i, 1);
+    this.articlesUiStore.updateSortingOrder(this.sorting);
+  }
+
+  onSortItemDrop(event: CdkDragDrop<string[]>) {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    moveItemInArray(this.sorting, event.previousIndex, event.currentIndex);
+    this.articlesUiStore.updateSortingOrder(this.sorting);
+  }
+
+  switchSortOrder(i: number) {
+    if (this.sorting[i].sortOrder === SortOrder.Asc) {
+      this.sorting[i].sortOrder = SortOrder.Desc;
+    } else {
+      this.sorting[i].sortOrder = SortOrder.Asc;
+    }
+    this.articlesUiStore.updateSortingOrder(this.sorting);
+  }
+
+  capitalize(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  onResetSorting() {
+    this.articlesUiStore.resetSorting();
+    this.showFieldValuesFilterError = false;
+  }
+
 }

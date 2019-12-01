@@ -38,7 +38,7 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
               private storage: AngularFireStorage) { }
 
   ngOnInit() {
-    this.images$ = this.imageQuery.selectAll();
+    this.images$ = this.imageQuery.selectAll({sortBy: 'url'});
 
     const popup = this;
     this.boundMousemoveMove =  this.mousemoveMove.bind(popup);

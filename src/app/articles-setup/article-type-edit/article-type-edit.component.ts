@@ -62,7 +62,7 @@ export class ArticleTypeEditComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.tags$ = this.tagQuery.selectAll();
+    this.tags$ = this.tagQuery.selectAll({sortBy: 'name'});
     this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
     this.loadingTags$ = this.tagQuery.selectLoading();
     this.loadingFieldNames$ = this.fieldNameQuery.selectLoading();
@@ -226,6 +226,7 @@ export class ArticleTypeEditComponent implements OnInit {
     if (this.editMode) {
       const updatedArticleType = {
         id: this.editedArticleType.id,
+        sortingOrder: this.editedArticleType.sortingOrder,
         name: this.articleTypeName,
         defaultTagIds: this.defaultTags.map(tag => tag.id),
         articleFieldNameIds: this.additionalFields.map(articleField => articleField.id)
@@ -233,22 +234,23 @@ export class ArticleTypeEditComponent implements OnInit {
 
       if (this.deletedAdditionalFields.length > 0) {
         const deletedAdditionalFieldIds = this.deletedAdditionalFields.map(field => field.id);
-        for (const additionalField of this.deletedAdditionalFields) {
-          this.fieldValueService.syncCollection().subscribe(() => {
-            const affectedFieldValueIds = this.fieldValueQuery.getAll({
-              filterBy: value => deletedAdditionalFieldIds.includes(value.fieldNameId)
-            }).map(value => value.id);
-            if (affectedFieldValueIds.length > 0) {
-              if (!confirm('This will delete removed fields from all existing articles. You sure?')) {
-                return;
-              } else {
-                this.fieldValueService.remove(affectedFieldValueIds);
-              }
-            }
 
-            this.fieldNameService.remove(deletedAdditionalFieldIds);
-          });
-        }
+        // for (const additionalField of this.deletedAdditionalFields) {
+        // }
+        this.fieldValueService.syncCollection().subscribe(() => {
+          const affectedFieldValueIds = this.fieldValueQuery.getAll({
+            filterBy: value => deletedAdditionalFieldIds.includes(value.fieldNameId)
+          }).map(value => value.id);
+          if (affectedFieldValueIds.length > 0) {
+            if (!confirm('This will delete removed fields from all existing articles. You sure?')) {
+              return;
+            } else {
+              this.fieldValueService.remove(affectedFieldValueIds);
+            }
+          }
+
+          this.fieldNameService.remove(deletedAdditionalFieldIds);
+        });
       }
 
       this.articleTypeService.update(updatedArticleType);
@@ -270,6 +272,7 @@ export class ArticleTypeEditComponent implements OnInit {
 
       const newArticleType = {
         id: guid(),
+        sortingOrder: this.articleTypeQuery.getCount(),
         name: this.articleTypeName,
         defaultTagIds: this.defaultTags.map(tag => tag.id),
         articleFieldNameIds: this.additionalFields.map(articleField => articleField.id)

@@ -6,7 +6,7 @@ import { ArticleTagQuery } from '../articles-setup/state/article-tag.query';
 import { ArticleTypeQuery } from '../articles-setup/state/article-type.query';
 import { ArticleFieldValueQuery } from './state/article-field-value.query';
 import { ArticlesUiQuery } from './state/article-ui.query';
-import { ArticlesUiState, FilterType } from './state/article-ui.store';
+import { ArticlesUiState, FilterType, SortItemType, SortOrder } from './state/article-ui.store';
 import { Article } from './state/article.model';
 import { ArticleQuery } from './state/article.query';
 
@@ -56,6 +56,7 @@ export class ArticlesComponent implements OnInit {
       result = this.filterByTags(this.allArticles);
       result = this.filterByArticleTypes(result);
       result = this.filterFieldValues(result);
+      result = this.sort(result);
     }
     return result;
   }
@@ -127,5 +128,94 @@ export class ArticlesComponent implements OnInit {
     });
 
     return result;
+  }
+
+  sort(articles: Article[]): Article[] {
+    if (!this.filtersAndSorting.sorting ||
+        !this.filtersAndSorting.sorting.sortItems ||
+        this.filtersAndSorting.sorting.sortItems.length === 0) {
+      return articles;
+    }
+    return articles.sort((article1, article2) => {
+      let article1Fields = null;
+      let article2Fields = null;
+
+      for (const sortItem of this.filtersAndSorting.sorting.sortItems) {
+        switch (sortItem.sortItemType) {
+          case SortItemType.ArticleType:
+            const articleType1 = this.articleTypeQuery.getEntity(article1.typeId);
+            const articleType2 = this.articleTypeQuery.getEntity(article2.typeId);
+            if (articleType1 === articleType2) {
+              continue;
+            } else {
+              const result = articleType1.sortingOrder - articleType2.sortingOrder;
+              return sortItem.sortOrder === SortOrder.Asc ?  result : -result;
+            }
+          case SortItemType.ArticleName:
+            if (article1.name.toLowerCase() === article2.name.toLowerCase()) {
+              continue;
+            } else {
+              const result = article1.name.toLowerCase().localeCompare(article2.name.toLowerCase());
+              return sortItem.sortOrder === SortOrder.Asc ?  result : -result;
+            }
+          case SortItemType.ArticleField:
+            if (!article1Fields) {
+              article1Fields = this.getAdditionalArticleFields(article1);
+            }
+            if (!article2Fields) {
+              article2Fields = this.getAdditionalArticleFields(article2);
+            }
+
+            let fieldValue1 = article1Fields.find(nameValuePair => nameValuePair.name === sortItem.sortItemName.toLowerCase());
+            let fieldValue2 = article2Fields.find(nameValuePair => nameValuePair.name === sortItem.sortItemName.toLowerCase());
+            if (fieldValue1) {
+              fieldValue1 = fieldValue1.value;
+            }
+            if (fieldValue2) {
+              fieldValue2 = fieldValue2.value;
+            }
+
+            if (!fieldValue1 && !fieldValue2) {
+              continue;
+            } else if (!fieldValue1 && fieldValue2) {
+              return sortItem.sortOrder === SortOrder.Asc ?  1 : -1;
+            } else if (fieldValue1 && !fieldValue2) {
+              return sortItem.sortOrder === SortOrder.Asc ?  -1 : 1;
+            } else {
+              const result = fieldValue1.toLowerCase().localeCompare(fieldValue2.toLowerCase());
+              return sortItem.sortOrder === SortOrder.Asc ?  result : -result;
+            }
+        }
+      }
+
+      return 0;
+    });
+  }
+
+  getAdditionalArticleFields(article: Article) {
+    const additionalFields = [];
+
+    if (article != null) {
+      const articleType = this.articleTypeQuery.getEntity(article.typeId);
+      const additionalFieldNames = this.articleFieldNameQuery.getAll({
+            filterBy: value => articleType.articleFieldNameIds.includes(value.id), sortBy: 'orderNo'
+      });
+
+      if (article.additionalFieldValueIds != null && article.additionalFieldValueIds.length > 0) {
+        const additionalFieldValues = this.articleFieldValueQuery.getAll({
+          filterBy: fieldValue => article.additionalFieldValueIds.includes(fieldValue.id)
+        });
+
+        for (const additionalFieldName of additionalFieldNames) {
+          const existingValue = additionalFieldValues.find(value => value.fieldNameId === additionalFieldName.id);
+          additionalFields.push({
+              name: additionalFieldName.name.toLowerCase(),
+              value: existingValue ? existingValue.value.toLowerCase() : null
+          });
+        }
+      }
+    }
+
+    return additionalFields;
   }
 }

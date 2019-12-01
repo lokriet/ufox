@@ -5,6 +5,7 @@ import { ArticleTypeEditComponent } from './article-type-edit/article-type-edit.
 import { ArticleTypeGuard } from './state/article-type.guard';
 import { ArticleTagGuard } from './state/article-tag.guard';
 import { ArticleFieldNameGuard } from './state/article-field-name.guard';
+import { ArticleTypeSortingComponent } from './article-type-sorting/article-type-sorting.component';
 
 const routes: Route[] = [
   { 
@@ -26,7 +27,14 @@ const routes: Route[] = [
     component: ArticleTypeEditComponent,
     canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard],
     canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard]
-  }
+  },
+
+  {
+    path: 'articles-setup/sorting',
+    component: ArticleTypeSortingComponent,
+    canActivate: [ArticleTypeGuard],
+    canDeactivate: [ArticleTypeGuard]
+  },
 ];
 
 @NgModule({

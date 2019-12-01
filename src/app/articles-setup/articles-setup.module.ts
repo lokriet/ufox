@@ -9,6 +9,7 @@ import { ArticlesSetupRoutingModule } from './articles-setup-routing.module';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ArticleTypeSortingComponent } from './article-type-sorting/article-type-sorting.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     ArticleTypeEditComponent,
     ArticleTypeViewComponent,
     ArticleTypeListComponent,
-    ArticlesSetupComponent
+    ArticlesSetupComponent,
+    ArticleTypeSortingComponent
   ],
   imports: [
     CommonModule,

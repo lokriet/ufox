@@ -4,24 +4,22 @@
 @import '../../../assets/scss/partials/form-styles';
 
 .filters-panel {
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
   background-color: white;
-  height: calc(100vh - #{$header-height});
-  position: fixed;
-  top: $header-height;
-  left: 0;
-  z-index: 1;
-  
-  width: $filter-panel-full-width;
+}
 
-  &.collapsed {
-    width: $filter-panel-collapsed-width;
-  }
+.collapsed-view {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0 1rem;
 }
 
 .expanded-view {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - #{$header-height});
   align-items: stretch;
   justify-content: flex-start;
   padding: 0 1rem $footer-height 1rem;
@@ -47,16 +45,9 @@ label {
   align-items: center;
   margin-top: 1rem;
 
-  .header-text {
-    margin-left: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.1rem;
-    font-family: $header-font;
-    font-size: 1.5rem;
-  }
-
   .expand-button {
     background-color: transparent;
+    margin-right: 1rem;
     border: none;
     transition: transform 400ms ease-in-out;
     cursor: pointer;
@@ -65,6 +56,13 @@ label {
       transform: rotate(90deg);
     }
   }
+}
+
+.subsection-header-text {
+  font-weight: 700;
+  letter-spacing: 0.1rem;
+  font-family: $header-font;
+  font-size: 1.5rem;
 }
 
 .subsection {
@@ -141,4 +139,40 @@ input[type='radio'] {
   display: flex;
   align-items: center;
   overflow: hidden;
+}
+
+.sort-item {
+  align-items: center;
+}
+
+.sorting-options-subsection {
+  padding-left: 0;
+}
+
+.sorting-options {
+  margin: 1rem 0;
+
+  .sorting-option {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    
+    >* {
+      margin-right: 0.5rem;
+    }
+  }
+
+  input {
+    width: 7rem;
+  }
+}
+
+.reset-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+
+  button {
+    width: 10rem;
+  }
 }

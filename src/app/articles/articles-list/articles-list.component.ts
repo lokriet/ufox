@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
 
 import { Article } from '../state/article.model';
-import { ArticleQuery } from '../state/article.query';
 
 @Component({
   selector: 'app-articles-list',

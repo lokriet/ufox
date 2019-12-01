@@ -15,6 +15,6 @@ export class ArticleTypeListComponent implements OnInit {
   constructor(private articleTypesQuery: ArticleTypeQuery) { }
 
   ngOnInit() {
-    this.articleTypes$ = this.articleTypesQuery.selectAll();
+    this.articleTypes$ = this.articleTypesQuery.selectAll({sortBy: 'sortingOrder'});
   }
 }

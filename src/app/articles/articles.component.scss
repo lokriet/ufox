@@ -6,6 +6,19 @@
   text-align: center;
 }
 
+.side-view {
+  height: calc(100vh - #{$header-height});
+  position: fixed;
+  top: $header-height;
+  left: 0;
+  z-index: 1;
+  width: $filter-panel-full-width;
+
+  &.collapsed {
+    width: $filter-panel-collapsed-width;
+  }
+}
+
 .main-view {
   margin-left: $filter-panel-collapsed-width;
 

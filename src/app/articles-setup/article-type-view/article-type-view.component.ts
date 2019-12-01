@@ -37,7 +37,8 @@ export class ArticleTypeViewComponent implements OnInit {
 
   ngOnInit() {
     this.tags$ = this.tagsQuery.selectAll({
-      filterBy: entity => this.articleType.defaultTagIds.includes(entity.id)
+      filterBy: entity => this.articleType.defaultTagIds.includes(entity.id),
+      sortBy: 'name'
     });
 
     this.fieldNames$ = this.fieldNamesQuery.selectAll({

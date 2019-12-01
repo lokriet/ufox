@@ -29,7 +29,7 @@ export class EditTagsComponent implements OnInit {
               private articleQuery: ArticleQuery) { }
 
   ngOnInit() {
-    this.tags$ = this.tagQuery.selectAll();
+    this.tags$ = this.tagQuery.selectAll({sortBy: 'name'});
   }
 
   onRemoveTag(selectedTagId: string) {

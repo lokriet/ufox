@@ -12,6 +12,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ArticlesFilterPanelComponent } from './articles-filter-panel/articles-filter-panel.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CKEditorModule,
     NgSelectModule,
     FontAwesomeModule,
+    DragDropModule,
     ArticlesRoutingModule
   ],
   exports: [

@@ -23,6 +23,18 @@
     cursor: pointer;
   }
 
+  &.button-delete {
+    background-color: transparent;
+    border-color: transparent;
+    color: $accent-color-orange;
+
+    &:hover {
+      color: $accent-color-red;
+      background-color: transparent;
+      border-color: transparent;
+    }
+  }
+
   &:disabled, &:disabled:hover {
     background-color: $background-color;
     border-color: $main-color;

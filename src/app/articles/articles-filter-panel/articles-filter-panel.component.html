@@ -1,13 +1,99 @@
 <div class="filters-panel" [class.collapsed]="!expanded">
-  <div class="collapsed-view">
-
+  <div class="collapsed-view" *ngIf="!expanded">
+    <div class="section-header">
+      F<span *ngIf="!filtersEmpty()">*</span>
+    </div>
   </div>
 
-  <div class="expanded-view">
+  <div class="expanded-view" *ngIf="expanded">
     <div class="section-header">
-      Filters
+      Filters<span *ngIf="!filtersEmpty()">*</span>
     </div>
-  
+    <div class="subsection-header">
+      <button 
+            type="button" 
+            class="expand-button" 
+            [class.expanded]="typeFiltersExpanded"
+            (click)="typeFiltersExpanded = !typeFiltersExpanded">
+        <fa-icon [icon]="faRight"></fa-icon>
+      </button>
+      <div class="subsection-header-text">Article types</div>
+    </div>
+
+    <div class="subsection" [@collapse]="typeFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+      <div class="article-types-list">
+        <div class="clickable-label article-type" *ngFor="let articleType of (allArticleTypes$ | async)" (click)="onChangeArticleTypeFilter(articleType.id)">
+          <input type="checkbox" [ngModel]="isInFilterList(articleType.id)">
+          <span class="checkbox-icon">
+            <fa-icon [icon]="faCheck" [class.checked]="isInFilterList(articleType.id)"></fa-icon>
+          </span>
+          {{ articleType.name }}
+        </div> 
+      </div>
+    </div>
+
+    <div class="subsection-header">
+      <button 
+            type="button" 
+            class="expand-button" 
+            [class.expanded]="fieldFiltersExpanded"
+            (click)="fieldFiltersExpanded = !fieldFiltersExpanded">
+        <fa-icon [icon]="faRight"></fa-icon>
+      </button>
+      <div class="subsection-header-text">Field values</div>
+    </div>
+    <div class="subsection" [@collapse]="fieldFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+      <div class="inputs-buttons-group radio-buttons" *ngIf="fieldValueFilters && fieldValueFilters.length > 1">
+        <label class="clickable-label">
+          <input 
+                type="radio" 
+                name="fieldValuesFilterTypeField" 
+                [value]="0" 
+                [ngModel]="fieldValuesFilterType" 
+                (ngModelChange)="onFieldValuesFilterTypeChanged(0)">
+          <span class="checkbox-icon radio">
+            <fa-icon [icon]="faCheck" [class.checked]="fieldValuesFilterType === 0"></fa-icon>
+          </span>
+          One of the values
+        </label>
+        <label class="clickable-label">
+          <input 
+                type="radio" 
+                name="fieldValuesFilterTypeField" 
+                [value]="1" 
+                [ngModel]="fieldValuesFilterType" 
+                (ngModelChange)="onFieldValuesFilterTypeChanged(1)">
+          <span class="checkbox-icon radio">
+            <fa-icon [icon]="faCheck" [class.checked]="fieldValuesFilterType === 1"></fa-icon>
+          </span>
+          All of them
+        </label>
+      </div>
+      <div class="name-value-pair" *ngFor="let fieldValueFilter of fieldValueFilters; let i = index">
+        <input 
+            type="text" 
+            placeholder="Name" 
+            [(ngModel)]="fieldValueFilter.name">
+        <input 
+            type="text" 
+            placeholder="Value" 
+            [(ngModel)]="fieldValueFilter.value">
+        <button 
+            class="button button-delete"
+            type="button"
+            (click)="onDeleteFieldValueFilter(i)">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+      <div class="error-message" [class.hidden]="!showFieldValuesFilterError">Fill all values and apply again</div>
+      <div class="inputs-buttons-group">
+        <button class="button" type="button" (click)="onSaveFieldValueFilters()">Apply</button>
+        <button class="button" type="button" (click)="onAddFieldValueFilter()">
+          Add value
+        </button>
+      </div>
+    </div>
+
     <div class="subsection-header">
       <button 
             type="button" 
@@ -16,7 +102,7 @@
             (click)="tagsFiltersExpanded = !tagsFiltersExpanded">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
-      <div class="header-text">Tags</div>
+      <div class="subsection-header-text">Tags</div>
     </div>
 
     <div class="subsection" [@collapse]="tagsFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
@@ -66,103 +152,95 @@
       </div> 
     </div>
 
-    <div class="subsection-header">
-      <button 
-            type="button" 
-            class="expand-button" 
-            [class.expanded]="typeFiltersExpanded"
-            (click)="typeFiltersExpanded = !typeFiltersExpanded">
-        <fa-icon [icon]="faRight"></fa-icon>
-      </button>
-      <div class="header-text">Article types</div>
-    </div>
 
-    <div class="subsection" [@collapse]="typeFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
-      <div class="article-types-list">
-        <div class="clickable-label article-type" (click)="onChangeArticleTypeFilter(null)">
-          <input type="checkbox" [ngModel]="isInFilterList(null)">
-          <span class="checkbox-icon">
-            <fa-icon [icon]="faCheck" [class.checked]="isInFilterList(null)"></fa-icon>
-          </span>
-          General
-        </div>
-        <div class="clickable-label article-type" *ngFor="let articleType of (allArticleTypes$ | async)" (click)="onChangeArticleTypeFilter(articleType.id)">
-          <input type="checkbox" [ngModel]="isInFilterList(articleType.id)">
-          <span class="checkbox-icon">
-            <fa-icon [icon]="faCheck" [class.checked]="isInFilterList(articleType.id)"></fa-icon>
-          </span>
-          {{ articleType.name }}
-        </div> 
-      </div>
+    <div class="reset-button">
+      <button class="button button-danger" type="button" (click)="onClearAllFilters()">Clear all filters</button>
     </div>
-
-    <div class="subsection-header">
-      <button 
-            type="button" 
-            class="expand-button" 
-            [class.expanded]="fieldFiltersExpanded"
-            (click)="fieldFiltersExpanded = !fieldFiltersExpanded">
-        <fa-icon [icon]="faRight"></fa-icon>
-      </button>
-      <div class="header-text">Field values</div>
-    </div>
-    <div class="subsection" [@collapse]="fieldFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
-      <div class="inputs-buttons-group radio-buttons" *ngIf="fieldValueFilters && fieldValueFilters.length > 1">
-        <label class="clickable-label">
-          <input 
-                type="radio" 
-                name="fieldValuesFilterTypeField" 
-                [value]="0" 
-                [ngModel]="fieldValuesFilterType" 
-                (ngModelChange)="onFieldValuesFilterTypeChanged(0)">
-          <span class="checkbox-icon radio">
-            <fa-icon [icon]="faCheck" [class.checked]="fieldValuesFilterType === 0"></fa-icon>
-          </span>
-          One of the values
-        </label>
-        <label class="clickable-label">
-          <input 
-                type="radio" 
-                name="fieldValuesFilterTypeField" 
-                [value]="1" 
-                [ngModel]="fieldValuesFilterType" 
-                (ngModelChange)="onFieldValuesFilterTypeChanged(1)">
-          <span class="checkbox-icon radio">
-            <fa-icon [icon]="faCheck" [class.checked]="fieldValuesFilterType === 1"></fa-icon>
-          </span>
-          All of them
-        </label>
-      </div>
-      <div class="name-value-pair" *ngFor="let fieldValueFilter of fieldValueFilters; let i = index">
-        <input 
-            type="text" 
-            placeholder="Name" 
-            [(ngModel)]="fieldValueFilter.name">
-        <input 
-            type="text" 
-            placeholder="Value" 
-            [(ngModel)]="fieldValueFilter.value">
-        <button 
-            class="button button-danger"
-            type="button"
-            (click)="onDeleteFieldValueFilter(i)">
-          <fa-icon [icon]="faTimes"></fa-icon>
-        </button>
-      </div>
-      <div class="error-message" [class.hidden]="!showFieldValuesError">Fill all values and apply again</div>
-      <div class="inputs-buttons-group">
-        <button class="button" type="button" (click)="onSaveFieldValueFilters()">Apply</button>
-        <button class="button" type="button" (click)="onAddFieldValueFilter()">
-          Add value
-        </button>
-      </div>
-    </div>
-
-    <button class="button button-danger" type="button" (click)="onClearAllFilters()">Clear all filters</button>
 
     <div class="section-header">
       Sorting
     </div>
+
+    <div class="subsection-header">
+      <button 
+            type="button" 
+            class="expand-button" 
+            [class.expanded]="sortingOrderExpanded"
+            (click)="sortingOrderExpanded = !sortingOrderExpanded">
+        <fa-icon [icon]="faRight"></fa-icon>
+      </button>
+      <div class="subsection-header-text">Current sorting order</div>
+    </div>
+    <div 
+          class="subsection" 
+          [@collapse]="sortingOrderExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'" 
+          cdkDropList 
+          (cdkDropListDropped)="onSortItemDrop($event)">
+      <div 
+            *ngFor="let sortItem of sorting; let i = index" 
+            [ngStyle]="{'margin-left': (i * 20)+'px'}" 
+            class="sort-item inputs-buttons-group"
+            cdkDrag>
+        <div class="sort-item-value">
+          {{ sortItem.sortItemType === 0 ? 'Article name' : sortItem.sortItemType === 2 ? 'Article type' : capitalize(sortItem.sortItemName) + ' field value'}} 
+          <button
+              type="button"
+              class="button"
+              (click)="switchSortOrder(i)"
+          >
+            {{ sortItem.sortOrder === 0 ? 'a..Z' : 'Z..a'}}
+          </button>
+          <!-- <span class="sort-order">{{ sortItem.sortOrder === 0 ? 'a..Z' : 'Z..a'}}</span> -->
+        </div>
+        <button class="button button-delete" type="button" (click)="onRemoveSortingOrderItem(i)">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="subsection-header">
+      <button 
+            type="button" 
+            class="expand-button" 
+            [class.expanded]="sortingFieldsExpanded"
+            (click)="sortingFieldsExpanded = !sortingFieldsExpanded">
+        <fa-icon [icon]="faRight"></fa-icon>
+      </button>
+      <div class="subsection-header-text">Add sorting by:</div>
+    </div>
+    
+    <div class="subsection sorting-options-subsection" [@collapse]="sortingFieldsExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+      <ul class="sorting-options">
+        <li>
+          <div class="sorting-option">
+            <span>Article name</span>
+            <button type="button" class="button" [disabled]="sortingTypeAdded(0)" (click)="addSorting(0, 0, null)">a..Z</button>
+            <button type="button" class="button" [disabled]="sortingTypeAdded(0)" (click)="addSorting(0, 1, null)">Z..a</button>
+          </div>
+        </li>
+        <li>
+          <div class="sorting-option">
+            <span>Article type</span>
+            <button type="button" class="button" [disabled]="sortingTypeAdded(2)" (click)="addSorting(2, 0, null)">a..Z</button>
+            <button type="button" class="button" [disabled]="sortingTypeAdded(2)" (click)="addSorting(2, 1, null)">Z..a</button>
+          </div>
+        </li>
+        <li>
+          <div class="sorting-option">
+            <span>Field value</span>
+            <input type="text" placeholder="Field name" #fieldNameInput>
+            <button type="button" class="button" (click)="addSorting(1, 0, fieldNameInput.value)">a..Z</button>
+            <button type="button" class="button" (click)="addSorting(1, 1, fieldNameInput.value)">Z..a</button>
+          </div>
+        </li>
+      </ul>
+      <div class="error-message" [class.hidden]="!showFieldValueSortingError">Fill in field name and try again</div>
+    </div>
+
+    <div class="reset-button">
+      <button class="button button-danger" type="button" (click)="onResetSorting()">Reset sorting</button>
+    </div>
+
   </div>
   
 </div>

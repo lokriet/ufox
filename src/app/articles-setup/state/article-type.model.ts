@@ -1,5 +1,6 @@
 export interface ArticleType {
   id: string;
+  sortingOrder: number;
   name: string;
   defaultTagIds: string[];
   articleFieldNameIds: string[];

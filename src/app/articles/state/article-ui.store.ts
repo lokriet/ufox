@@ -4,6 +4,7 @@ import { Store, StoreConfig } from '@datorama/akita';
 
 export interface ArticlesUiState {
   filters: ArticleFilters;
+  sorting: ArticleSorting;
 }
 
 export enum FilterType {
@@ -24,6 +25,27 @@ export interface ArticleFilters {
   fieldValuesFilterType: FilterType;
 }
 
+export interface ArticleSorting {
+  sortItems: SortItem[];
+}
+
+export interface SortItem {
+  sortItemType: SortItemType;
+  sortItemName: string;
+  sortOrder: SortOrder;
+}
+
+export enum SortItemType {
+  ArticleName = 0,
+  ArticleField = 1,
+  ArticleType = 2
+}
+
+export enum SortOrder {
+  Asc = 0,
+  Desc = 1
+}
+
 const initialState = {
   filters: {
     tagIds: [],
@@ -31,7 +53,20 @@ const initialState = {
     articleTypeIds: [],
     fieldValues: [],
     fieldValuesFilterType: FilterType.Any
-  }
+  },
+  sorting: { sortItems: [
+    {
+      sortItemType: SortItemType.ArticleType,
+      sortItemName: null,
+      sortOrder: SortOrder.Asc
+    },
+
+    {
+      sortItemType: SortItemType.ArticleName,
+      sortItemName: null,
+      sortOrder: SortOrder.Asc
+    }
+  ]}
 }
 
 @Injectable({ providedIn: 'root' })
@@ -44,6 +79,14 @@ export class ArticlesUiStore extends Store<ArticlesUiState> {
 
   reset() {
     this.update(initialState);
+  }
+
+  resetFilters() {
+    this.update({...this._value, filters: {...initialState.filters}});
+  }
+
+  resetSorting() {
+    this.update({...this._value, sorting: {...initialState.sorting}});
   }
 
   updateFilterTags(tagIds: string[]) {
@@ -64,5 +107,9 @@ export class ArticlesUiStore extends Store<ArticlesUiState> {
 
   updateFieldValuesFilterType(fieldValuesFilterType: FilterType) {
     this.update({ ...this._value(), filters: {...this._value().filters, fieldValuesFilterType} });
+  }
+
+  updateSortingOrder(sortItems: SortItem[]) {
+    this.update({...this._value, sorting: { sortItems }});
   }
 }
