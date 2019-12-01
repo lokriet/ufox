@@ -14,9 +14,6 @@ const routes: Routes = [
 
 
 const routerOptions: ExtraOptions = {
-  useHash: false,
-  anchorScrolling: 'enabled',
-  onSameUrlNavigation: 'reload',
   preloadingStrategy: PreloadAllModules
 };
 

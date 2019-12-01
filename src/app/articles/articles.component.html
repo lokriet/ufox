@@ -13,6 +13,13 @@
     <div class="articles-view">
       <div class="side-view" [class.collapsed]="!sidePanelExpanded">
         <app-articles-filter-panel *ngIf="isSideViewSelected('Filters')"></app-articles-filter-panel>
+        <!-- <div class="outline">
+          <div class="outline-panel">
+            <div class="anchors-list" *ngFor="let article of filteredArticles">
+              <a class="anchor" [routerLink]="'/articles/'" [fragment]="article.id" >{{ article.name ? article.name : "&lt;name meee&gt;" }}</a>
+            </div>
+          </div>
+        </div> -->
         <app-articles-outline-panel *ngIf="isSideViewSelected('Outline')" [articles]="filteredArticles"></app-articles-outline-panel>
         
         <button 

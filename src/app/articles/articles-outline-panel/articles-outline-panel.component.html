@@ -1,6 +1,5 @@
 <div class="outline-panel">
   <div class="anchors-list" *ngFor="let article of articles">
-    <!-- <a class="anchor" [href]="'#' + article.id">{{ article.name ? article.name : "&lt;name meee&gt;" }}</a> -->
-    <a class="anchor" [routerLink]="['/articles/']" [fragment]="article.id" >{{ article.name ? article.name : "&lt;name meee&gt;" }}</a>
+    <div class="anchor" (click)="scrollToArticle(article.id)">{{ article.name ? article.name : "&lt;name meee&gt;" }}</div>
   </div>
 </div>

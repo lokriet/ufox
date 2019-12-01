@@ -14,4 +14,9 @@ export class ArticlesOutlinePanelComponent implements OnInit {
   ngOnInit() {
   }
 
+  scrollToArticle(articleId: string) {
+    document.getElementById(articleId).scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+    // }
+  }
+
 }

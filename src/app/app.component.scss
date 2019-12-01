@@ -1,27 +1,21 @@
 @import "../assets/scss/partials/variables";
 
-.main {
-  display: grid;
-  height: 100%;
-  width: 100%;
-  grid-template-rows: $header-height auto $footer-height;
-  grid-template-areas: "."
-                       "main"
-                       "footer"
-}
-
-main {
-  grid-area: main;
+.page {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   width: 100%;
-  margin: 0;
+  height: 100%;
 }
 
-footer {
-  grid-area: footer;
+.header {
+  height: $header-height;
 }
 
-.router-outlet {
-  width: 0;
+.scroll-container {
+  height: calc(100% - #{$header-height});
+  width: 100%;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
 }
