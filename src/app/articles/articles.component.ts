@@ -51,7 +51,11 @@ export class ArticlesComponent implements OnInit {
     this.loadingTags$ = this.articleTagQuery.selectLoading();
     this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
 
-    this.articleQuery.selectAll().subscribe(articles => this.allArticles = articles);
+    this.articleQuery.selectAll().subscribe(articles => {
+      this.allArticles = articles;
+      this.filteredArticles = this.applyFiltersAndSorting();
+    });
+
     this.articleUiQuery.select().subscribe(value => {
       this.filtersAndSorting = value;
       this.filteredArticles = this.applyFiltersAndSorting();
