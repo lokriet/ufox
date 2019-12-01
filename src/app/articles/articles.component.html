@@ -11,10 +11,38 @@
   
   <ng-template #loaded>
     <div class="articles-view">
-      <div class="side-view">
-        <app-articles-filter-panel [(expanded)]="filterPanelExpanded"></app-articles-filter-panel>
+      <div class="side-view" [class.collapsed]="!sidePanelExpanded">
+        <app-articles-filter-panel *ngIf="isSideViewSelected('Filters')"></app-articles-filter-panel>
+        <app-articles-outline-panel *ngIf="isSideViewSelected('Outline')" [articles]="filteredArticles"></app-articles-outline-panel>
+        
+        <button 
+            class="collapse-side-view-button"
+            *ngIf="sidePanelExpanded"
+            (click)="sidePanelExpanded = false">
+          <fa-icon [icon]="faCollapse"></fa-icon>
+        </button>
+        
+        <div class="side-view-selector">
+          <div class="side-view-selector-item">
+            <button 
+                class="side-view-button" 
+                [class.active]="isSideViewSelected('Filters')"
+                (click)="selectSideView('Filters')">
+              Filters<span class="has-changes-sign">{{ userFiltersNotEmpty ? '*' : '' }}</span>
+            </button>
+          </div>
+
+          <div class="side-view-selector-item">
+            <button 
+                class="side-view-button" 
+                [class.active]="isSideViewSelected('Outline')"
+                (click)="selectSideView('Outline')">
+              Outline
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="main-view" [class.filters-expanded]="filterPanelExpanded">
+      <div class="main-view" [class.filters-expanded]="sidePanelExpanded">
         <div class="articles">
           <div class="inputs-buttons-group">
             <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>

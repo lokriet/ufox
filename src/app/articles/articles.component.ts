@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 
 import { ArticleFieldNameQuery } from '../articles-setup/state/article-field-name.query';
@@ -10,12 +11,19 @@ import { ArticlesUiState, FilterType, SortItemType, SortOrder } from './state/ar
 import { Article } from './state/article.model';
 import { ArticleQuery } from './state/article.query';
 
+enum SideView {
+  Filters = 'Filters',
+  Outline = 'Outline'
+}
+
 @Component({
   selector: 'app-articles',
   templateUrl: './articles.component.html',
   styleUrls: ['./articles.component.scss']
 })
 export class ArticlesComponent implements OnInit {
+  faCollapse = faAngleDoubleLeft;
+
   loadingArticles$: Observable<boolean>;
   loadingFieldNames$: Observable<boolean>;
   loadingFieldValues$: Observable<boolean>;
@@ -26,7 +34,9 @@ export class ArticlesComponent implements OnInit {
   filteredArticles: Article[];
   filtersAndSorting: ArticlesUiState;
 
-  filterPanelExpanded = true;
+  sidePanelExpanded = true;
+  userFiltersNotEmpty = false;
+  selectedSideView = SideView.Filters;
 
   constructor(private articleQuery: ArticleQuery,
               private articleUiQuery: ArticlesUiQuery,
@@ -46,9 +56,25 @@ export class ArticlesComponent implements OnInit {
     this.articleUiQuery.select().subscribe(value => {
       this.filtersAndSorting = value;
       this.filteredArticles = this.applyFiltersAndSorting();
+      this.userFiltersNotEmpty = !this.filtersEmpty(value);
     });
   }
 
+  filtersEmpty(uiState: ArticlesUiState): boolean {
+    if (uiState.filters.tagIds && uiState.filters.tagIds.length > 0) {
+       return false;
+    }
+
+    if (uiState.filters.articleTypeIds && uiState.filters.articleTypeIds.length > 0) {
+      return false;
+    }
+
+    if (uiState.filters.fieldValues && uiState.filters.fieldValues.length > 0) {
+      return false;
+    }
+
+    return true;
+  }
 
   applyFiltersAndSorting(): Article[] {
     let result = this.allArticles;
@@ -217,5 +243,19 @@ export class ArticlesComponent implements OnInit {
     }
 
     return additionalFields;
+  }
+
+  isSideViewSelected(sideView: SideView) {
+    return this.selectedSideView === sideView;
+  }
+
+  selectSideView(sideView: SideView) {
+    if (!this.sidePanelExpanded) {
+      this.sidePanelExpanded = true;
+    }
+
+    if (this.selectedSideView !== sideView) {
+      this.selectedSideView = sideView;
+    }
   }
 }

@@ -28,9 +28,6 @@ export class ArticlesFilterPanelComponent implements OnInit {
   faRight = faChevronRight;
   faCheck = faCheck;
 
-  @Input() expanded = false;
-  @Output() expandedChange = new EventEmitter<boolean>();
-
   filterTags: ArticleTag[] = [];
   tagsFilterType: FilterType;
 
@@ -77,7 +74,7 @@ export class ArticlesFilterPanelComponent implements OnInit {
 
 
       this.sorting = [];
-      for(const sortItem of value.sorting.sortItems) {
+      for (const sortItem of value.sorting.sortItems) {
         this.sorting.push({...sortItem});
       }
     });
@@ -110,11 +107,6 @@ export class ArticlesFilterPanelComponent implements OnInit {
       this.filterTags.push(tag);
       this.articlesUiStore.updateFilterTags(this.filterTags.map(filterTag => filterTag.id));
     }
-  }
-
-  onSwitchExpandedState() {
-    this.expanded = !this.expanded;
-    this.expandedChange.emit(this.expanded);
   }
 
   onTagsFilterTypeChanged(tagsFilterType: FilterType) {

@@ -1,11 +1,5 @@
-<div class="filters-panel" [class.collapsed]="!expanded">
-  <div class="collapsed-view" *ngIf="!expanded">
-    <div class="section-header">
-      F<span *ngIf="!filtersEmpty()">*</span>
-    </div>
-  </div>
-
-  <div class="expanded-view" *ngIf="expanded">
+<div class="filters-panel">
+  <div class="expanded-view">
     <div class="section-header">
       Filters<span *ngIf="!filtersEmpty()">*</span>
     </div>
