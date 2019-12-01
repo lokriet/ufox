@@ -64,3 +64,18 @@ figure {
 .highlight {
   background-color: yellow;
 }
+
+// custom scrollbar
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: $background-color;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: $main-color;
+}

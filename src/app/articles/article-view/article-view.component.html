@@ -18,7 +18,11 @@
          *ngFor="let additionalField of getAdditionalFields()">
       <span class="article-field-order-no">{{ additionalField.name.orderNo + 1 }} </span>
       <span class="article-field-name">{{ additionalField.name.name }}: </span>
-      <span class="article-field-value">{{ additionalField.value ? additionalField.value.value : '' }}</span>
+      <span class="article-field-value"
+            [innerHtml]=" additionalField.value ? (additionalField.value.value | highlight: highlightString) : ''"
+      >
+      <!-- {{ additionalField.value ? additionalField.value.value | highlight: highlightString) : '' }} -->
+    </span>
     </div>
     
     <div class="article-text" [innerHTML]="article.text | safeHtml">

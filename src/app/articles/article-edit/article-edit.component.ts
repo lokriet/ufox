@@ -71,15 +71,12 @@ export class ArticleEditComponent implements OnInit {
               private articleService: ArticleService,
               fireStorage: AngularFireStorage,
               imageService: ImageService) {
-    console.log('creating article edit component');
     ArticleEditComponent.staticFiretorage = fireStorage;
     ArticleEditComponent.staticImageService = imageService;
   }
 
   imagePluginFactory(editor) {
     editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-      console.log('creating new upload adapter');
-      console.log(ArticleEditComponent.staticFiretorage);
       return new FirebaseImageUploadAdapter(loader, ArticleEditComponent.staticFiretorage, ArticleEditComponent.staticImageService);
     };
   }
