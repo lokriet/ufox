@@ -15,6 +15,7 @@ import { ArticlesListComponent } from './articles-list/articles-list.component';
 import { ArticlesOutlinePanelComponent } from './articles-outline-panel/articles-outline-panel.component';
 import { ArticlesRoutingModule } from './articles-routing.module';
 import { ArticlesComponent } from './articles.component';
+import { HighlightPipe } from './article-view/highlight.pipe';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { ArticlesComponent } from './articles.component';
     ArticlesComponent,
     ArticlesListComponent,
     ArticlesFilterPanelComponent,
-    ArticlesOutlinePanelComponent
+    ArticlesOutlinePanelComponent,
+    HighlightPipe
   ],
   imports: [
     CommonModule,

@@ -1,7 +1,10 @@
 <div class="article">
 
   <div class="clearfix">
-    <h1 class="article-name"  [attr.id]='article.id'>{{ article.name?.length ? article.name : "&lt;name meee&gt;"}}</h1>
+    <h1 class="article-name"  
+        [attr.id]='article.id' 
+        [innerHtml]="article.name?.length ? (article.name | highlight: highlightString) : '&lt; name meee &gt;'">
+    </h1>
   
     <div 
         class="picture" 

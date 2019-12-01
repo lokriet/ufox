@@ -23,6 +23,7 @@ export interface ArticleFilters {
   articleTypeIds: string[];
   fieldValues: FieldValueFilter[];
   fieldValuesFilterType: FilterType;
+  fastSearch: string;
 }
 
 export interface ArticleSorting {
@@ -52,7 +53,8 @@ const initialState = {
     tagsFilterType: FilterType.Any,
     articleTypeIds: [],
     fieldValues: [],
-    fieldValuesFilterType: FilterType.Any
+    fieldValuesFilterType: FilterType.Any,
+    fastSearch: null
   },
   sorting: { sortItems: [
     {
@@ -107,6 +109,10 @@ export class ArticlesUiStore extends Store<ArticlesUiState> {
 
   updateFieldValuesFilterType(fieldValuesFilterType: FilterType) {
     this.update({ ...this._value(), filters: {...this._value().filters, fieldValuesFilterType} });
+  }
+
+  updateFastSearch(fastSearch: string) {
+    this.update({ ...this._value(), filters: {...this._value().filters, fastSearch} });
   }
 
   updateSortingOrder(sortItems: SortItem[]) {

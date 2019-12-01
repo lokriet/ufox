@@ -1,5 +1,5 @@
 <div class="outline-panel">
-  <div class="anchors-list" *ngFor="let article of articles">
-    <div class="anchor" (click)="scrollToArticle(article.id)">{{ article.name ? article.name : "&lt;name meee&gt;" }}</div>
+  <div class="anchors-list">
+    <div class="anchor" (click)="scrollToArticle(article.id)" *ngFor="let article of articles">{{ article.name ? article.name : "&lt;name meee&gt;" }}</div>
   </div>
 </div>

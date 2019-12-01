@@ -15,7 +15,7 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  padding: 0 1rem $footer-height 1rem;
+  padding: 0 1rem calc(#{$footer-height} + 2rem) 1rem;
 }
 
 label {

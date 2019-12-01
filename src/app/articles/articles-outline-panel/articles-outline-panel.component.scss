@@ -1,5 +1,6 @@
 
 @import '../../../assets/scss/partials/colors';
+@import '../../../assets/scss/partials/variables';
 
 .outline-panel {
   overflow-y: auto;
@@ -11,6 +12,7 @@
 .anchors-list {
   display: flex;
   flex-direction: column;
+  padding-bottom: calc(#{$footer-height} + 2rem);
 }
 
 .anchor {

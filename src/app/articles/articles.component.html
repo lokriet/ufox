@@ -13,15 +13,8 @@
     <div class="articles-view">
       <div class="side-view" [class.collapsed]="!sidePanelExpanded">
         <app-articles-filter-panel *ngIf="isSideViewSelected('Filters')"></app-articles-filter-panel>
-        <!-- <div class="outline">
-          <div class="outline-panel">
-            <div class="anchors-list" *ngFor="let article of filteredArticles">
-              <a class="anchor" [routerLink]="'/articles/'" [fragment]="article.id" >{{ article.name ? article.name : "&lt;name meee&gt;" }}</a>
-            </div>
-          </div>
-        </div> -->
         <app-articles-outline-panel *ngIf="isSideViewSelected('Outline')" [articles]="filteredArticles"></app-articles-outline-panel>
-        
+
         <button 
             class="collapse-side-view-button"
             *ngIf="sidePanelExpanded"
@@ -49,11 +42,15 @@
           </div>
         </div>
       </div>
+
+
       <div class="main-view" [class.filters-expanded]="sidePanelExpanded">
         <div class="articles">
           <div class="inputs-buttons-group">
             <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>
             <a class="button" href="https://www.youtube.com/results?search_query=foxes+are+cute" target="_blank">Alisa I'm bored!</a>
+            <input type="text" [(ngModel)]="fastSearchString" (keydown)="onFastSearchInput($event)">
+            <button type="button" class="button" (click)="onFastSearch()">Search fast!!!</button>
           </div>
           <app-articles-list [articles]="filteredArticles"></app-articles-list>
         </div>

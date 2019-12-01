@@ -1,16 +1,18 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Article } from '../state/article.model';
-import { ArticleFieldValue } from '../state/article-field-value.model';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ArticleFieldName } from 'src/app/articles-setup/state/article-field-name.model';
 import { ArticleFieldNameQuery } from 'src/app/articles-setup/state/article-field-name.query';
-import { ArticleFieldValueQuery } from '../state/article-field-value.query';
-import { Observable } from 'rxjs';
-import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
-import { ArticleFieldValueService } from '../state/article-field-value.service';
-import { ArticleService } from '../state/article.service';
+import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
+
+import { ArticleFieldValue } from '../state/article-field-value.model';
+import { ArticleFieldValueQuery } from '../state/article-field-value.query';
+import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticlesUiStore } from '../state/article-ui.store';
+import { Article } from '../state/article.model';
+import { ArticleService } from '../state/article.service';
+import { ArticlesUiQuery } from '../state/article-ui.query';
 
 interface AdditionalField {
   name: ArticleFieldName;
@@ -28,18 +30,25 @@ export class ArticleViewComponent implements OnInit {
   additionalFields: AdditionalField[];
   articleTags: Observable<ArticleTag[]>;
 
+  highlightString: string;
+
   constructor(private fieldNamesQuery: ArticleFieldNameQuery,
               private fieldValuesQuery: ArticleFieldValueQuery,
               private fieldValueService: ArticleFieldValueService,
               private tagsQuery: ArticleTagQuery,
               private articleTypeQuery: ArticleTypeQuery,
               private articleService: ArticleService,
-              private articlesUiStore: ArticlesUiStore) {
+              private articlesUiStore: ArticlesUiStore,
+              private articlesUiQuery: ArticlesUiQuery) {
   }
 
   ngOnInit() {
     this.additionalFields = null;
     this.articleTags = this.tagsQuery.selectAll({filterBy: tag => this.article.tagIds.includes(tag.id)});
+
+    this.articlesUiQuery.select().subscribe(value => {
+      this.highlightString = value.filters.fastSearch;
+    });
   }
 
 

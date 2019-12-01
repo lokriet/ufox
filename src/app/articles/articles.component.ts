@@ -7,7 +7,7 @@ import { ArticleTagQuery } from '../articles-setup/state/article-tag.query';
 import { ArticleTypeQuery } from '../articles-setup/state/article-type.query';
 import { ArticleFieldValueQuery } from './state/article-field-value.query';
 import { ArticlesUiQuery } from './state/article-ui.query';
-import { ArticlesUiState, FilterType, SortItemType, SortOrder } from './state/article-ui.store';
+import { ArticlesUiState, FilterType, SortItemType, SortOrder, ArticlesUiStore } from './state/article-ui.store';
 import { Article } from './state/article.model';
 import { ArticleQuery } from './state/article.query';
 
@@ -38,8 +38,13 @@ export class ArticlesComponent implements OnInit {
   userFiltersNotEmpty = false;
   selectedSideView = SideView.Filters;
 
+  fastSearchString: string = null;
+
+  // fastSearchString = null;
+
   constructor(private articleQuery: ArticleQuery,
               private articleUiQuery: ArticlesUiQuery,
+              private articlesUiStore: ArticlesUiStore,
               private articleFieldNameQuery: ArticleFieldNameQuery,
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleTagQuery: ArticleTagQuery,
@@ -57,6 +62,8 @@ export class ArticlesComponent implements OnInit {
       this.filtersAndSorting = value;
       this.filteredArticles = this.applyFiltersAndSorting();
       this.userFiltersNotEmpty = !this.filtersEmpty(value);
+
+      this.fastSearchString = value.filters.fastSearch;
     });
   }
 
@@ -82,6 +89,7 @@ export class ArticlesComponent implements OnInit {
       result = this.filterByTags(this.allArticles);
       result = this.filterByArticleTypes(result);
       result = this.filterFieldValues(result);
+      result = this.filterFastSearch(result);
       result = this.sort(result);
     }
     return result;
@@ -154,6 +162,51 @@ export class ArticlesComponent implements OnInit {
     });
 
     return result;
+  }
+
+  filterFastSearch(articles: Article[]): Article[] {
+    const fastSearch = this.filtersAndSorting.filters.fastSearch;
+
+    if (!fastSearch) {
+      return articles;
+    }
+
+    return articles.filter(article => {
+      if (article.name && article.name.toLowerCase().includes(fastSearch.toLowerCase())) {
+        return true;
+      }
+
+      if (article.additionalFieldValueIds && article.additionalFieldValueIds.length > 0) {
+        const fieldValues = this.articleFieldValueQuery.getAll({
+          filterBy: fieldValue => article.additionalFieldValueIds.includes(fieldValue.id)
+        });
+
+        if (fieldValues.some(fieldValue => fieldValue.value.toLowerCase().includes(fastSearch.toLowerCase()))) {
+          return true;
+        }
+      }
+
+      // if (article.text.toLowerCase().includes(fastSearch.toLowerCase())) {
+      //   return true;
+      // }
+
+      return false;
+    });
+  }
+
+  onFastSearch() {
+    if (!this.fastSearchString || this.fastSearchString.length === 0) {
+      this.articlesUiStore.updateFastSearch(null);
+    } else {
+      this.articlesUiStore.updateFastSearch(this.fastSearchString);
+    }
+  }
+
+  onFastSearchInput(event: KeyboardEvent) {
+    if (event.keyCode === 13) { // enter
+      event.stopPropagation(); // don't submit the form
+      this.onFastSearch();
+    }
   }
 
   sort(articles: Article[]): Article[] {
