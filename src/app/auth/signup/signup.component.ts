@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../state/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { MessageService } from 'src/app/messages/state/message.service';
 
 @Component({
   selector: 'app-signup',
@@ -15,7 +16,8 @@ export class SignupComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
   constructor(private authService: AuthService,
-              private router: Router) { }
+              private router: Router,
+              private messageService: MessageService) { }
 
   ngOnInit() {
     this.sub = this.authService.sync().subscribe();
@@ -26,6 +28,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       .catch(
       (errorMessage: string) => {
         console.log(errorMessage);
+        this.messageService.addError('Failed to sign up!');
       });
 
     this.router.navigate(['/']);

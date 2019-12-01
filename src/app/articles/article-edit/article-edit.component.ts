@@ -4,7 +4,6 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { guid } from '@datorama/akita';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { ArticleFieldName } from 'src/app/articles-setup/state/article-field-name.model';
 import { ArticleFieldNameQuery } from 'src/app/articles-setup/state/article-field-name.query';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
@@ -19,7 +18,7 @@ import { ArticleFieldValueService } from '../state/article-field-value.service';
 import { ArticleQuery } from '../state/article.query';
 import { ArticleService } from '../state/article.service';
 import { FirebaseImageUploadAdapter } from './image-upload.adapter';
-
+import { MessageService } from 'src/app/messages/state/message.service';
 
 @Component({
   selector: 'app-article-edit',
@@ -50,6 +49,8 @@ export class ArticleEditComponent implements OnInit {
   selectedArticleType: ArticleType;
   additionalFieldNames: ArticleFieldName[];
 
+  deletedFieldValueIds: string[];
+
   addedTags: ArticleTag[];
   allTags$: Observable<ArticleTag[]>;
   showTagsEditView = false;
@@ -57,8 +58,6 @@ export class ArticleEditComponent implements OnInit {
   showingPictureInput = false;
 
   articleForm: FormGroup;
-
-
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -69,6 +68,7 @@ export class ArticleEditComponent implements OnInit {
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleQuery: ArticleQuery,
               private articleService: ArticleService,
+              private messageService: MessageService,
               fireStorage: AngularFireStorage,
               imageService: ImageService) {
     ArticleEditComponent.staticFiretorage = fireStorage;
@@ -94,7 +94,6 @@ export class ArticleEditComponent implements OnInit {
 
     this.allTags$ = this.articleTagQuery.selectAll({sortBy: 'name'});
 
-
     this.route.params.subscribe(
       (params: Params) => {
         this.editedArticleId = params.id;
@@ -116,6 +115,8 @@ export class ArticleEditComponent implements OnInit {
     const additionalArticleFields = new FormArray([]);
 
     if (this.editMode) {
+      this. deletedFieldValueIds = [];
+
       const editedArticle = this.articleQuery.getEntity(this.editedArticleId);
       this.addedTags = this.articleTagQuery.getAll({
         filterBy: entity => editedArticle.tagIds.includes(entity.id)
@@ -155,7 +156,7 @@ export class ArticleEditComponent implements OnInit {
       id: new FormControl(id),
       name: new FormControl(name),
       imageUrl: new FormControl(imageUrl),
-      articleType: new FormControl({value: articleTypeId, disabled: this.editMode}),
+      articleType: new FormControl(articleTypeId/*{value: articleTypeId, disabled: this.editMode}*/),
       articleText: new FormControl(articleText),
       additionalFields: additionalArticleFields
     });
@@ -168,6 +169,18 @@ export class ArticleEditComponent implements OnInit {
       return;
     }
 
+    if (this.editMode) {
+      const editedArticle = this.articleQuery.getEntity(this.editedArticleId);
+      const fieldsToDelete = editedArticle.additionalFieldValueIds;
+      if (fieldsToDelete) {
+        for (const fieldValue of fieldsToDelete) {
+          if (!this.deletedFieldValueIds.includes(fieldValue)) {
+            this.deletedFieldValueIds.push(fieldValue);
+          }
+        }
+      }
+    }
+
     this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
     if (this.selectedArticleType != null) {
       this.additionalFieldNames = this.articleFieldNameQuery.getAll({
@@ -178,7 +191,7 @@ export class ArticleEditComponent implements OnInit {
       (this.articleForm.get('additionalFields') as FormArray).clear();
       for (const additionalFieldName of this.additionalFieldNames ) {
         const additionalFieldGroup = new FormGroup({
-          id: new FormControl(guid()),
+          id: new FormControl(null),
           fieldNameId: new FormControl(additionalFieldName.id),
           value: new FormControl(null)
         });
@@ -215,7 +228,6 @@ export class ArticleEditComponent implements OnInit {
 
   onDeleteArticleTag(index: number) {
     this.addedTags.splice(index, 1);
-    console.log('tag deleted');
   }
 
   onTagDeleted(deletedTagId: string) {
@@ -228,7 +240,7 @@ export class ArticleEditComponent implements OnInit {
     this.showingPictureInput = !this.showingPictureInput;
   }
 
-  onSubmit() {
+  onSubmit(autoSave: boolean) {
     const updatedFieldValues = [];
     const addedFieldValues = [];
     const additionalFieldValueIds = [];
@@ -248,6 +260,7 @@ export class ArticleEditComponent implements OnInit {
             addedFieldValues.push(additionalFieldValue);
           }
         } else {
+          additionalFieldValue.id = guid();
           addedFieldValues.push(additionalFieldValue);
         }
         additionalFieldValueIds.push(additionalFieldValue.id);
@@ -272,12 +285,24 @@ export class ArticleEditComponent implements OnInit {
         this.articleFieldValueService.update(fieldValue);
       }
       this.articleFieldValueService.add(addedFieldValues);
+
+      this.articleFieldValueService.remove(this.deletedFieldValueIds);
     } else {
       this.articleService.add(article);
       this.articleFieldValueService.add(addedFieldValues);
     }
 
-    this.router.navigate(['articles']);
+    if (!autoSave) {
+      this.messageService.addInfo(`Saved ${article.name ? article.name : 'noname'} article`);
+      this.router.navigate(['articles']);
+    } else {
+      this.messageService.addInfo(`Autosaved ${article.name ? article.name : 'noname'} article`);
+      if (!this.editMode) {
+        this.editMode = true;
+        this.editedArticleId = this.articleForm.value.id;
+        this.initForm();
+      }
+    }
   }
 
 }

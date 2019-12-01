@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { faCheck, faChevronRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
@@ -8,7 +8,7 @@ import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
 
 import { ArticlesUiQuery } from '../state/article-ui.query';
-import { ArticlesUiStore, FieldValueFilter, FilterType, SortItem, SortItemType, SortOrder } from '../state/article-ui.store';
+import { ArticlesUiStore, FieldValueFilter, FilterType, SortItem, SortItemType, SortOrder, FilterPanelState } from '../state/article-ui.store';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -32,21 +32,23 @@ export class ArticlesFilterPanelComponent implements OnInit {
   tagsFilterType: FilterType;
 
   allTags$: Observable<ArticleTag[]>;
-  tagsFiltersExpanded = true;
+  // tagsFiltersExpanded = true;
 
   filterArticleTypeIds: string[] = [];
   allArticleTypes$: Observable<ArticleType[]>;
-  typeFiltersExpanded = true;
+  // typeFiltersExpanded = true;
 
   fieldValuesFilterType: FilterType;
   fieldValueFilters: FieldValueFilter[];
   showFieldValuesFilterError = false;
-  fieldFiltersExpanded = true;
+  // fieldFiltersExpanded = true;
 
   sorting: SortItem[];
   showFieldValueSortingError = false;
-  sortingOrderExpanded = true;
-  sortingFieldsExpanded = false;
+  // sortingOrderExpanded = true;
+  // sortingFieldsExpanded = false;
+
+  panelState: FilterPanelState;
 
   constructor(private tagsQuery: ArticleTagQuery,
               private articlesUiQuery: ArticlesUiQuery,
@@ -77,6 +79,8 @@ export class ArticlesFilterPanelComponent implements OnInit {
       for (const sortItem of value.sorting.sortItems) {
         this.sorting.push({...sortItem});
       }
+
+      this.panelState = {...value.filterPanelState};
     });
   }
 
@@ -225,4 +229,28 @@ export class ArticlesFilterPanelComponent implements OnInit {
     this.showFieldValuesFilterError = false;
   }
 
+  switchTypeFiltersExpanded() {
+    this.panelState.typeFiltersExpanded = !this.panelState.typeFiltersExpanded;
+    this.articlesUiStore.updateFilterPanelState(this.panelState);
+  }
+
+  switchTagFiltersExpanded() {
+    this.panelState.tagsFiltersExpanded = !this.panelState.tagsFiltersExpanded;
+    this.articlesUiStore.updateFilterPanelState(this.panelState);
+  }
+
+  switchFieldFiltersExpanded() {
+    this.panelState.fieldFiltersExpanded = !this.panelState.fieldFiltersExpanded;
+    this.articlesUiStore.updateFilterPanelState(this.panelState);
+  }
+
+  switchSortingOrderExpanded() {
+    this.panelState.sortingOrderExpanded = !this.panelState.sortingOrderExpanded;
+    this.articlesUiStore.updateFilterPanelState(this.panelState);
+  }
+
+  switchSortingFieldsExpanded() {
+    this.panelState.sortingFieldsExpanded = !this.panelState.sortingFieldsExpanded;
+    this.articlesUiStore.updateFilterPanelState(this.panelState);
+  }
 }

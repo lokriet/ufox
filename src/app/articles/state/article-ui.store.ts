@@ -5,6 +5,23 @@ import { Store, StoreConfig } from '@datorama/akita';
 export interface ArticlesUiState {
   filters: ArticleFilters;
   sorting: ArticleSorting;
+  filterPanelState: FilterPanelState;
+}
+
+
+export enum SideView {
+  Filters = 'Filters',
+  Outline = 'Outline'
+}
+
+export interface FilterPanelState {
+  sidePanelExpanded: boolean;
+  tagsFiltersExpanded: boolean;
+  typeFiltersExpanded: boolean;
+  fieldFiltersExpanded: boolean;
+  sortingOrderExpanded: boolean;
+  sortingFieldsExpanded: boolean;
+  selectedSideView: SideView;
 }
 
 export enum FilterType {
@@ -68,7 +85,16 @@ const initialState = {
       sortItemName: null,
       sortOrder: SortOrder.Asc
     }
-  ]}
+  ]},
+  filterPanelState: {
+    sidePanelExpanded: true,
+    tagsFiltersExpanded: true,
+    typeFiltersExpanded: true,
+    fieldFiltersExpanded: true,
+    sortingOrderExpanded: true,
+    sortingFieldsExpanded: true,
+    selectedSideView: SideView.Filters
+  }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -117,5 +143,9 @@ export class ArticlesUiStore extends Store<ArticlesUiState> {
 
   updateSortingOrder(sortItems: SortItem[]) {
     this.update({...this._value, sorting: { sortItems }});
+  }
+
+  updateFilterPanelState(filterPanelState: FilterPanelState) {
+    this.update({...this._value, filterPanelState });
   }
 }

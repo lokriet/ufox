@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../state/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { MessageService } from 'src/app/messages/state/message.service';
 
 @Component({
   selector: 'app-signin',
@@ -15,7 +16,8 @@ export class SigninComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
   constructor(private authService: AuthService,
-              private router: Router) { }
+              private router: Router,
+              private messageService: MessageService) { }
 
   ngOnInit() {
     this.sub = this.authService.sync().subscribe();
@@ -37,6 +39,9 @@ export class SigninComponent implements OnInit, OnDestroy {
           errorMessage = 'Unknown error';
       }
       // idk?
+      if (!errorMessage) {
+        this.messageService.addError(errorMessage);
+      }
     });
 
     this.router.navigate(['/']);

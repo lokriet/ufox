@@ -7,14 +7,14 @@
       <button 
             type="button" 
             class="expand-button" 
-            [class.expanded]="typeFiltersExpanded"
-            (click)="typeFiltersExpanded = !typeFiltersExpanded">
+            [class.expanded]="panelState.typeFiltersExpanded"
+            (click)="switchTypeFiltersExpanded()">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
       <div class="subsection-header-text">Article types</div>
     </div>
 
-    <div class="subsection" [@collapse]="typeFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+    <div class="subsection" [@collapse]="panelState.typeFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
       <div class="article-types-list">
         <div class="clickable-label article-type" *ngFor="let articleType of (allArticleTypes$ | async)" (click)="onChangeArticleTypeFilter(articleType.id)">
           <input type="checkbox" [ngModel]="isInFilterList(articleType.id)">
@@ -30,13 +30,13 @@
       <button 
             type="button" 
             class="expand-button" 
-            [class.expanded]="fieldFiltersExpanded"
-            (click)="fieldFiltersExpanded = !fieldFiltersExpanded">
+            [class.expanded]="panelState.fieldFiltersExpanded"
+            (click)="switchFieldFiltersExpanded()">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
       <div class="subsection-header-text">Field values</div>
     </div>
-    <div class="subsection" [@collapse]="fieldFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+    <div class="subsection" [@collapse]="panelState.fieldFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
       <div class="inputs-buttons-group radio-buttons" *ngIf="fieldValueFilters && fieldValueFilters.length > 1">
         <label class="clickable-label">
           <input 
@@ -92,14 +92,14 @@
       <button 
             type="button" 
             class="expand-button" 
-            [class.expanded]="tagsFiltersExpanded"
-            (click)="tagsFiltersExpanded = !tagsFiltersExpanded">
+            [class.expanded]="panelState.tagsFiltersExpanded"
+            (click)="switchTagFiltersExpanded()">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
       <div class="subsection-header-text">Tags</div>
     </div>
 
-    <div class="subsection" [@collapse]="tagsFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+    <div class="subsection" [@collapse]="panelState.tagsFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
       <div class="inputs-buttons-group">
         <select #tagDropdown>
           <option *ngFor="let tag of (allTags$ | async)" [value]="tag.id">{{tag.name}}</option>
@@ -159,15 +159,15 @@
       <button 
             type="button" 
             class="expand-button" 
-            [class.expanded]="sortingOrderExpanded"
-            (click)="sortingOrderExpanded = !sortingOrderExpanded">
+            [class.expanded]="panelState.sortingOrderExpanded"
+            (click)="switchSortingOrderExpanded()">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
       <div class="subsection-header-text">Current sorting order</div>
     </div>
     <div 
           class="subsection" 
-          [@collapse]="sortingOrderExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'" 
+          [@collapse]="panelState.sortingOrderExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'" 
           cdkDropList 
           (cdkDropListDropped)="onSortItemDrop($event)">
       <div 
@@ -184,7 +184,6 @@
           >
             {{ sortItem.sortOrder === 0 ? 'a..Z' : 'Z..a'}}
           </button>
-          <!-- <span class="sort-order">{{ sortItem.sortOrder === 0 ? 'a..Z' : 'Z..a'}}</span> -->
         </div>
         <button class="button button-delete" type="button" (click)="onRemoveSortingOrderItem(i)">
           <fa-icon [icon]="faTimes"></fa-icon>
@@ -196,14 +195,14 @@
       <button 
             type="button" 
             class="expand-button" 
-            [class.expanded]="sortingFieldsExpanded"
-            (click)="sortingFieldsExpanded = !sortingFieldsExpanded">
+            [class.expanded]="panelState.sortingFieldsExpanded"
+            (click)="switchSortingFieldsExpanded()">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
       <div class="subsection-header-text">Add sorting by:</div>
     </div>
     
-    <div class="subsection sorting-options-subsection" [@collapse]="sortingFieldsExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+    <div class="subsection sorting-options-subsection" [@collapse]="panelState.sortingFieldsExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
       <ul class="sorting-options">
         <li>
           <div class="sorting-option">

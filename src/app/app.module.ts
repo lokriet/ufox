@@ -22,6 +22,8 @@ import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { SharedModule } from './shared/shared.module';
 import { UploadTestComponent } from './upload-test/upload-test.component';
+import { MessagesComponent } from './messages/messages.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -31,7 +33,8 @@ import { UploadTestComponent } from './upload-test/upload-test.component';
     PageNotFoundComponent,
     HeaderComponent,
     FooterComponent,
-    UploadTestComponent
+    UploadTestComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +46,7 @@ import { UploadTestComponent } from './upload-test/upload-test.component';
     ArticlesSetupModule,
     AuthModule,
     AppRoutingModule,
+    FontAwesomeModule,
 
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features

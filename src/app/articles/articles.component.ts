@@ -7,14 +7,10 @@ import { ArticleTagQuery } from '../articles-setup/state/article-tag.query';
 import { ArticleTypeQuery } from '../articles-setup/state/article-type.query';
 import { ArticleFieldValueQuery } from './state/article-field-value.query';
 import { ArticlesUiQuery } from './state/article-ui.query';
-import { ArticlesUiState, FilterType, SortItemType, SortOrder, ArticlesUiStore } from './state/article-ui.store';
+import { ArticlesUiState, ArticlesUiStore, FilterType, SideView, SortItemType, SortOrder, FilterPanelState } from './state/article-ui.store';
 import { Article } from './state/article.model';
 import { ArticleQuery } from './state/article.query';
 
-enum SideView {
-  Filters = 'Filters',
-  Outline = 'Outline'
-}
 
 @Component({
   selector: 'app-articles',
@@ -33,10 +29,8 @@ export class ArticlesComponent implements OnInit {
   allArticles: Article[];
   filteredArticles: Article[];
   filtersAndSorting: ArticlesUiState;
-
-  sidePanelExpanded = true;
   userFiltersNotEmpty = false;
-  selectedSideView = SideView.Filters;
+  sidePanelState: FilterPanelState;
 
   fastSearchString: string = null;
 
@@ -64,6 +58,8 @@ export class ArticlesComponent implements OnInit {
       this.userFiltersNotEmpty = !this.filtersEmpty(value);
 
       this.fastSearchString = value.filters.fastSearch;
+
+      this.sidePanelState = {...value.filterPanelState};
     });
   }
 
@@ -299,16 +295,23 @@ export class ArticlesComponent implements OnInit {
   }
 
   isSideViewSelected(sideView: SideView) {
-    return this.selectedSideView === sideView;
+    return this.sidePanelState.selectedSideView === sideView;
   }
 
   selectSideView(sideView: SideView) {
-    if (!this.sidePanelExpanded) {
-      this.sidePanelExpanded = true;
+    if (!this.sidePanelState.sidePanelExpanded) {
+      this.sidePanelState.sidePanelExpanded = true;
     }
 
-    if (this.selectedSideView !== sideView) {
-      this.selectedSideView = sideView;
+    if (this.sidePanelState.selectedSideView !== sideView) {
+      this.sidePanelState.selectedSideView = sideView;
     }
+
+    this.articlesUiStore.updateFilterPanelState(this.sidePanelState);
+  }
+
+  collapseSidePanel() {
+    this.sidePanelState.sidePanelExpanded = false;
+    this.articlesUiStore.updateFilterPanelState(this.sidePanelState);
   }
 }

@@ -11,14 +11,14 @@
   
   <ng-template #loaded>
     <div class="articles-view">
-      <div class="side-view" [class.collapsed]="!sidePanelExpanded">
+      <div class="side-view" [class.collapsed]="!sidePanelState.sidePanelExpanded">
         <app-articles-filter-panel *ngIf="isSideViewSelected('Filters')"></app-articles-filter-panel>
         <app-articles-outline-panel *ngIf="isSideViewSelected('Outline')" [articles]="filteredArticles"></app-articles-outline-panel>
 
         <button 
             class="collapse-side-view-button"
-            *ngIf="sidePanelExpanded"
-            (click)="sidePanelExpanded = false">
+            *ngIf="sidePanelState.sidePanelExpanded"
+            (click)="collapseSidePanel()">
           <fa-icon [icon]="faCollapse"></fa-icon>
         </button>
         
@@ -44,7 +44,7 @@
       </div>
 
 
-      <div class="main-view" [class.filters-expanded]="sidePanelExpanded">
+      <div class="main-view" [class.filters-expanded]="sidePanelState.sidePanelExpanded">
         <div class="articles">
           <div class="inputs-buttons-group">
             <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>
