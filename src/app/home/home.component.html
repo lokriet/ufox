@@ -1,3 +1,18 @@
-<p>Hi boyfriend! ^^~</p>
-<p><a href="https://www.postermywall.com/index.php">Poster maker</a></p>
-<p><a href="http://www.fantasynamegenerators.com/">Name generator</a></p>
+
+<div *ngIf="!loggedIn(); else loggedin" class="home-container">
+  <h3>Why don't you log in or create a user?</h3>
+  <div class="inputs-buttons-group">
+    <button type="button" class="button" [routerLink]="'/signin'">Log In</button>
+    <button type="button" class="button" [routerLink]="'/signup'">Register</button>
+  </div>
+</div>
+
+<ng-template #loggedin>
+  <p>Hi boyfriend! ^^~</p>
+  <p>To see all the goodies there's 'Articles' button on the top!</p>
+  <p>Useful links:</p>
+  <ul>
+    <li><a href="https://www.postermywall.com/index.php">Poster maker</a></li>
+    <li><a href="http://www.fantasynamegenerators.com/">Name generator</a></li>
+  </ul>
+</ng-template>

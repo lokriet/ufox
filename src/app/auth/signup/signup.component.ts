@@ -25,13 +25,14 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   onSignUp() {
     this.authService.signup(this.email, this.password)
+      .then( value => {
+        this.router.navigate(['/']);
+      })
       .catch(
       (errorMessage: string) => {
         console.log(errorMessage);
-        this.messageService.addError('Failed to sign up!');
+        this.messageService.addError('Failed to create a user!');
       });
-
-    this.router.navigate(['/']);
   }
 
   ngOnDestroy(): void {

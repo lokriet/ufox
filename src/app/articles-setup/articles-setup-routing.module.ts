@@ -6,33 +6,34 @@ import { ArticleTypeGuard } from './state/article-type.guard';
 import { ArticleTagGuard } from './state/article-tag.guard';
 import { ArticleFieldNameGuard } from './state/article-field-name.guard';
 import { ArticleTypeSortingComponent } from './article-type-sorting/article-type-sorting.component';
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Route[] = [
   { 
     path: 'articles-setup',
     component: ArticlesSetupComponent,
-    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard],
+    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard, AuthGuard],
     canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard]
   },
 
   {
     path: 'articles-setup/new',
     component: ArticleTypeEditComponent,
-    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard],
+    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard, AuthGuard],
     canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard]
   },
 
   {
     path: 'articles-setup/edit/:id',
     component: ArticleTypeEditComponent,
-    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard],
+    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard, AuthGuard],
     canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard]
   },
 
   {
     path: 'articles-setup/sorting',
     component: ArticleTypeSortingComponent,
-    canActivate: [ArticleTypeGuard],
+    canActivate: [ArticleTypeGuard, AuthGuard],
     canDeactivate: [ArticleTypeGuard]
   },
 ];

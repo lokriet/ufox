@@ -24,7 +24,11 @@ export class SigninComponent implements OnInit, OnDestroy {
   }
 
   onSignIn() {
-    this.authService.signin(this.email, this.password).catch(error => {
+    this.authService.signin(this.email, this.password)
+    .then(value => {
+      this.router.navigate(['/']);
+    })
+    .catch(error => {
       let errorMessage: string;
 
       switch (error.code) {
@@ -39,12 +43,10 @@ export class SigninComponent implements OnInit, OnDestroy {
           errorMessage = 'Unknown error';
       }
       // idk?
-      if (!errorMessage) {
+      if (errorMessage) {
         this.messageService.addError(errorMessage);
       }
     });
-
-    this.router.navigate(['/']);
   }
 
   ngOnDestroy(): void {

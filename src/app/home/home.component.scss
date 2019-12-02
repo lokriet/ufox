@@ -1,5 +1,12 @@
 @import '../../assets/scss/partials/colors';
+@import '../../assets/scss/partials/shared-styles';
 
 a {
   color: $main-color--dark;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

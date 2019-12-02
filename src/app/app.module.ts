@@ -24,6 +24,7 @@ import { SharedModule } from './shared/shared.module';
 import { UploadTestComponent } from './upload-test/upload-test.component';
 import { MessagesComponent } from './messages/messages.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AuthGuard } from './auth/auth.guard';
 
 
 @NgModule({
@@ -56,7 +57,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     AkitaNgRouterStoreModule.forRoot(),
     NoopAnimationsModule
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

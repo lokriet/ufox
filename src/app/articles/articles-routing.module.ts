@@ -10,24 +10,32 @@ import { ArticlesComponent } from './articles.component';
 import { ArticleFieldValueGuard } from './state/articles/article-field-value.guard';
 import { ArticleGuard } from './state/articles/article.guard';
 import { FilteringPresetGuard } from './state/ui/filtering-preset.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Route[] = [
   {
     path: 'articles',
     component: ArticlesComponent,
-    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, FilteringPresetGuard],
+    canActivate: [
+      ArticleGuard,
+      ArticleTagGuard,
+      ArticleFieldNameGuard,
+      ArticleFieldValueGuard,
+      ArticleTypeGuard,
+      FilteringPresetGuard,
+      AuthGuard],
     canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, FilteringPresetGuard]
   },
   {
     path: 'articles/new',
     component: ArticleEditComponent,
-    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard],
+    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard, AuthGuard],
     canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard]
   },
   {
     path: 'articles/edit/:id',
     component: ArticleEditComponent,
-    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard],
+    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard, AuthGuard],
     canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard]
   }
 ];
