@@ -3,7 +3,8 @@
                        (loadingFieldNames$ | async) || 
                        (loadingFieldValues$ | async) || 
                        (loadingTags$ | async) ||
-                       (loadingArticleTypes$ | async)
+                       (loadingArticleTypes$ | async) ||
+                       (loadingFilteringPresets$ | async)
                        ; else loaded">
     <h1 class="loading-text">Loading...</h1>
     
@@ -14,7 +15,7 @@
       <div class="side-view" [class.collapsed]="!sidePanelState.sidePanelExpanded">
         <app-articles-filter-panel *ngIf="isSideViewSelected('Filters')"></app-articles-filter-panel>
         <app-articles-outline-panel *ngIf="isSideViewSelected('Outline')" [articles]="filteredArticles"></app-articles-outline-panel>
-
+        <app-presets-panel *ngIf="isSideViewSelected('Presets')"></app-presets-panel>
         <button 
             class="collapse-side-view-button"
             *ngIf="sidePanelState.sidePanelExpanded"
@@ -38,6 +39,15 @@
                 [class.active]="isSideViewSelected('Outline')"
                 (click)="selectSideView('Outline')">
               Outline
+            </button>
+          </div>
+
+          <div class="side-view-selector-item">
+            <button 
+                class="side-view-button" 
+                [class.active]="isSideViewSelected('Presets')"
+                (click)="selectSideView('Presets')">
+              Presets
             </button>
           </div>
         </div>

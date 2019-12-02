@@ -1,11 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-
-import * as ClassicEditor from 'src/assets/ckeditor/ckeditor';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { FirebaseImageUploadAdapter } from '../articles/article-edit/image-upload.adapter';
-import { FormsModule } from '@angular/forms';
-import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
-import { ArticleService } from '../articles/state/article.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+import { ArticleService } from '../articles/state/articles/article.service';
 import { ImageService } from '../shared/image/state/image.service';
 
 @Component({

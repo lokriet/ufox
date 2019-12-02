@@ -1,11 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
+import { ArticleQuery } from 'src/app/articles/state/articles/article.query';
 
 import { Image } from '../state/image.model';
 import { ImageQuery } from '../state/image.query';
 import { ImageService } from '../state/image.service';
-import { ArticleQuery } from 'src/app/articles/state/article.query';
-import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-image-upload',
@@ -95,7 +95,7 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
         this.popupBoxDiv.nativeElement.offsetTop - $event.clientY
     ];
     document.body.addEventListener('mousemove', this.boundMousemoveMove);
-}
+  }
 
   mouseupMove($event) {
       this.isMoving = false;

@@ -1,20 +1,20 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { guid } from '@datorama/akita';
+import { faChevronDown, faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
+import { ArticleFieldValueQuery } from 'src/app/articles/state/articles/article-field-value.query';
+import { ArticleFieldValueService } from 'src/app/articles/state/articles/article-field-value.service';
 
 import { ArticleFieldName } from '../state/article-field-name.model';
+import { ArticleFieldNameQuery } from '../state/article-field-name.query';
 import { ArticleFieldNameService } from '../state/article-field-name.service';
 import { ArticleTag } from '../state/article-tag.model';
 import { ArticleTagQuery } from '../state/article-tag.query';
-import { ArticleTypeService } from '../state/article-type.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { ArticleFieldNameQuery } from '../state/article-field-name.query';
-import { ArticleTypeQuery } from '../state/article-type.query';
 import { ArticleType } from '../state/article-type.model';
-import { ArticleFieldValueService } from 'src/app/articles/state/article-field-value.service';
-import { ArticleFieldValueQuery } from 'src/app/articles/state/article-field-value.query';
-import { faChevronUp, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ArticleTypeQuery } from '../state/article-type.query';
+import { ArticleTypeService } from '../state/article-type.service';
 
 @Component({
   selector: 'app-article-type-edit',

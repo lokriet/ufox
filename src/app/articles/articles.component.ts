@@ -5,11 +5,20 @@ import { Observable } from 'rxjs';
 import { ArticleFieldNameQuery } from '../articles-setup/state/article-field-name.query';
 import { ArticleTagQuery } from '../articles-setup/state/article-tag.query';
 import { ArticleTypeQuery } from '../articles-setup/state/article-type.query';
-import { ArticleFieldValueQuery } from './state/article-field-value.query';
-import { ArticlesUiQuery } from './state/article-ui.query';
-import { ArticlesUiState, ArticlesUiStore, FilterType, SideView, SortItemType, SortOrder, FilterPanelState } from './state/article-ui.store';
-import { Article } from './state/article.model';
-import { ArticleQuery } from './state/article.query';
+import { ArticleFieldValueQuery } from './state/articles/article-field-value.query';
+import { Article } from './state/articles/article.model';
+import { ArticleQuery } from './state/articles/article.query';
+import { ArticlesUiQuery } from './state/ui/article-ui.query';
+import {
+  ArticlesUiState,
+  ArticlesUiStore,
+  FilterPanelState,
+  FilterType,
+  SideView,
+  SortItemType,
+  SortOrder,
+} from './state/ui/article-ui.store';
+import { FilteringPresetQuery } from './state/ui/filtering-preset.query';
 
 
 @Component({
@@ -25,6 +34,7 @@ export class ArticlesComponent implements OnInit {
   loadingFieldValues$: Observable<boolean>;
   loadingTags$: Observable<boolean>;
   loadingArticleTypes$: Observable<boolean>;
+  loadingFilteringPresets$: Observable<boolean>;
 
   allArticles: Article[];
   filteredArticles: Article[];
@@ -42,7 +52,8 @@ export class ArticlesComponent implements OnInit {
               private articleFieldNameQuery: ArticleFieldNameQuery,
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleTagQuery: ArticleTagQuery,
-              private articleTypeQuery: ArticleTypeQuery) {}
+              private articleTypeQuery: ArticleTypeQuery,
+              private filteringPresetsQuery: FilteringPresetQuery) {}
 
   ngOnInit(): void {
     this.loadingArticles$ = this.articleQuery.selectLoading();
@@ -50,6 +61,7 @@ export class ArticlesComponent implements OnInit {
     this.loadingFieldValues$ = this.articleFieldValueQuery.selectLoading();
     this.loadingTags$ = this.articleTagQuery.selectLoading();
     this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
+    this.loadingFilteringPresets$ = this.filteringPresetsQuery.selectLoading();
 
     this.articleQuery.selectAll().subscribe(articles => {
       this.allArticles = articles;
@@ -225,7 +237,12 @@ export class ArticlesComponent implements OnInit {
             const articleType1 = this.articleTypeQuery.getEntity(article1.typeId);
             const articleType2 = this.articleTypeQuery.getEntity(article2.typeId);
             if (articleType1 === articleType2) {
-              continue;
+              if (article1.isSectionHeader === article2.isSectionHeader) {
+                continue;
+              } else {
+                const result = article1.isSectionHeader ? -1 : 1;
+                return sortItem.sortOrder === SortOrder.Asc ?  result : -result;
+              }
             } else {
               const result = articleType1.sortingOrder - articleType2.sortingOrder;
               return sortItem.sortOrder === SortOrder.Asc ?  result : -result;

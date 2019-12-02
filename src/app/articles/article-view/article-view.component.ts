@@ -6,13 +6,13 @@ import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
 
-import { ArticleFieldValue } from '../state/article-field-value.model';
-import { ArticleFieldValueQuery } from '../state/article-field-value.query';
-import { ArticleFieldValueService } from '../state/article-field-value.service';
-import { ArticlesUiStore } from '../state/article-ui.store';
-import { Article } from '../state/article.model';
-import { ArticleService } from '../state/article.service';
-import { ArticlesUiQuery } from '../state/article-ui.query';
+import { ArticleFieldValue } from '../state/articles/article-field-value.model';
+import { ArticleFieldValueQuery } from '../state/articles/article-field-value.query';
+import { ArticleFieldValueService } from '../state/articles/article-field-value.service';
+import { Article } from '../state/articles/article.model';
+import { ArticleService } from '../state/articles/article.service';
+import { ArticlesUiQuery } from '../state/ui/article-ui.query';
+import { ArticlesUiStore } from '../state/ui/article-ui.store';
 
 interface AdditionalField {
   name: ArticleFieldName;

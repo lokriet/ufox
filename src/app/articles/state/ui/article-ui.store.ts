@@ -11,7 +11,8 @@ export interface ArticlesUiState {
 
 export enum SideView {
   Filters = 'Filters',
-  Outline = 'Outline'
+  Outline = 'Outline',
+  Presets = 'Presets'
 }
 
 export interface FilterPanelState {
@@ -115,6 +116,14 @@ export class ArticlesUiStore extends Store<ArticlesUiState> {
 
   resetSorting() {
     this.update({...this._value, sorting: {...initialState.sorting}});
+  }
+
+  updateFilters(filters: ArticleFilters) {
+    this.update({...this._value, filters: {...filters}});
+  }
+
+  updateSorting(sorting: ArticleSorting) {
+    this.update({...this._value, sorting: {...sorting}});
   }
 
   updateFilterTags(tagIds: string[]) {

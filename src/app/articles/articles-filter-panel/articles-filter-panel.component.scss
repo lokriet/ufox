@@ -169,3 +169,40 @@ input[type='radio'] {
     width: 10rem;
   }
 }
+
+.save-preset-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+
+  button {
+    width: 10rem;
+  }
+}
+
+
+.preset-saving-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  width: 20rem;
+  height: 8rem;
+  background-color: $main-color--dark;
+
+  .header {
+    height: 3rem;
+    color: $main-color--dark;
+    font-weight: 700;
+    background-color: $main-color;
+    padding: 1rem;
+  }
+
+  .inputs-buttons-group {
+    margin-left: 1rem;
+  }
+
+  &.closed {
+    display: none;
+  }
+}

@@ -1,4 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { faCheck, faChevronRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
@@ -7,9 +8,18 @@ import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query'
 import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
 
-import { ArticlesUiQuery } from '../state/article-ui.query';
-import { ArticlesUiStore, FieldValueFilter, FilterType, SortItem, SortItemType, SortOrder, FilterPanelState } from '../state/article-ui.store';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ArticlesUiQuery } from '../state/ui/article-ui.query';
+import {
+  ArticlesUiStore,
+  FieldValueFilter,
+  FilterPanelState,
+  FilterType,
+  SortItem,
+  SortItemType,
+  SortOrder,
+} from '../state/ui/article-ui.store';
+import { FilteringPresetService } from '../state/ui/filtering-preset.service';
+import { guid } from '@datorama/akita';
 
 @Component({
   selector: 'app-articles-filter-panel',
@@ -32,28 +42,26 @@ export class ArticlesFilterPanelComponent implements OnInit {
   tagsFilterType: FilterType;
 
   allTags$: Observable<ArticleTag[]>;
-  // tagsFiltersExpanded = true;
 
   filterArticleTypeIds: string[] = [];
   allArticleTypes$: Observable<ArticleType[]>;
-  // typeFiltersExpanded = true;
 
   fieldValuesFilterType: FilterType;
   fieldValueFilters: FieldValueFilter[];
   showFieldValuesFilterError = false;
-  // fieldFiltersExpanded = true;
 
   sorting: SortItem[];
   showFieldValueSortingError = false;
-  // sortingOrderExpanded = true;
-  // sortingFieldsExpanded = false;
 
   panelState: FilterPanelState;
+
+  showSavePresetWindow = false;
 
   constructor(private tagsQuery: ArticleTagQuery,
               private articlesUiQuery: ArticlesUiQuery,
               private articlesUiStore: ArticlesUiStore,
-              private articleTypesQuery: ArticleTypeQuery) { }
+              private articleTypesQuery: ArticleTypeQuery,
+              private filteringPresetsService: FilteringPresetService) { }
 
   ngOnInit() {
     this.allTags$ = this.tagsQuery.selectAll({sortBy: 'name'});
@@ -252,5 +260,45 @@ export class ArticlesFilterPanelComponent implements OnInit {
   switchSortingFieldsExpanded() {
     this.panelState.sortingFieldsExpanded = !this.panelState.sortingFieldsExpanded;
     this.articlesUiStore.updateFilterPanelState(this.panelState);
+  }
+
+  onShowPresetSavingWindow() {
+    this.showSavePresetWindow = true;
+  }
+
+  onHidePresetSavingWindow() {
+    this.showSavePresetWindow = false;
+  }
+
+  onPresetNameEnter(event, name: string) {
+    if (event.keyCode === 13) { // enter
+      event.stopPropagation(); // don't submit the form
+      this.onSaveNewPreset(name);
+    }
+  }
+
+  onSaveNewPreset(name: string) {
+    const uiState = this.articlesUiQuery.getValue();
+
+    const preset = {
+      id: guid(),
+      name,
+      // filters
+      tagIds: [...uiState.filters.tagIds],
+      tagsFilterType: uiState.filters.tagsFilterType,
+      articleTypeIds: [...uiState.filters.articleTypeIds],
+      fieldValueNames: uiState.filters.fieldValues.map(item => item.name),
+      fieldValues: uiState.filters.fieldValues.map(item => item.value),
+      fieldValuesFilterType: uiState.filters.fieldValuesFilterType,
+
+      //sorting
+      sortItemTypes: uiState.sorting.sortItems.map(item => item.sortItemType),
+      sortItemNames: uiState.sorting.sortItems.map(item => item.sortItemName),
+      sortOrders: uiState.sorting.sortItems.map(item => item.sortOrder)
+    };
+
+    this.filteringPresetsService.add(preset);
+
+    this.showSavePresetWindow = false;
   }
 }

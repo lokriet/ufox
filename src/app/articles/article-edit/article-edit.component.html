@@ -29,6 +29,15 @@
         <input formControlName="name" class="article-name-input" (keydown.enter)="$event.preventDefault()">
       </div>
 
+      <div class="fields-row">
+        <input 
+              type="checkbox" 
+              formControlName="isSectionHeader" 
+              #isSectionHeaderCheckbox 
+              (change)="onSectionHeaderSwitched(isSectionHeaderCheckbox.checked)">
+        <div class="label">Section description</div>
+      </div>
+
       <button type="button" class="button" [class.button-danger]="showingPictureInput" (click)="onSwitchAddingPicture()">
         {{ showingPictureInput ? 'Actually, no picture' : 'Add picture' }}
       </button>
@@ -39,7 +48,7 @@
       <div
           formArrayName="additionalFields" 
           class="additonal-fields fields-row"
-          *ngIf="selectedArticleType != null">
+          *ngIf="selectedArticleType != null && !isSectionHeaderCheckbox.checked">
         <ng-container class="additional-field" *ngFor="let additionalField of additionalFieldNames; let i = index" [formGroupName]="i">
           <span class="additional-field-no">{{ additionalField.orderNo + 1}} </span>
           <div class="label">{{ additionalField.name }}</div>

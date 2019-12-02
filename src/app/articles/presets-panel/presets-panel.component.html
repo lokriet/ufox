@@ -1,0 +1,8 @@
+
+<div class="presets-panel">
+  <div class="presets-list">
+    <div *ngFor="let preset of (allPresets$ | async)" class="preset" (click)="loadPreset(preset)">
+      {{preset.name}}
+    </div>
+  </div>
+</div>

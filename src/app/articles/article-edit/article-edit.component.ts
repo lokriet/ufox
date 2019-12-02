@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -10,15 +10,15 @@ import { ArticleTag } from 'src/app/articles-setup/state/article-tag.model';
 import { ArticleTagQuery } from 'src/app/articles-setup/state/article-tag.query';
 import { ArticleType } from 'src/app/articles-setup/state/article-type.model';
 import { ArticleTypeQuery } from 'src/app/articles-setup/state/article-type.query';
+import { MessageService } from 'src/app/messages/state/message.service';
 import * as ClassicEditor from 'src/assets/ckeditor/ckeditor';
 
 import { ImageService } from '../../shared/image/state/image.service';
-import { ArticleFieldValueQuery } from '../state/article-field-value.query';
-import { ArticleFieldValueService } from '../state/article-field-value.service';
-import { ArticleQuery } from '../state/article.query';
-import { ArticleService } from '../state/article.service';
+import { ArticleFieldValueQuery } from '../state/articles/article-field-value.query';
+import { ArticleFieldValueService } from '../state/articles/article-field-value.service';
+import { ArticleQuery } from '../state/articles/article.query';
+import { ArticleService } from '../state/articles/article.service';
 import { FirebaseImageUploadAdapter } from './image-upload.adapter';
-import { MessageService } from 'src/app/messages/state/message.service';
 
 @Component({
   selector: 'app-article-edit',
@@ -125,6 +125,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     let imageUrl = null;
     let additionalArticleFields = null;
     let articleTypeId = null;
+    let isSectionHeader = false;
 
     if (!this.editMode) {
       this.selectedArticleType = this.articleTypeQuery.getAll({sortBy: 'sortingOrder'})[0];
@@ -132,7 +133,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       additionalArticleFields = this.getAdditionalFieldControls();
       this.setDefaultTags();
     } else {
-      this. deletedFieldValueIds = [];
+      this.deletedFieldValueIds = [];
 
       const editedArticle = this.articleQuery.getEntity(this.editedArticleId);
       this.addedTags = this.articleTagQuery.getAll({
@@ -141,6 +142,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
       id = this.editedArticleId;
       name = editedArticle.name;
+      isSectionHeader = editedArticle.isSectionHeader;
       articleTypeId = editedArticle.typeId;
       articleText = editedArticle.text;
       additionalArticleFields = new FormArray([]);
@@ -150,24 +152,27 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
       if (articleTypeId != null) {
         this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
-        this.additionalFieldNames = this.articleFieldNameQuery.getAll({
-          filterBy: entity => this.selectedArticleType.articleFieldNameIds.includes(entity.id),
-          sortBy: 'orderNo'
-        });
+        if (isSectionHeader) {
+          this.additionalFieldNames = [];
+        } else {
+          this.additionalFieldNames = this.articleFieldNameQuery.getAll({
+            filterBy: entity => this.selectedArticleType.articleFieldNameIds.includes(entity.id),
+            sortBy: 'orderNo'
+          });
 
-        const additionalFieldValues =
-            this.articleFieldValueQuery.getAll({filterBy: value => editedArticle.additionalFieldValueIds.includes(value.id)});
+          const additionalFieldValues =
+              this.articleFieldValueQuery.getAll({filterBy: value => editedArticle.additionalFieldValueIds.includes(value.id)});
 
-        for (const additionalFieldName of this.additionalFieldNames) {
-          const fieldValue = additionalFieldValues.find(value => value.fieldNameId === additionalFieldName.id);
-          additionalArticleFields.push(new FormGroup({
-            id: new FormControl(fieldValue ? fieldValue.id : null),
-            fieldNameId: new FormControl(additionalFieldName.id),
-            value: new FormControl(fieldValue ? fieldValue.value : '')
-          }));
+          for (const additionalFieldName of this.additionalFieldNames) {
+            const fieldValue = additionalFieldValues.find(value => value.fieldNameId === additionalFieldName.id);
+            additionalArticleFields.push(new FormGroup({
+              id: new FormControl(fieldValue ? fieldValue.id : null),
+              fieldNameId: new FormControl(additionalFieldName.id),
+              value: new FormControl(fieldValue ? fieldValue.value : '')
+            }));
+          }
         }
       }
-
     }
 
     this.articleForm = new FormGroup({
@@ -176,6 +181,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       imageUrl: new FormControl(imageUrl),
       articleType: new FormControl(articleTypeId),
       articleText: new FormControl(articleText),
+      isSectionHeader: new FormControl(isSectionHeader),
       additionalFields: additionalArticleFields
     });
   }
@@ -221,6 +227,18 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.articleForm.controls.isSectionHeader.setValue(false);
+
+    this.assignDeletedFields();
+
+    this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
+    if (this.selectedArticleType != null) {
+      this.articleForm.setControl('additionalFields', this.getAdditionalFieldControls());
+      this.setDefaultTags();
+    }
+  }
+
+  private assignDeletedFields() {
     if (this.editMode) {
       const editedArticle = this.articleQuery.getEntity(this.editedArticleId);
       const fieldsToDelete = editedArticle.additionalFieldValueIds;
@@ -232,15 +250,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
         }
       }
     }
-
-    this.selectedArticleType = this.articleTypeQuery.getEntity(articleTypeId);
-    if (this.selectedArticleType != null) {
-      this.articleForm.setControl('additionalFields', this.getAdditionalFieldControls());
-      this.setDefaultTags();
-    }
   }
-
-
 
   onShowEditTags() {
     this.showTagsEditView = true;
@@ -276,26 +286,31 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     const updatedFieldValues = [];
     const addedFieldValues = [];
     const additionalFieldValueIds = [];
-    if (this.articleForm.value.additionalFields != null) {
-      for (const additionalField of this.articleForm.value.additionalFields) {
-        const additionalFieldValue = {
-          id: additionalField.id,
-          fieldNameId: additionalField.fieldNameId,
-          value: additionalField.value
-        };
 
-        if (this.editMode) {
-          if (additionalFieldValue.id != null) {
-            updatedFieldValues.push(additionalFieldValue);
+    if (this.articleForm.value.additionalFields != null) {
+      if (this.articleForm.value.isSectionHeader) {
+        this.assignDeletedFields();
+      } else {
+        for (const additionalField of this.articleForm.value.additionalFields) {
+          const additionalFieldValue = {
+            id: additionalField.id,
+            fieldNameId: additionalField.fieldNameId,
+            value: additionalField.value
+          };
+
+          if (this.editMode) {
+            if (additionalFieldValue.id != null) {
+              updatedFieldValues.push(additionalFieldValue);
+            } else {
+              additionalFieldValue.id = guid();
+              addedFieldValues.push(additionalFieldValue);
+            }
           } else {
             additionalFieldValue.id = guid();
             addedFieldValues.push(additionalFieldValue);
           }
-        } else {
-          additionalFieldValue.id = guid();
-          addedFieldValues.push(additionalFieldValue);
+          additionalFieldValueIds.push(additionalFieldValue.id);
         }
-        additionalFieldValueIds.push(additionalFieldValue.id);
       }
     }
 
@@ -307,6 +322,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       name: this.articleForm.value.name,
       text: this.articleForm.value.articleText,
       imageUrl: this.showingPictureInput ? this.articleForm.value.imageUrl : null,
+      isSectionHeader: this.articleForm.value.isSectionHeader,
       additionalFieldValueIds,
       tagIds
     };
@@ -334,6 +350,14 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
         this.editedArticleId = this.articleForm.value.id;
         this.initForm();
       }
+    }
+  }
+
+  onSectionHeaderSwitched(isSectionHeader: boolean) {
+    if (isSectionHeader) {
+      (this.articleForm.get('additionalFields') as FormArray).clear();
+    } else {
+      this.articleForm.setControl('additionalFields', this.getAdditionalFieldControls());
     }
   }
 

@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
-import { Article } from '../state/article.model';
+import { Article } from '../state/articles/article.model';
 
 @Component({
   selector: 'app-articles-list',

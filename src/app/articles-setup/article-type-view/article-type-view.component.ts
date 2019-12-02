@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { ArticleFieldValueService } from 'src/app/articles/state/articles/article-field-value.service';
+import { Article } from 'src/app/articles/state/articles/article.model';
+import { ArticleQuery } from 'src/app/articles/state/articles/article.query';
+import { ArticleService } from 'src/app/articles/state/articles/article.service';
 
 import { ArticleFieldName } from '../state/article-field-name.model';
 import { ArticleFieldNameQuery } from '../state/article-field-name.query';
@@ -8,10 +12,6 @@ import { ArticleTag } from '../state/article-tag.model';
 import { ArticleTagQuery } from '../state/article-tag.query';
 import { ArticleType } from '../state/article-type.model';
 import { ArticleTypeService } from '../state/article-type.service';
-import { ArticleQuery } from 'src/app/articles/state/article.query';
-import { ArticleService } from 'src/app/articles/state/article.service';;
-import { ArticleFieldValueService } from 'src/app/articles/state/article-field-value.service';
-import { Article } from 'src/app/articles/state/article.model';
 
 @Component({
   selector: 'app-article-type-view',

@@ -79,3 +79,41 @@ figure {
     border-radius: 4px;
     background: $main-color;
 }
+
+// popup directive
+.draggable-header {
+  background-color: transparent;
+  height: 2.5rem;
+  width: calc(100% - 3rem);
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: move;
+
+}
+
+.close-button {
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: $accent-color-orange;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resize-corner {
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: transparent;
+  cursor: nwse-resize;
+}

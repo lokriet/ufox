@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { guid } from '@datorama/akita';
-import { ArticleTagService } from '../../articles-setup/state/article-tag.service';
-import { ArticleTagQuery } from '../../articles-setup/state/article-tag.query';
-import { ArticleTag } from '../../articles-setup/state/article-tag.model';
 import { Observable } from 'rxjs';
-import { ArticleService } from 'src/app/articles/state/article.service';
-import { ArticleQuery } from 'src/app/articles/state/article.query';
+import { ArticleQuery } from 'src/app/articles/state/articles/article.query';
+import { ArticleService } from 'src/app/articles/state/articles/article.service';
+
+import { ArticleTag } from '../../articles-setup/state/article-tag.model';
+import { ArticleTagQuery } from '../../articles-setup/state/article-tag.query';
+import { ArticleTagService } from '../../articles-setup/state/article-tag.service';
 
 @Component({
   selector: 'app-edit-tags',

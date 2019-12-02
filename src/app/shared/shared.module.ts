@@ -9,6 +9,7 @@ import { FileSizePipe } from './image/file-size.pipe';
 import { ImageUploadComponent } from './image/image-upload/image-upload.component';
 import { ImageComponent } from './image/image.component';
 import { SafeHtmlPipe } from './safe-html.pipe';
+import { PopupWindowDirective } from './popup-window.directive';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SafeHtmlPipe } from './safe-html.pipe';
     FileSizePipe,
     DropZoneDirective,
     ImageComponent,
-    ImageUploadComponent
+    ImageUploadComponent,
+    PopupWindowDirective
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import { SafeHtmlPipe } from './safe-html.pipe';
     SafeHtmlPipe,
     FileSizePipe,
     DropZoneDirective,
-    ImageComponent
+    ImageComponent,
+    PopupWindowDirective
   ]
 })
 export class SharedModule { }

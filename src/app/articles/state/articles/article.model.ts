@@ -6,6 +6,7 @@ export interface Article {
   additionalFieldValueIds: string[];
   tagIds: string[];
   imageUrl: string;
+  isSectionHeader: boolean;
 }
 
 export function createArticle(params: Partial<Article>) {
