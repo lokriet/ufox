@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "ufox-prod": {
+      "hosting": {
+        "ufox": [
+          "ufox-prod"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "ufox-prod"
+  }
+}

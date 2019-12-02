@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/currently-deployed-build
 # Only exists if Bazel was run
 /bazel-out
 
@@ -45,3 +46,7 @@ testem.log
 .DS_Store
 Thumbs.db
 src/environments/environment.ts
+public/index.html
+.firebase/hosting.ZGlzdFx1Zm94.cache
+.firebase/hosting.cHVibGlj.cache
+src/environments/environment.prod.ts
