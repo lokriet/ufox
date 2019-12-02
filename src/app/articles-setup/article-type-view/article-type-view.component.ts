@@ -12,6 +12,7 @@ import { ArticleTag } from '../state/article-tag.model';
 import { ArticleTagQuery } from '../state/article-tag.query';
 import { ArticleType } from '../state/article-type.model';
 import { ArticleTypeService } from '../state/article-type.service';
+import { ArticleTypeQuery } from '../state/article-type.query';
 
 @Component({
   selector: 'app-article-type-view',
@@ -30,6 +31,7 @@ export class ArticleTypeViewComponent implements OnInit {
               private fieldNamesQuery: ArticleFieldNameQuery,
               private fieldNamesService: ArticleFieldNameService,
               private articleTypeService: ArticleTypeService,
+              private articleTypeQuery: ArticleTypeQuery,
               private articleQuery: ArticleQuery,
               private articleService: ArticleService,
               private articleFieldValueService: ArticleFieldValueService
@@ -79,9 +81,13 @@ export class ArticleTypeViewComponent implements OnInit {
   }
 
   deleteArticleType() {
+    const removedOrderNo = this.articleType.sortingOrder;
     for (const fieldNameId of this.articleType.articleFieldNameIds) {
       this.fieldNamesService.remove(fieldNameId);
     }
     this.articleTypeService.remove(this.articleType.id);
+    for (const articleType of this.articleTypeQuery.getAll({filterBy: item => item.sortingOrder > removedOrderNo})) {
+      this.articleTypeService.updateSortingOrder(articleType, (articleType.sortingOrder - 1));
+    }
   }
 }

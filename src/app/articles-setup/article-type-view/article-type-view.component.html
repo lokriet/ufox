@@ -9,7 +9,7 @@
       Extra fields
     </div>
     <ul>
-      <li *ngFor="let fieldName of (fieldNames$ | async)" class="article-field-name">{{ fieldName.name }}<span *ngIf="fieldName.hint"> ({{ fieldName.hint }})</span></li>
+      <li *ngFor="let fieldName of (fieldNames$ | async)" class="article-field-name">{{ fieldName.name }}<span *ngIf="fieldName.hint && fieldName.hint.length > 0"> ({{ fieldName.hint }})</span></li>
     </ul>
   </div>
 

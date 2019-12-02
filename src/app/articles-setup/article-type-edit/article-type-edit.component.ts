@@ -100,6 +100,7 @@ export class ArticleTypeEditComponent implements OnInit {
     }
 
     this.newAdditionalFieldName = null;
+    this.newAdditionalFieldHint = null;
     this.showTagsEditView = false;
 
     this.editedAdditionalFieldIndex = -1;
@@ -131,6 +132,7 @@ export class ArticleTypeEditComponent implements OnInit {
     }
 
     this.newAdditionalFieldName = '';
+    this.newAdditionalFieldHint = '';
   }
 
   onAddTag(tagId: string) {
@@ -243,8 +245,6 @@ export class ArticleTypeEditComponent implements OnInit {
       if (this.deletedAdditionalFields.length > 0) {
         const deletedAdditionalFieldIds = this.deletedAdditionalFields.map(field => field.id);
 
-        // for (const additionalField of this.deletedAdditionalFields) {
-        // }
         this.fieldValueService.syncCollection().subscribe(() => {
           const affectedFieldValueIds = this.fieldValueQuery.getAll({
             filterBy: value => deletedAdditionalFieldIds.includes(value.fieldNameId)

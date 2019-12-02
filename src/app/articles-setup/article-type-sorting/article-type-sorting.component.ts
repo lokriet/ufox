@@ -1,4 +1,4 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -33,14 +33,11 @@ export class ArticleTypeSortingComponent implements OnInit {
       return;
     }
 
-    const previousSortingOrder = this.articleTypes[event.previousIndex].sortingOrder;
-    this.articleTypes[event.previousIndex].sortingOrder = this.articleTypes[event.currentIndex].sortingOrder;
-    this.articleTypes[event.currentIndex].sortingOrder = previousSortingOrder;
-
-    this.articleTypeService.update(this.articleTypes[event.previousIndex]);
-    this.articleTypeService.update(this.articleTypes[event.currentIndex]);
-
-    // moveItemInArray(this.articleTypes, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.articleTypes, event.previousIndex, event.currentIndex);
+    for (let i = Math.min(event.previousIndex, event.currentIndex); i <= Math.max(event.previousIndex, event.currentIndex); i++) {
+      this.articleTypes[i].sortingOrder = i;
+      this.articleTypeService.update(this.articleTypes[i]);
+    }
   }
 
 }

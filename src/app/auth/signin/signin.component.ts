@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../state/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'src/app/messages/state/message.service';
 
@@ -14,19 +14,22 @@ export class SigninComponent implements OnInit, OnDestroy {
   password: string;
 
   private sub: Subscription;
+  returnUrl: string;
 
   constructor(private authService: AuthService,
               private router: Router,
+              private route: ActivatedRoute,
               private messageService: MessageService) { }
 
   ngOnInit() {
     this.sub = this.authService.sync().subscribe();
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
   }
 
   onSignIn() {
     this.authService.signin(this.email, this.password)
     .then(value => {
-      this.router.navigate(['/']);
+      this.router.navigateByUrl(this.returnUrl);
     })
     .catch(error => {
       let errorMessage: string;

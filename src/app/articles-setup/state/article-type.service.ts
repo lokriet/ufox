@@ -10,4 +10,8 @@ export class ArticleTypeService extends CollectionService<ArticleTypeState> {
   constructor(store: ArticleTypeStore) {
     super(store);
   }
+
+  updateSortingOrder(articleType: ArticleType, newSortingOrder: number) {
+    this.update({...articleType, sortingOrder: newSortingOrder});
+  }
 }

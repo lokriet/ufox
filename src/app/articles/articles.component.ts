@@ -193,7 +193,7 @@ export class ArticlesComponent implements OnInit {
           filterBy: fieldValue => article.additionalFieldValueIds.includes(fieldValue.id)
         });
 
-        if (fieldValues.some(fieldValue => fieldValue.value.toLowerCase().includes(fastSearch.toLowerCase()))) {
+        if (fieldValues.some(fieldValue => fieldValue.value && fieldValue.value.toLowerCase().includes(fastSearch.toLowerCase()))) {
           return true;
         }
       }
