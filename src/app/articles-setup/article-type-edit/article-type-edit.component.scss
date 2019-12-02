@@ -42,7 +42,8 @@
     width: 1rem; 
   }
   
-  .field-name {
+  .field-name,
+  .field-hint {
     text-transform: capitalize;
     width: 10rem;
   }

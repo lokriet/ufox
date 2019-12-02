@@ -54,7 +54,11 @@
           <div class="label">{{ additionalField.name }}</div>
           <input type="hidden" formControlName="id">
           <input type="hidden" formControlName="fieldNameId">
-          <input type="text" formControlName="value" (keydown.enter)="$event.preventDefault()">
+          <input 
+              type="text" 
+              formControlName="value" 
+              (keydown.enter)="$event.preventDefault()" 
+              [placeholder]="additionalField.hint ? additionalField.hint : ''">
         </ng-container>
       </div>
 

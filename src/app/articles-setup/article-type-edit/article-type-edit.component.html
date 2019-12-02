@@ -22,6 +22,13 @@
           [(ngModel)]="editedAdditionalFieldName" 
           (keydown)="onAdditionalFieldRename($event, i)"
           class="field-name-input">
+
+        <div *ngIf="i !== editedAdditionalFieldIndex" class="field-hint">{{ additionalField.hint }}</div>
+        <input 
+          *ngIf="i === editedAdditionalFieldIndex" 
+          [(ngModel)]="editedAdditionalFieldHint" 
+          (keydown)="onAdditionalFieldRename($event, i)"
+          class="field-name-input">
   
         <button type="button" class="button button-danger short-button" (click)="onDeleteField(i)">
           <fa-icon [icon]="faTimes"></fa-icon>
@@ -39,6 +46,7 @@
 
     <div class="fields-row inputs-buttons-group">
       <input placeholder="field name" #additionalFieldInput (keydown)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldName">
+      <input placeholder="hint" #additionalFieldInput (keydown)="onAdditionalFieldInput($event)" [(ngModel)]="newAdditionalFieldHint">
       <button type="button" class="button" (click)="onCreateField()">Add</button>
     </div>
 

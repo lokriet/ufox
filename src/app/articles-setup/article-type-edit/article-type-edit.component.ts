@@ -37,11 +37,13 @@ export class ArticleTypeEditComponent implements OnInit {
 
   articleTypeName: string;
   newAdditionalFieldName: string;
+  newAdditionalFieldHint: string;
 
   additionalFields: ArticleFieldName[];
 
   editedAdditionalFieldIndex: number;
   editedAdditionalFieldName: string;
+  editedAdditionalFieldHint: string;
 
   deletedAdditionalFields: ArticleFieldName[];
   addedAdditionalFields: ArticleFieldName[];
@@ -102,6 +104,7 @@ export class ArticleTypeEditComponent implements OnInit {
 
     this.editedAdditionalFieldIndex = -1;
     this.editedAdditionalFieldName = null;
+    this.editedAdditionalFieldHint = null;
 
     this.addedAdditionalFields = [];
     this.updatedAdditionalFields = [];
@@ -116,7 +119,12 @@ export class ArticleTypeEditComponent implements OnInit {
   }
 
   onCreateField() {
-    const additionalField = {id: guid(), orderNo: this.additionalFields.length, name: this.newAdditionalFieldName} as ArticleFieldName;
+    const additionalField = {
+      id: guid(),
+      orderNo: this.additionalFields.length,
+      name: this.newAdditionalFieldName,
+      hint: this.newAdditionalFieldHint
+    } as ArticleFieldName;
     this.additionalFields.push(additionalField);
     if (this.editMode) {
       this.addedAdditionalFields.push(additionalField);
@@ -288,6 +296,7 @@ export class ArticleTypeEditComponent implements OnInit {
     if (this.editedAdditionalFieldIndex !== index) {
       this.editedAdditionalFieldIndex = index;
       this.editedAdditionalFieldName = this.additionalFields[index].name;
+      this.editedAdditionalFieldHint = this.additionalFields[index].hint;
     }
   }
 
@@ -300,16 +309,19 @@ export class ArticleTypeEditComponent implements OnInit {
 
   onSaveRenamedField(index: number) {
     this.additionalFields[index].name = this.editedAdditionalFieldName;
+    this.additionalFields[index].hint = this.editedAdditionalFieldHint;
     if (!this.updatedAdditionalFields.includes(this.additionalFields[index])) {
       this.updatedAdditionalFields.push(this.additionalFields[index]);
     }
 
     this.editedAdditionalFieldIndex = -1;
     this.editedAdditionalFieldName = null;
+    this.editedAdditionalFieldHint = null;
   }
 
   onCancelRenamingField() {
     this.editedAdditionalFieldIndex = -1;
     this.editedAdditionalFieldName = null;
+    this.editedAdditionalFieldHint = null;
   }
 }
