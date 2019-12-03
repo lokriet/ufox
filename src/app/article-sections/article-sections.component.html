@@ -1,0 +1,38 @@
+<div class="loading" *ngIf="(articlesLoading$ | async) || (articleSectionsLoading$ | async);else articleSectionsDiv">
+  <h1>Loading...</h1>
+</div>
+
+
+<ng-template #articleSectionsDiv>
+  <div class="article-sections">
+    <div class="article-sections-list" cdkDropList  (cdkDropListDropped)="onReorderDrop($event)">
+      <div *ngFor="let articleSection of articleSections;let i = index" cdkDrag class="inputs-buttons-group">
+        <div class="section-order-no">{{ (articleSection.orderNo + 1) }}. </div>
+        <div *ngIf="i !== editedSectionIndex" class="section-name">{{ articleSection.name }}</div>
+        <input 
+          *ngIf="i === editedSectionIndex" 
+          [(ngModel)]="editedSectionName" 
+          (keydown)="onSectionRename($event, i)"
+          class="section-name-input">
+    
+        <button type="button" class="button button-danger short-button" (click)="onDeleteSection(i)">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+        
+        <div class="long-button">
+          <button type="button" class="button long-button" (click)="onRenameSection(i)" *ngIf="i !== editedSectionIndex">Rename</button>
+          <button type="button" class="button long-button" (click)="onSaveRenamedSection()" *ngIf="i === editedSectionIndex">Save</button>
+        </div>
+        <div class="long-button">
+          <button type="button" class="button" (click)="onCancelRenamingSection()" *ngIf="i === editedSectionIndex">Cancel</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="fields-row inputs-buttons-group">
+      <input placeholder="Name" #additionalFieldInput (keydown)="onNewSectionInput($event)" [(ngModel)]="newSectionName">
+      <button type="button" class="button" (click)="onCreateSection()">Add</button>
+    </div>
+  </div>
+</ng-template>
+

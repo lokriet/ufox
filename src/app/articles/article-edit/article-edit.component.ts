@@ -324,7 +324,8 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       imageUrl: this.showingPictureInput ? this.articleForm.value.imageUrl : null,
       isSectionHeader: this.articleForm.value.isSectionHeader,
       additionalFieldValueIds,
-      tagIds
+      tagIds,
+      sectionId: null
     };
 
     if (this.editMode) {

@@ -25,6 +25,7 @@ import { UploadTestComponent } from './upload-test/upload-test.component';
 import { MessagesComponent } from './messages/messages.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthGuard } from './auth/auth.guard';
+import { ArticleSectionsModule } from './article-sections/article-sections.module';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { AuthGuard } from './auth/auth.guard';
     SharedModule,
     ArticlesModule,
     ArticlesSetupModule,
+    ArticleSectionsModule,
     AuthModule,
     AppRoutingModule,
     FontAwesomeModule,

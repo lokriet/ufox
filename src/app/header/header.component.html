@@ -12,7 +12,10 @@
           <a class="nav-link" [routerLink]="'/articles'">Articles</a>
         </li>
         <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" [routerLink]="'/articles-setup'">Settings</a>
+          <a class="nav-link" [routerLink]="'/articles-setup'">Templates</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="'/article-sections'">Sections</a>
         </li>
       </ul>
       <ul class="navbar-nav-group nav-signin" *ngIf="!isAuthenticated()">

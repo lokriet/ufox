@@ -6,6 +6,7 @@ export interface Article {
   additionalFieldValueIds: string[];
   tagIds: string[];
   imageUrl: string;
+  sectionId: string;
   isSectionHeader: boolean;
 }
 
