@@ -11,6 +11,7 @@ import { ArticleFieldValueGuard } from './state/articles/article-field-value.gua
 import { ArticleGuard } from './state/articles/article.guard';
 import { FilteringPresetGuard } from './state/ui/filtering-preset.guard';
 import { AuthGuard } from '../auth/auth.guard';
+import { ArticleSectionGuard } from '../article-sections/state/article-section.guard';
 
 const routes: Route[] = [
   {
@@ -23,20 +24,58 @@ const routes: Route[] = [
       ArticleFieldValueGuard,
       ArticleTypeGuard,
       FilteringPresetGuard,
+      ArticleSectionGuard,
       AuthGuard],
-    canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, FilteringPresetGuard]
+    canDeactivate: [
+      ArticleGuard,
+      ArticleTagGuard,
+      ArticleFieldNameGuard,
+      ArticleFieldValueGuard,
+      ArticleTypeGuard,
+      FilteringPresetGuard,
+      ArticleSectionGuard]
   },
   {
     path: 'articles/new',
     component: ArticleEditComponent,
-    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard, AuthGuard],
-    canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard]
+    canActivate: [
+      ArticleGuard,
+      ArticleTagGuard,
+      ArticleFieldNameGuard,
+      ArticleFieldValueGuard,
+      ArticleTypeGuard,
+      ArticleSectionGuard,
+      ImageGuard,
+      AuthGuard],
+    canDeactivate: [
+      ArticleGuard,
+      ArticleTagGuard,
+      ArticleFieldNameGuard,
+      ArticleFieldValueGuard,
+      ArticleTypeGuard,
+      ArticleSectionGuard,
+      ImageGuard]
   },
   {
     path: 'articles/edit/:id',
     component: ArticleEditComponent,
-    canActivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard, AuthGuard],
-    canDeactivate: [ArticleGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, ArticleTypeGuard, ImageGuard]
+    canActivate: [
+      ArticleGuard,
+      ArticleTagGuard,
+      ArticleFieldNameGuard,
+      ArticleFieldValueGuard,
+      ArticleTypeGuard,
+      ArticleSectionGuard,
+      ImageGuard,
+      AuthGuard],
+    canDeactivate: [
+      ArticleGuard,
+      ArticleTagGuard,
+      ArticleFieldNameGuard,
+      ArticleFieldValueGuard,
+      ArticleTypeGuard,
+      ArticleSectionGuard,
+      ImageGuard]
   }
 ];
 

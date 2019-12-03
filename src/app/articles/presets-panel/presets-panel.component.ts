@@ -3,6 +3,8 @@ import { FilteringPresetQuery } from '../state/ui/filtering-preset.query';
 import { Observable } from 'rxjs';
 import { FilteringPreset } from '../state/ui/filtering-preset.model';
 import { ArticlesUiStore } from '../state/ui/article-ui.store';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FilteringPresetService } from '../state/ui/filtering-preset.service';
 
 @Component({
   selector: 'app-presets-panel',
@@ -10,9 +12,12 @@ import { ArticlesUiStore } from '../state/ui/article-ui.store';
   styleUrls: ['./presets-panel.component.scss']
 })
 export class PresetsPanelComponent implements OnInit {
+  faTimes = faTimes;
+
   allPresets$: Observable<FilteringPreset[]>;
 
   constructor(private filteringPresetsQuery: FilteringPresetQuery,
+              private filteringPresetService: FilteringPresetService,
               private uiStore: ArticlesUiStore) { }
 
   ngOnInit() {
@@ -32,6 +37,7 @@ export class PresetsPanelComponent implements OnInit {
       tagIds: preset.tagIds,
       tagsFilterType: preset.tagsFilterType,
       articleTypeIds: preset.articleTypeIds,
+      articleSectionIds: preset.articleSectionIds,
       fieldValues: fieldValueFilters,
       fieldValuesFilterType: preset.fieldValuesFilterType,
       fastSearch: null
@@ -48,6 +54,10 @@ export class PresetsPanelComponent implements OnInit {
     }
     const sorting = { sortItems };
     this.uiStore.updateSorting(sorting);
+  }
+
+  deletePreset(preset: FilteringPreset) {
+    this.filteringPresetService.remove(preset.id);
   }
 
 }

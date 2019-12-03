@@ -7,19 +7,46 @@
       <button 
             type="button" 
             class="expand-button" 
+            [class.expanded]="panelState.sectionFiltersExpanded"
+            (click)="switchSectionFiltersExpanded()">
+        <fa-icon [icon]="faRight"></fa-icon>
+      </button>
+      <div class="subsection-header-text">Article sections</div>
+    </div>
+
+    <div class="subsection" [@collapse]="panelState.sectionFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
+      <div class="article-sections-list">
+        <div 
+            class="clickable-label article-section" 
+            *ngFor="let articleSection of (allArticleSections$ | async)" 
+            (click)="onChangeArticleSectionFilter(articleSection.id)">
+          <input type="checkbox" [ngModel]="isInFilterSectionsList(articleSection.id)">
+          <span class="checkbox-icon">
+            <fa-icon [icon]="faCheck" [class.checked]="isInFilterSectionsList(articleSection.id)"></fa-icon>
+          </span>
+          {{ articleSection.name }}
+        </div> 
+      </div>
+    </div>
+
+
+    <div class="subsection-header">
+      <button 
+            type="button" 
+            class="expand-button" 
             [class.expanded]="panelState.typeFiltersExpanded"
             (click)="switchTypeFiltersExpanded()">
         <fa-icon [icon]="faRight"></fa-icon>
       </button>
-      <div class="subsection-header-text">Article types</div>
+      <div class="subsection-header-text">Article templates</div>
     </div>
 
     <div class="subsection" [@collapse]="panelState.typeFiltersExpanded ? 'subsectionExpanded' : 'subsectionCollapsed'">
       <div class="article-types-list">
         <div class="clickable-label article-type" *ngFor="let articleType of (allArticleTypes$ | async)" (click)="onChangeArticleTypeFilter(articleType.id)">
-          <input type="checkbox" [ngModel]="isInFilterList(articleType.id)">
+          <input type="checkbox" [ngModel]="isInFilterTypesList(articleType.id)">
           <span class="checkbox-icon">
-            <fa-icon [icon]="faCheck" [class.checked]="isInFilterList(articleType.id)"></fa-icon>
+            <fa-icon [icon]="faCheck" [class.checked]="isInFilterTypesList(articleType.id)"></fa-icon>
           </span>
           {{ articleType.name }}
         </div> 
@@ -176,7 +203,7 @@
             class="sort-item inputs-buttons-group"
             cdkDrag>
         <div class="sort-item-value">
-          {{ sortItem.sortItemType === 0 ? 'Article name' : sortItem.sortItemType === 2 ? 'Article type' : capitalize(sortItem.sortItemName) + ' field value'}} 
+          {{ sortItem.sortItemType === 0 ? 'Article name' : sortItem.sortItemType === 2 ? 'Article section' : capitalize(sortItem.sortItemName) + ' field value'}} 
           <button
               type="button"
               class="button"
@@ -213,7 +240,7 @@
         </li>
         <li>
           <div class="sorting-option">
-            <span>Article type</span>
+            <span>Article section</span>
             <button type="button" class="button" [disabled]="sortingTypeAdded(2)" (click)="addSorting(2, 0, null)">a..Z</button>
             <button type="button" class="button" [disabled]="sortingTypeAdded(2)" (click)="addSorting(2, 1, null)">Z..a</button>
           </div>

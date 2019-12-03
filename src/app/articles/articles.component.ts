@@ -19,6 +19,7 @@ import {
   SortOrder,
 } from './state/ui/article-ui.store';
 import { FilteringPresetQuery } from './state/ui/filtering-preset.query';
+import { ArticleSectionQuery } from '../article-sections/state/article-section.query';
 
 
 @Component({
@@ -53,6 +54,7 @@ export class ArticlesComponent implements OnInit {
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleTagQuery: ArticleTagQuery,
               private articleTypeQuery: ArticleTypeQuery,
+              private articleSectionQuery: ArticleSectionQuery,
               private filteringPresetsQuery: FilteringPresetQuery) {}
 
   ngOnInit(): void {
@@ -99,6 +101,7 @@ export class ArticlesComponent implements OnInit {
     let result = this.allArticles;
     if (this.filtersAndSorting != null && this.allArticles !== null) {
       result = this.filterByTags(this.allArticles);
+      result = this.filterByArticleSections(result);
       result = this.filterByArticleTypes(result);
       result = this.filterFieldValues(result);
       result = this.filterFastSearch(result);
@@ -131,6 +134,16 @@ export class ArticlesComponent implements OnInit {
     }
 
     return articles.filter(article => articleTypeIds.includes(article.typeId));
+  }
+
+  filterByArticleSections(articles: Article[]): Article[] {
+    const articleSectionIds = this.filtersAndSorting.filters.articleSectionIds;
+
+    if (!articleSectionIds || articleSectionIds.length === 0) {
+      return articles;
+    }
+
+    return articles.filter(article => articleSectionIds.includes(article.sectionId));
   }
 
   filterFieldValues(articles: Article[]): Article[] {
@@ -233,10 +246,10 @@ export class ArticlesComponent implements OnInit {
 
       for (const sortItem of this.filtersAndSorting.sorting.sortItems) {
         switch (sortItem.sortItemType) {
-          case SortItemType.ArticleType:
-            const articleType1 = this.articleTypeQuery.getEntity(article1.typeId);
-            const articleType2 = this.articleTypeQuery.getEntity(article2.typeId);
-            if (articleType1 === articleType2) {
+          case SortItemType.ArticleSection:
+            const articleSection1 =  article1.sectionId == null ? null : this.articleSectionQuery.getEntity(article1.sectionId);
+            const articleSection2 = article2.sectionId == null ? null : this.articleSectionQuery.getEntity(article2.sectionId);
+            if (articleSection1 === articleSection2) {
               if (article1.isSectionHeader === article2.isSectionHeader) {
                 continue;
               } else {
@@ -244,7 +257,15 @@ export class ArticlesComponent implements OnInit {
                 return sortItem.sortOrder === SortOrder.Asc ?  result : -result;
               }
             } else {
-              const result = articleType1.sortingOrder - articleType2.sortingOrder;
+              let result;
+              if (articleSection1 === null) {
+                result = -1;
+              } else if (articleSection2 === null) {
+                result = 1;
+              } else {
+                result = articleSection1.orderNo - articleSection2.orderNo;
+              }
+
               return sortItem.sortOrder === SortOrder.Asc ?  result : -result;
             }
           case SortItemType.ArticleName:

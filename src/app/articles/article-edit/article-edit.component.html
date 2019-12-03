@@ -2,6 +2,7 @@
                      (loadingFieldNames$ | async) || 
                      (loadingFieldValues$ | async) || 
                      (loadingTags$ | async) ||
+                     (loadingArticleSections$ | async) ||
                      (loadingArticleTypes$ | async); 
                      else loaded">
   <h1>Loading...</h1>
@@ -27,6 +28,19 @@
       <div class="article-name fields-row">
         <div class="label article-name-label">Article Name</div>
         <input formControlName="name" class="article-name-input" (keydown.enter)="$event.preventDefault()">
+      </div>
+
+      <div class="article-section fields-row">
+        <label class="article-section-label">Section</label>
+        <ng-select
+          class="article-section-select"
+          [items]="articleSections$ | async"
+          bindLabel="name"
+          bindValue="id"
+          formControlName="articleSection"
+          [clearable]="false"
+          (keydown.enter)="$event.preventDefault()"
+        ></ng-select>
       </div>
 
       <div class="fields-row">

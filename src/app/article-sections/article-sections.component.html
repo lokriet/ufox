@@ -1,12 +1,12 @@
-<div class="loading" *ngIf="(articlesLoading$ | async) || (articleSectionsLoading$ | async);else articleSectionsDiv">
+<div class="loading" *ngIf="(articlesLoading$ | async) || (articleSectionsLoading$ | async);else loaded">
   <h1>Loading...</h1>
 </div>
 
 
-<ng-template #articleSectionsDiv>
+<ng-template #loaded>
   <div class="article-sections">
     <div class="article-sections-list" cdkDropList  (cdkDropListDropped)="onReorderDrop($event)">
-      <div *ngFor="let articleSection of articleSections;let i = index" cdkDrag class="inputs-buttons-group">
+      <div *ngFor="let articleSection of articleSections;let i = index" cdkDrag class="inputs-buttons-group section">
         <div class="section-order-no">{{ (articleSection.orderNo + 1) }}. </div>
         <div *ngIf="i !== editedSectionIndex" class="section-name">{{ articleSection.name }}</div>
         <input 

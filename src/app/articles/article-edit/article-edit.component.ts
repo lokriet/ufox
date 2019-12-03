@@ -19,6 +19,8 @@ import { ArticleFieldValueService } from '../state/articles/article-field-value.
 import { ArticleQuery } from '../state/articles/article.query';
 import { ArticleService } from '../state/articles/article.service';
 import { FirebaseImageUploadAdapter } from './image-upload.adapter';
+import { ArticleSection } from 'src/app/article-sections/state/article-section.model';
+import { ArticleSectionQuery } from 'src/app/article-sections/state/article-section.query';
 
 @Component({
   selector: 'app-article-edit',
@@ -35,6 +37,8 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
   loadingFieldValues$: Observable<boolean>;
   loadingTags$: Observable<boolean>;
   loadingArticleTypes$: Observable<boolean>;
+  loadingArticleSections$: Observable<boolean>;
+
 
   public editor = ClassicEditor;
   ckconfig = {
@@ -48,6 +52,8 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
   articleTypes$: Observable<ArticleType[]>;
   selectedArticleType: ArticleType;
   additionalFieldNames: ArticleFieldName[];
+
+  articleSections$: Observable<ArticleSection[]>;
 
   deletedFieldValueIds: string[];
 
@@ -70,6 +76,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
               private articleFieldValueQuery: ArticleFieldValueQuery,
               private articleQuery: ArticleQuery,
               private articleService: ArticleService,
+              private articleSectionQuery: ArticleSectionQuery,
               private messageService: MessageService,
               fireStorage: AngularFireStorage,
               imageService: ImageService) {
@@ -89,10 +96,13 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     this.loadingFieldValues$ = this.articleFieldValueQuery.selectLoading();
     this.loadingTags$ = this.articleTagQuery.selectLoading();
     this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
+    this.loadingArticleSections$ = this.articleSectionQuery.selectLoading();
 
 
     this.articleTypes$ = this.articleTypeQuery.selectAll({sortBy: 'sortingOrder'});
     this.selectedArticleType = null;
+
+    this.articleSections$ = this.articleSectionQuery.selectAll({sortBy: 'orderNo'});
 
     this.allTags$ = this.articleTagQuery.selectAll({sortBy: 'name'});
 
@@ -126,6 +136,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     let additionalArticleFields = null;
     let articleTypeId = null;
     let isSectionHeader = false;
+    let articleSectionId = null;
 
     if (!this.editMode) {
       this.selectedArticleType = this.articleTypeQuery.getAll({sortBy: 'sortingOrder'})[0];
@@ -142,6 +153,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
       id = this.editedArticleId;
       name = editedArticle.name;
+      articleSectionId = editedArticle.sectionId;
       isSectionHeader = editedArticle.isSectionHeader;
       articleTypeId = editedArticle.typeId;
       articleText = editedArticle.text;
@@ -180,6 +192,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       name: new FormControl(name),
       imageUrl: new FormControl(imageUrl),
       articleType: new FormControl(articleTypeId),
+      articleSection: new FormControl(articleSectionId),
       articleText: new FormControl(articleText),
       isSectionHeader: new FormControl(isSectionHeader),
       additionalFields: additionalArticleFields
@@ -322,10 +335,10 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       name: this.articleForm.value.name,
       text: this.articleForm.value.articleText,
       imageUrl: this.showingPictureInput ? this.articleForm.value.imageUrl : null,
+      sectionId: this.articleForm.value.articleSection,
       isSectionHeader: this.articleForm.value.isSectionHeader,
       additionalFieldValueIds,
-      tagIds,
-      sectionId: null
+      tagIds
     };
 
     if (this.editMode) {

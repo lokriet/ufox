@@ -19,6 +19,7 @@ export interface FilterPanelState {
   sidePanelExpanded: boolean;
   tagsFiltersExpanded: boolean;
   typeFiltersExpanded: boolean;
+  sectionFiltersExpanded: boolean;
   fieldFiltersExpanded: boolean;
   sortingOrderExpanded: boolean;
   sortingFieldsExpanded: boolean;
@@ -39,6 +40,7 @@ export interface ArticleFilters {
   tagIds: string[];
   tagsFilterType: FilterType;
   articleTypeIds: string[];
+  articleSectionIds: string[];
   fieldValues: FieldValueFilter[];
   fieldValuesFilterType: FilterType;
   fastSearch: string;
@@ -57,7 +59,7 @@ export interface SortItem {
 export enum SortItemType {
   ArticleName = 0,
   ArticleField = 1,
-  ArticleType = 2
+  ArticleSection = 2
 }
 
 export enum SortOrder {
@@ -70,13 +72,14 @@ const initialState = {
     tagIds: [],
     tagsFilterType: FilterType.Any,
     articleTypeIds: [],
+    articleSectionIds: [],
     fieldValues: [],
     fieldValuesFilterType: FilterType.Any,
     fastSearch: null
   },
   sorting: { sortItems: [
     {
-      sortItemType: SortItemType.ArticleType,
+      sortItemType: SortItemType.ArticleSection,
       sortItemName: null,
       sortOrder: SortOrder.Asc
     },
@@ -91,6 +94,7 @@ const initialState = {
     sidePanelExpanded: true,
     tagsFiltersExpanded: true,
     typeFiltersExpanded: true,
+    sectionFiltersExpanded: true,
     fieldFiltersExpanded: true,
     sortingOrderExpanded: true,
     sortingFieldsExpanded: true,
@@ -136,6 +140,10 @@ export class ArticlesUiStore extends Store<ArticlesUiState> {
 
   updateFilterArticleTypes(articleTypeIds: string[]) {
     this.update({ ...this._value(), filters: {...this._value().filters, articleTypeIds} });
+  }
+
+  updateFilterArticleSections(articleSectionIds: string[]) {
+    this.update({ ...this._value(), filters: {...this._value().filters, articleSectionIds} });
   }
 
   updateFilterFieldValues(fieldValues: FieldValueFilter[]) {

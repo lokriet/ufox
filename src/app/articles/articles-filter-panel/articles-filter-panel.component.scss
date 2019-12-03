@@ -63,13 +63,15 @@ label {
   padding-left: 2rem;
 }
 
-.article-types-list {
+.article-types-list,
+.article-sections-list {
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
-.article-type {
+.article-type,
+.article-section {
   margin: 0.25rem 0;
 }
 

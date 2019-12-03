@@ -16,11 +16,23 @@
 }
 
 .preset {
+  display: flex;
   padding: 0.5rem 1rem;
-  color: $main-color--dark;
-  cursor: pointer;
-
+  cursor: default;
+  
   &:hover {
     background-color: $background-color;
+  }
+
+  .preset-name {
+    color: $main-color--dark;
+    flex-grow: 1;
+  }
+
+  .delete-preset-button {
+    background-color: transparent;
+    border: none;
+    color: $accent-color-orange;
+    cursor: pointer;
   }
 }

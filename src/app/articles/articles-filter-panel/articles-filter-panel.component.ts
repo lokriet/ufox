@@ -20,6 +20,8 @@ import {
 } from '../state/ui/article-ui.store';
 import { FilteringPresetService } from '../state/ui/filtering-preset.service';
 import { guid } from '@datorama/akita';
+import { ArticleSection } from 'src/app/article-sections/state/article-section.model';
+import { ArticleSectionQuery } from 'src/app/article-sections/state/article-section.query';
 
 @Component({
   selector: 'app-articles-filter-panel',
@@ -46,6 +48,9 @@ export class ArticlesFilterPanelComponent implements OnInit {
   filterArticleTypeIds: string[] = [];
   allArticleTypes$: Observable<ArticleType[]>;
 
+  filterArticleSectionIds: string[] = [];
+  allArticleSections$: Observable<ArticleSection[]>;
+
   fieldValuesFilterType: FilterType;
   fieldValueFilters: FieldValueFilter[];
   showFieldValuesFilterError = false;
@@ -61,11 +66,13 @@ export class ArticlesFilterPanelComponent implements OnInit {
               private articlesUiQuery: ArticlesUiQuery,
               private articlesUiStore: ArticlesUiStore,
               private articleTypesQuery: ArticleTypeQuery,
+              private articleSectionsQuery: ArticleSectionQuery,
               private filteringPresetsService: FilteringPresetService) { }
 
   ngOnInit() {
     this.allTags$ = this.tagsQuery.selectAll({sortBy: 'name'});
     this.allArticleTypes$ = this.articleTypesQuery.selectAll({sortBy: 'sortingOrder'});
+    this.allArticleSections$ = this.articleSectionsQuery.selectAll({sortBy: 'orderNo'});
 
     this.articlesUiQuery.select().subscribe(value => {
       this.filterTags = this.tagsQuery.getAll({
@@ -75,6 +82,7 @@ export class ArticlesFilterPanelComponent implements OnInit {
       this.tagsFilterType = value.filters.tagsFilterType;
 
       this.filterArticleTypeIds = [...value.filters.articleTypeIds];
+      this.filterArticleSectionIds = [...value.filters.articleSectionIds];
 
       this.fieldValuesFilterType = value.filters.fieldValuesFilterType;
       this.fieldValueFilters = [];
@@ -98,6 +106,10 @@ export class ArticlesFilterPanelComponent implements OnInit {
     }
 
     if (this.filterArticleTypeIds && this.filterArticleTypeIds.length > 0) {
+      return false;
+    }
+
+    if (this.filterArticleSectionIds && this.filterArticleSectionIds.length > 0) {
       return false;
     }
 
@@ -130,18 +142,32 @@ export class ArticlesFilterPanelComponent implements OnInit {
     this.articlesUiStore.resetFilters();
   }
 
-  isInFilterList(articleTypeId: string) {
+  isInFilterTypesList(articleTypeId: string) {
     return this.filterArticleTypeIds.includes(articleTypeId);
   }
 
   onChangeArticleTypeFilter(articleTypeId: string) {
-    if (this.isInFilterList(articleTypeId)) {
+    if (this.isInFilterTypesList(articleTypeId)) {
       this.filterArticleTypeIds = this.filterArticleTypeIds.filter(id => id !== articleTypeId);
     } else {
       this.filterArticleTypeIds.push(articleTypeId);
     }
 
     this.articlesUiStore.updateFilterArticleTypes(this.filterArticleTypeIds);
+  }
+
+  isInFilterSectionsList(articleSectionId: string) {
+    return this.filterArticleSectionIds.includes(articleSectionId);
+  }
+
+  onChangeArticleSectionFilter(articleSectionId: string) {
+    if (this.isInFilterSectionsList(articleSectionId)) {
+      this.filterArticleSectionIds = this.filterArticleSectionIds.filter(id => id !== articleSectionId);
+    } else {
+      this.filterArticleSectionIds.push(articleSectionId);
+    }
+
+    this.articlesUiStore.updateFilterArticleSections(this.filterArticleSectionIds);
   }
 
   onFieldValuesFilterTypeChanged(fieldValuesFilterType: FilterType) {
@@ -242,6 +268,11 @@ export class ArticlesFilterPanelComponent implements OnInit {
     this.articlesUiStore.updateFilterPanelState(this.panelState);
   }
 
+  switchSectionFiltersExpanded() {
+    this.panelState.sectionFiltersExpanded = !this.panelState.sectionFiltersExpanded;
+    this.articlesUiStore.updateFilterPanelState(this.panelState);
+  }
+
   switchTagFiltersExpanded() {
     this.panelState.tagsFiltersExpanded = !this.panelState.tagsFiltersExpanded;
     this.articlesUiStore.updateFilterPanelState(this.panelState);
@@ -287,6 +318,7 @@ export class ArticlesFilterPanelComponent implements OnInit {
       tagIds: [...uiState.filters.tagIds],
       tagsFilterType: uiState.filters.tagsFilterType,
       articleTypeIds: [...uiState.filters.articleTypeIds],
+      articleSectionIds: [...uiState.filters.articleSectionIds],
       fieldValueNames: uiState.filters.fieldValues.map(item => item.name),
       fieldValues: uiState.filters.fieldValues.map(item => item.value),
       fieldValuesFilterType: uiState.filters.fieldValuesFilterType,

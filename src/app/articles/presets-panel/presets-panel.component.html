@@ -1,8 +1,9 @@
 
 <div class="presets-panel">
   <div class="presets-list">
-    <div *ngFor="let preset of (allPresets$ | async)" class="preset" (click)="loadPreset(preset)">
-      {{preset.name}}
+    <div *ngFor="let preset of (allPresets$ | async)" class="preset">
+      <span (click)="loadPreset(preset)" class="preset-name">{{preset.name}}</span>
+      <button type="button" class="delete-preset-button" (click)="deletePreset(preset)"><fa-icon [icon]="faTimes"></fa-icon></button>
     </div>
   </div>
 </div>

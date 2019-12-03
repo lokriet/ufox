@@ -7,6 +7,7 @@ export interface FilteringPreset {
   tagIds: string[];
   tagsFilterType: FilterType;
   articleTypeIds: string[];
+  articleSectionIds: string[];
   fieldValueNames: string[];
   fieldValues: string[];
   fieldValuesFilterType: FilterType;
