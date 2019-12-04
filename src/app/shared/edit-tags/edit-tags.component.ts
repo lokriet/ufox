@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy } from '@angular/core';
 import { guid } from '@datorama/akita';
 import { Observable } from 'rxjs';
 import { ArticleQuery } from 'src/app/articles/state/articles/article.query';
@@ -13,16 +13,19 @@ import { ArticleTagService } from '../../articles-setup/state/article-tag.servic
   templateUrl: './edit-tags.component.html',
   styleUrls: ['./edit-tags.component.scss']
 })
-export class EditTagsComponent implements OnInit {
+export class EditTagsComponent implements OnInit, OnDestroy {
   @ViewChild('createTagInput', { static: true }) createTagInput: ElementRef;
   @ViewChild('dialogBoxDiv', { static: false }) dialogBoxDiv: ElementRef;
-  @Input() enabled: boolean;
+
   tags$: Observable<ArticleTag[]>;
   @Output() viewClosed = new EventEmitter();
   @Output() tagDeleted = new EventEmitter<string>();
 
   isDown = false;
   dragOffset: any;
+
+  @Input() enabled: boolean;
+  boundEventListener = this.escapeEvent.bind(this);
 
   constructor(private tagService: ArticleTagService,
               private tagQuery: ArticleTagQuery,
@@ -31,6 +34,11 @@ export class EditTagsComponent implements OnInit {
 
   ngOnInit() {
     this.tags$ = this.tagQuery.selectAll({sortBy: 'name'});
+    document.addEventListener('keydown', this.boundEventListener);
+  }
+
+  ngOnDestroy() {
+    document.removeEventListener('keydown', this.boundEventListener);
   }
 
   onRemoveTag(selectedTagId: string) {
@@ -84,7 +92,7 @@ export class EditTagsComponent implements OnInit {
   mousemove($event){
       $event.preventDefault();
 
-      if (this.isDown){
+      if (this.isDown) {
           const mousePosition = {
               x : $event.clientX,
               y : $event.clientY
@@ -93,6 +101,25 @@ export class EditTagsComponent implements OnInit {
           this.dialogBoxDiv.nativeElement.style.left = (mousePosition.x + this.dragOffset[0]) + 'px';
           this.dialogBoxDiv.nativeElement.style.top  = (mousePosition.y + this.dragOffset[1]) + 'px';
       }
+  }
+
+  // 
+  // @Input() set enabled(enabled: boolean) {
+  //   if (enabled && !this.enabled)  {
+  //     this.enabled = true;
+  //     document.addEventListener('keydown', this.boundEventListener);
+  //   }
+  //   if (!enabled && this.enabled) {
+  //     this.enabled = false;
+  //     document.removeEventListener('keydown', this.boundEventListener)
+  //   }
+  // }
+
+  
+  escapeEvent(event) {
+    if (this.enabled && event.key === 'Escape' || event.keyCode === 27) {
+      this.onCloseView();
+    }
   }
 
 }

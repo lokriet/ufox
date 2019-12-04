@@ -57,7 +57,9 @@ export class PresetsPanelComponent implements OnInit {
   }
 
   deletePreset(preset: FilteringPreset) {
-    this.filteringPresetService.remove(preset.id);
+    if (confirm('You wanna delete a preset?')) {
+      this.filteringPresetService.remove(preset.id);
+    }
   }
 
 }

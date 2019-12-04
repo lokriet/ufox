@@ -356,7 +356,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
     if (!autoSave) {
       this.messageService.addInfo(`Saved ${article.name ? article.name : 'noname'} article`);
-      this.router.navigate(['articles']);
+      this.router.navigate(['articles'], { queryParams: { scrollTo: article.id }});
     } else {
       this.messageService.addInfo(`Autosaved ${article.name ? article.name : 'noname'} article`);
       if (!this.editMode) {

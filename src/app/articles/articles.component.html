@@ -57,13 +57,22 @@
       <div class="main-view" [class.filters-expanded]="sidePanelState.sidePanelExpanded">
         <div class="articles">
           <div class="inputs-buttons-group">
+            <div id='startOfThePage'></div>
             <button type="button" class="button" [routerLink]="'/articles/new'">Add something new</button>
             <a class="button" href="https://www.youtube.com/results?search_query=foxes+are+cute" target="_blank">Alisa I'm bored!</a>
             <input type="text" [(ngModel)]="fastSearchString" (keydown)="onFastSearchInput($event)">
             <button type="button" class="button" (click)="onFastSearch()">Search fast!!!</button>
           </div>
           <app-articles-list [articles]="filteredArticles"></app-articles-list>
+
         </div>
       </div>
+
+
+      <div class="to-the-top-button" [class.expanded-side-view]="sidePanelState.sidePanelExpanded" (click)="scrollToElement('startOfThePage')">
+        <fa-icon [icon]="faUp"></fa-icon>
+      </div>
+
+      
     </div>
   </ng-template>

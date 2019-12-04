@@ -49,6 +49,14 @@ export class ArticleViewComponent implements OnInit {
     this.articlesUiQuery.select().subscribe(value => {
       this.highlightString = value.filters.fastSearch;
     });
+
+    this.fieldNamesQuery.selectAll().subscribe(value => {
+      this.additionalFields = null;
+    });
+
+    this.fieldValuesQuery.selectAll().subscribe(value => {
+      this.additionalFields = null;
+    });
   }
 
 
@@ -80,6 +88,10 @@ export class ArticleViewComponent implements OnInit {
   }
 
   onDeleteArticle() {
+    if (!confirm('Are you sure you wanna delete?')) {
+      return;
+    }
+
     for (const fieldValueId of this.article.additionalFieldValueIds) {
       this.fieldValueService.remove(fieldValueId);
     }

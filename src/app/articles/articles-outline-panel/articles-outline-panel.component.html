@@ -1,5 +1,13 @@
 <div class="outline-panel">
   <div class="anchors-list">
-    <div class="anchor" (click)="scrollToArticle(article.id)" *ngFor="let article of articles">{{ article.name ? article.name : "&lt;name meee&gt;" }}</div>
+
+    <ng-container *ngFor="let article of articles;let i = index">
+      <div class="section-name" *ngIf="showSectionNames && (i === 0 || articles[i].sectionId !== articles[i-1].sectionId)">
+        {{ getSectionName(article) }}
+      </div>
+      <div class="anchor" [class.tabbed]="showSectionNames" (click)="scrollToArticle(article.id)">
+        {{ article.name ? article.name : "&lt;name meee&gt;" }}
+      </div>
+    </ng-container>
   </div>
 </div>

@@ -74,6 +74,10 @@ export class ArticleSectionsComponent implements OnInit {
   }
 
   onDeleteSection(index: number) {
+    if (!confirm('Delete section?')) {
+      return;
+    }
+
     const affectedArticles = this.articleQuery.getAll({filterBy: article => article.sectionId === this.articleSections[index].id});
     if (affectedArticles.length > 0) {
       // tslint:disable-next-line: max-line-length

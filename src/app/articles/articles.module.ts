@@ -32,7 +32,6 @@ import { PresetsPanelComponent } from './presets-panel/presets-panel.component';
   ],
   imports: [
     CommonModule,
-    BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
     SharedModule,

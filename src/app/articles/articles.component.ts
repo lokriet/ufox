@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { faAngleDoubleLeft, faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 
 import { ArticleFieldNameQuery } from '../articles-setup/state/article-field-name.query';
@@ -20,6 +20,8 @@ import {
 } from './state/ui/article-ui.store';
 import { FilteringPresetQuery } from './state/ui/filtering-preset.query';
 import { ArticleSectionQuery } from '../article-sections/state/article-section.query';
+import { ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/operators';
 
 
 @Component({
@@ -27,8 +29,9 @@ import { ArticleSectionQuery } from '../article-sections/state/article-section.q
   templateUrl: './articles.component.html',
   styleUrls: ['./articles.component.scss']
 })
-export class ArticlesComponent implements OnInit {
+export class ArticlesComponent implements OnInit, OnDestroy {
   faCollapse = faAngleDoubleLeft;
+  faUp = faAngleDoubleUp;
 
   loadingArticles$: Observable<boolean>;
   loadingFieldNames$: Observable<boolean>;
@@ -45,9 +48,12 @@ export class ArticlesComponent implements OnInit {
 
   fastSearchString: string = null;
 
+  queryParamsSub;
+  scrolledTo = false;
   // fastSearchString = null;
 
-  constructor(private articleQuery: ArticleQuery,
+  constructor(private route: ActivatedRoute,
+              private articleQuery: ArticleQuery,
               private articleUiQuery: ArticlesUiQuery,
               private articlesUiStore: ArticlesUiStore,
               private articleFieldNameQuery: ArticleFieldNameQuery,
@@ -68,6 +74,18 @@ export class ArticlesComponent implements OnInit {
     this.articleQuery.selectAll().subscribe(articles => {
       this.allArticles = articles;
       this.filteredArticles = this.applyFiltersAndSorting();
+
+      this.queryParamsSub = this.route.queryParams.pipe(first()).subscribe(params => {
+        const articleId = params.scrollTo;
+        if (articleId && articleId.length > 0) {
+          setTimeout(() => {
+            if (!this.scrolledTo) {
+              this.scrollToElement(articleId);
+              this.scrolledTo = true;
+            }
+          }, 0);
+        }
+      });
     });
 
     this.articleUiQuery.select().subscribe(value => {
@@ -81,12 +99,22 @@ export class ArticlesComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.queryParamsSub) {
+      this.queryParamsSub.unsubscribe();
+    }
+  }
+
   filtersEmpty(uiState: ArticlesUiState): boolean {
     if (uiState.filters.tagIds && uiState.filters.tagIds.length > 0) {
        return false;
     }
 
     if (uiState.filters.articleTypeIds && uiState.filters.articleTypeIds.length > 0) {
+      return false;
+    }
+
+    if (uiState.filters.articleSectionIds && uiState.filters.articleSectionIds.length > 0) {
       return false;
     }
 
@@ -165,14 +193,18 @@ export class ArticlesComponent implements OnInit {
       for (const articleFieldValueId of article.additionalFieldValueIds) {
         const fieldValue = this.articleFieldValueQuery.getEntity(articleFieldValueId);
         const fieldName = this.articleFieldNameQuery.getEntity(fieldValue.fieldNameId);
+        let articleFieldValue = fieldValue.value;
+        if (!articleFieldValue) {
+          articleFieldValue = '';
+        }
 
         if (fieldValueFilterType === FilterType.Any) {
           if (fieldValueFilters.some(fieldValueFilter => fieldValueFilter.name.toLowerCase() === fieldName.name.toLowerCase() &&
-                                                         fieldValueFilter.value.toLowerCase() === fieldValue.value.toLowerCase())) {
+                                                         fieldValueFilter.value.toLowerCase() === articleFieldValue.toLowerCase())) {
             return true;
           }
         } else {
-          articleFieldNameValues.push({name: fieldName.name, value: fieldValue.value});
+          articleFieldNameValues.push({name: fieldName.name, value: articleFieldValue});
         }
       }
 
@@ -292,12 +324,12 @@ export class ArticlesComponent implements OnInit {
               fieldValue2 = fieldValue2.value;
             }
 
-            if (!fieldValue1 && !fieldValue2) {
+            if (!fieldValue1 || !fieldValue2) {
               continue;
-            } else if (!fieldValue1 && fieldValue2) {
-              return sortItem.sortOrder === SortOrder.Asc ?  1 : -1;
-            } else if (fieldValue1 && !fieldValue2) {
-              return sortItem.sortOrder === SortOrder.Asc ?  -1 : 1;
+            // } else if (!fieldValue1 && fieldValue2) {
+            //   return sortItem.sortOrder === SortOrder.Asc ?  1 : -1;
+            // } else if (fieldValue1 && !fieldValue2) {
+            //   return sortItem.sortOrder === SortOrder.Asc ?  -1 : 1;
             } else {
               const result = fieldValue1.toLowerCase().localeCompare(fieldValue2.toLowerCase());
               return sortItem.sortOrder === SortOrder.Asc ?  result : -result;
@@ -355,5 +387,9 @@ export class ArticlesComponent implements OnInit {
   collapseSidePanel() {
     this.sidePanelState.sidePanelExpanded = false;
     this.articlesUiStore.updateFilterPanelState(this.sidePanelState);
+  }
+
+  scrollToElement(elementId: string) {
+    document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
   }
 }

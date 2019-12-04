@@ -115,7 +115,11 @@
 
       <div class="inputs-buttons-group">
         <button type="submit" class="button">{{ editMode ? 'Save changes' : 'Create article' }}</button>
-        <button class="button" type="button" [routerLink]="'/articles'">Cancel</button>
+        <button 
+            class="button" 
+            type="button" 
+            [routerLink]="['/articles']"
+            [queryParams]="editMode ? { scrollTo: editedArticleId } : {}">Cancel</button>
       </div>
     </form>
 

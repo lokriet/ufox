@@ -20,9 +20,19 @@
   width: 100%;
   cursor: pointer;
   font-size: 1.2rem;
+  
+  &.tabbed {
+    margin-left: 1rem;
+  }
 
   &:hover {
     background-color: $background-color;
     color: $accent-color-red--dark;
   }
+}
+
+.section-name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin: 0.5rem;
 }

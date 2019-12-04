@@ -50,13 +50,17 @@ export class ArticleTypeViewComponent implements OnInit {
   }
 
   onDeleteArticleType() {
+    if (!confirm('Delete template?')) {
+      return;
+    }
+
     this.loading = true;
     this.articleTypeService.syncCollection().subscribe();
     this.articleService.syncCollection().subscribe(() => {
       this.loading = false;
       const articles = this.articleQuery.getAll({filterBy: article => article.typeId != null && article.typeId === this.articleType.id});
       if (articles != null && articles.length > 0) {
-        if (confirm(`There are ${articles.length} articles with this type. ` +
+        if (confirm(`There are ${articles.length} articles with this template. ` +
                     `They will be deleted if you procede. Are you sure about this?`)) {
           this.loading = true;
           this.articleFieldValueService.syncCollection().subscribe(() => {
