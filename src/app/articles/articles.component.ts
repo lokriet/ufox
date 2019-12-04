@@ -359,7 +359,7 @@ export class ArticlesComponent implements OnInit, OnDestroy {
           const existingValue = additionalFieldValues.find(value => value.fieldNameId === additionalFieldName.id);
           additionalFields.push({
               name: additionalFieldName.name.toLowerCase(),
-              value: existingValue ? existingValue.value.toLowerCase() : null
+              value: (existingValue && existingValue.value) ? existingValue.value.toLowerCase() : null
           });
         }
       }
