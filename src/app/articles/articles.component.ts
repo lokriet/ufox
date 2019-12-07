@@ -390,6 +390,6 @@ export class ArticlesComponent implements OnInit, OnDestroy {
   }
 
   scrollToElement(elementId: string) {
-    document.getElementById(elementId).scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+    document.getElementById(elementId).scrollIntoView({/*behavior: 'smooth', */block: 'start', inline: 'nearest'});
   }
 }

@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { guid } from '@datorama/akita';
 import { faChevronDown, faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ArticleFieldValueQuery } from 'src/app/articles/state/articles/article-field-value.query';
 import { ArticleFieldValueService } from 'src/app/articles/state/articles/article-field-value.service';
 
@@ -25,6 +25,7 @@ export class ArticleTypeEditComponent implements OnInit {
   loadingArticleTypes$: Observable<boolean>;
   loadingTags$: Observable<boolean>;
   loadingFieldNames$: Observable<boolean>;
+  loadingFieldValues$: Observable<boolean>;
 
   faChevronUp = faChevronUp;
   faChevronDown = faChevronDown;
@@ -68,6 +69,8 @@ export class ArticleTypeEditComponent implements OnInit {
     this.loadingArticleTypes$ = this.articleTypeQuery.selectLoading();
     this.loadingTags$ = this.tagQuery.selectLoading();
     this.loadingFieldNames$ = this.fieldNameQuery.selectLoading();
+
+    this.loadingFieldValues$ = this.editMode ? this.fieldValueQuery.selectLoading() : of(false);
 
     this.route.params.subscribe(
       (params: Params) => {
@@ -245,20 +248,18 @@ export class ArticleTypeEditComponent implements OnInit {
       if (this.deletedAdditionalFields.length > 0) {
         const deletedAdditionalFieldIds = this.deletedAdditionalFields.map(field => field.id);
 
-        this.fieldValueService.syncCollection().subscribe(() => {
-          const affectedFieldValueIds = this.fieldValueQuery.getAll({
-            filterBy: value => deletedAdditionalFieldIds.includes(value.fieldNameId)
-          }).map(value => value.id);
-          if (affectedFieldValueIds.length > 0) {
-            if (!confirm('This will delete removed fields from all existing articles. You sure?')) {
-              return;
-            } else {
-              this.fieldValueService.remove(affectedFieldValueIds);
-            }
+        const affectedFieldValueIds = this.fieldValueQuery.getAll({
+          filterBy: value => deletedAdditionalFieldIds.includes(value.fieldNameId)
+        }).map(value => value.id);
+        if (affectedFieldValueIds.length > 0) {
+          if (!confirm('This will delete removed fields from all existing articles. You sure?')) {
+            return;
+          } else {
+            this.fieldValueService.remove(affectedFieldValueIds);
           }
+        }
 
-          this.fieldNameService.remove(deletedAdditionalFieldIds);
-        });
+        this.fieldNameService.remove(deletedAdditionalFieldIds);
       }
 
       this.articleTypeService.update(updatedArticleType);
@@ -295,8 +296,8 @@ export class ArticleTypeEditComponent implements OnInit {
   onRenameField(index: number) {
     if (this.editedAdditionalFieldIndex !== index) {
       this.editedAdditionalFieldIndex = index;
-      this.editedAdditionalFieldName = this.additionalFields[index].name;
-      this.editedAdditionalFieldHint = this.additionalFields[index].hint;
+      this.editedAdditionalFieldName = this.additionalFields[index].name ? this.additionalFields[index].name : null;
+      this.editedAdditionalFieldHint = this.additionalFields[index].hint ? this.additionalFields[index].hint : null;
     }
   }
 

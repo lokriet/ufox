@@ -7,6 +7,7 @@ import { ArticleTagGuard } from './state/article-tag.guard';
 import { ArticleFieldNameGuard } from './state/article-field-name.guard';
 import { ArticleTypeSortingComponent } from './article-type-sorting/article-type-sorting.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { ArticleFieldValueGuard } from '../articles/state/articles/article-field-value.guard';
 
 const routes: Route[] = [
   { 
@@ -26,8 +27,8 @@ const routes: Route[] = [
   {
     path: 'articles-setup/edit/:id',
     component: ArticleTypeEditComponent,
-    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard, AuthGuard],
-    canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard]
+    canActivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard, AuthGuard],
+    canDeactivate: [ArticleTypeGuard, ArticleTagGuard, ArticleFieldNameGuard, ArticleFieldValueGuard]
   },
 
   {

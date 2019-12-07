@@ -24,6 +24,7 @@ export interface FilterPanelState {
   sortingOrderExpanded: boolean;
   sortingFieldsExpanded: boolean;
   selectedSideView: SideView;
+  outlineSectionsExpanded: string[];
 }
 
 export enum FilterType {
@@ -98,7 +99,8 @@ const initialState = {
     fieldFiltersExpanded: true,
     sortingOrderExpanded: true,
     sortingFieldsExpanded: true,
-    selectedSideView: SideView.Filters
+    selectedSideView: SideView.Filters,
+    outlineSectionsExpanded: null
   }
 }
 
@@ -159,10 +161,14 @@ export class ArticlesUiStore extends Store<ArticlesUiState> {
   }
 
   updateSortingOrder(sortItems: SortItem[]) {
-    this.update({...this._value, sorting: { sortItems }});
+    this.update({...this._value(), sorting: { sortItems }});
   }
 
   updateFilterPanelState(filterPanelState: FilterPanelState) {
-    this.update({...this._value, filterPanelState });
+    this.update({...this._value(), filterPanelState });
+  }
+
+  updateExpandedOutlineSections(outlineSectionsExpanded: string[]) {
+    this.update({...this._value(), filterPanelState: {...this._value().filterPanelState, outlineSectionsExpanded} });
   }
 }

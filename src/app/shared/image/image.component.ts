@@ -18,7 +18,7 @@ export const IMAGE_VALUE_ACCESSOR: any = {
   selector: 'app-image',
   templateUrl: './image.component.html',
   styleUrls: ['./image.component.scss'],
-  providers: [IMAGE_VALUE_ACCESSOR],
+  providers: [IMAGE_VALUE_ACCESSOR]
 })
 export class ImageComponent implements ControlValueAccessor {
 

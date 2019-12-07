@@ -31,8 +31,33 @@
   }
 }
 
-.section-name {
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+
+  .expand-button {
+    background-color: transparent;
+    margin-right: 1rem;
+    border: none;
+    transition: transform 400ms ease-in-out;
+    cursor: pointer;
+
+    &.expanded {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.section-header-text {
   font-weight: 700;
-  font-size: 1.2rem;
-  margin: 0.5rem;
+  letter-spacing: 0.1rem;
+  font-family: $header-font;
+  font-size: 1.5rem;
+}
+
+
+.section {
+  overflow: hidden;
+  padding-left: 2rem;
 }
