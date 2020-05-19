@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules, ExtraOptions } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent},
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'article-sections',
     loadChildren: () => import('./article-sections/article-sections.module').then(mod => mod.ArticleSectionsModule)},
 
+  { path: 'profile', component: ProfileComponent },
   { path: '404', component: PageNotFoundComponent },
   { path: '**', redirectTo: '/404' }
 

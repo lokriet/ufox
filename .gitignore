@@ -41,11 +41,12 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+firebase.json
 
 # System Files
 .DS_Store
 Thumbs.db
-src/environments/environment.ts
+src/environments
 public/index.html
 .firebase/hosting.ZGlzdFx1Zm94.cache
 .firebase/hosting.cHVibGlj.cache

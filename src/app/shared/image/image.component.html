@@ -19,12 +19,12 @@
   </div>
 
   <div *ngIf="(percentage$ | async) as percent">
-      <progress class="progress " 
-                [value]="percent" 
-                max="100">        
-      </progress>
-      <span> {{ percent | number }}%</span>
-    </div>
+    <progress class="progress " 
+              [value]="percent" 
+              max="100">        
+    </progress>
+    <span> {{ percent | number }}%</span>
+  </div>
 
   
   <div *ngIf="(snapshot$ | async) as snapshot">

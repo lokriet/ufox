@@ -26,6 +26,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthGuard } from './auth/auth.guard';
 import { ArticleSectionsModule } from './article-sections/article-sections.module';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { ArticleSectionsModule } from './article-sections/article-sections.modul
     HeaderComponent,
     FooterComponent,
     UploadTestComponent,
-    MessagesComponent
+    MessagesComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
