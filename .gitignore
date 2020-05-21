@@ -51,3 +51,7 @@ public/index.html
 .firebase/hosting.ZGlzdFx1Zm94.cache
 .firebase/hosting.cHVibGlj.cache
 src/environments/environment.prod.ts
+.firebaserc
+.firebaserc___prod
+firebase.json___prod
+.firebaserc
